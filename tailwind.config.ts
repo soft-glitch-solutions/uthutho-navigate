@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -26,35 +25,23 @@ export default {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: '#F97316',
+          DEFAULT: '#1ea2b1',
           foreground: 'hsl(var(--primary-foreground))'
         },
         secondary: {
-          DEFAULT: '#7E69AB',
+          DEFAULT: '#ed67b1',
           foreground: 'hsl(var(--secondary-foreground))'
         },
         accent: {
-          DEFAULT: '#4ADE80',
+          DEFAULT: '#f8c325',
           foreground: 'hsl(var(--accent-foreground))'
         },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))'
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))'
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))'
-        },
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))'
+        highlight: {
+          DEFAULT: '#fd602d',
         }
       },
       fontFamily: {
+        quiapo: ['Quiapo', 'sans-serif'],
         playfair: ['Playfair Display', 'serif'],
         inter: ['Inter', 'sans-serif']
       },
