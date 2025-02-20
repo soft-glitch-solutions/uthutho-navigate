@@ -3,9 +3,17 @@ import { Bus, Train, MapPin, Users, Clock, Phone } from 'lucide-react';
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [currentPartnerIndex, setCurrentPartnerIndex] = useState(0);
 
   useEffect(() => {
     setIsVisible(true);
+    
+    // Auto-advance partners carousel
+    const interval = setInterval(() => {
+      setCurrentPartnerIndex((prev) => (prev + 1) % partners.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -35,7 +43,7 @@ const Index = () => {
       <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-16">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[linear-gradient(45deg,#1ea2b133,#ed67b133,#f8c32533,#fd602d33)] opacity-20"></div>
-          <div className="absolute inset-0 bg-[url('/lovable-uploads/01b78f5b-4e13-46ad-b9d0-62bb77fe3821.png')] bg-cover bg-center opacity-10"></div>
+          <div className="absolute inset-0 bg-[url('/lovable-uploads/57f51ba8-7a3d-442f-b314-6732a5bd80fe.png')] bg-cover bg-center opacity-10"></div>
         </div>
         <div className="container px-4 mx-auto flex flex-col md:flex-row items-center justify-between relative z-10">
           <div className="text-center md:text-left md:w-1/2 mb-12 md:mb-0">
@@ -113,6 +121,68 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Awards Section */}
+      <section className="py-20 bg-black">
+        <div className="container px-4 mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-white">Our Awards</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <AwardCard
+              logo="Meek Ventures"
+              title="Africa Start Up Of"
+              description="Winner of Meek Ventures Innovation Challenge 2023"
+            />
+            <AwardCard
+              logo="Innovation City"
+              title="Start-up of the Year"
+              description="Innovation City's Most Promising Startup 2023"
+            />
+            <AwardCard
+              logo="City of Cape Town"
+              title="City Hustlers"
+              description="Cape Town's Urban Mobility Champion 2023"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Partners Section */}
+      <section className="py-20 bg-black">
+        <div className="container px-4 mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-white">Our Partners</h2>
+          <div className="relative overflow-hidden">
+            <div className="flex transition-transform duration-500 ease-in-out"
+                 style={{ transform: `translateX(-${currentPartnerIndex * 100}%)` }}>
+              {partners.map((partner, index) => (
+                <div key={index} className="min-w-full flex justify-center items-center space-x-8">
+                  {partner.map((logo, i) => (
+                    <div key={i} className="w-32 h-16 bg-white/10 rounded-lg p-4 flex items-center justify-center">
+                      <img src={logo} alt="Partner logo" className="max-w-full max-h-full object-contain invert" />
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section className="py-20 bg-black">
+        <div className="container px-4 mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-white">Our Team</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+            {team.map((member, index) => (
+              <TeamCard
+                key={index}
+                name={member.name}
+                role={member.role}
+                image={member.image}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Motto Section */}
       <section className="py-20 bg-gradient-to-r from-primary via-secondary to-highlight">
         <div className="container px-4 mx-auto text-center">
@@ -136,6 +206,24 @@ const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; titl
   </div>
 );
 
+const AwardCard = ({ logo, title, description }: { logo: string; title: string; description: string }) => (
+  <div className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-primary/50 transition-all animate-fade-up">
+    <div className="mb-4 text-white font-bold text-lg">{logo}</div>
+    <h3 className="text-xl font-semibold mb-2 text-white">{title}</h3>
+    <p className="text-gray-400">{description}</p>
+  </div>
+);
+
+const TeamCard = ({ name, role, image }: { name: string; role: string; image: string }) => (
+  <div className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-primary/50 transition-all animate-fade-up text-center">
+    <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
+      <img src={image} alt={name} className="w-full h-full object-cover" />
+    </div>
+    <h3 className="text-xl font-semibold mb-2 text-white">{name}</h3>
+    <p className="text-gray-400">{role}</p>
+  </div>
+);
+
 const goals = [
   "Provide real-time route and schedule updates",
   "Make public transport easier to understand",
@@ -143,6 +231,34 @@ const goals = [
   "Reduce traffic congestion",
   "Improve urban mobility",
   "Bridge the information gap"
+];
+
+const partners = [
+  ['/google-logo.svg', '/visa-logo.svg', '/amazon-logo.svg'],
+  ['/cape-town-logo.svg', '/labs-logo.svg', '/university-logo.svg'],
+];
+
+const team = [
+  {
+    name: "John Doe",
+    role: "CEO & Founder",
+    image: "/team-member-1.jpg"
+  },
+  {
+    name: "Jane Smith",
+    role: "CTO",
+    image: "/team-member-2.jpg"
+  },
+  {
+    name: "Mike Johnson",
+    role: "Lead Developer",
+    image: "/team-member-3.jpg"
+  },
+  {
+    name: "Sarah Williams",
+    role: "Design Lead",
+    image: "/team-member-4.jpg"
+  }
 ];
 
 export default Index;
