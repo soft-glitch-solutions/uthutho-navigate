@@ -23,7 +23,12 @@ const Index = () => {
         <div className="container mx-auto px-4 mt-4">
           <div className="bg-white/95 backdrop-blur-sm rounded-full mx-auto max-w-3xl">
             <div className="flex items-center justify-between h-16 px-8">
-              <div className="flex items-center">
+              <div className="flex items-center space-x-3">
+                <img 
+                  src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png" 
+                  alt="Uthutho Maps Logo" 
+                  className="h-8 w-8"
+                />
                 <span className="text-2xl font-bold text-primary">Uthutho Maps</span>
               </div>
               <div className="hidden md:flex items-center space-x-8">
@@ -44,6 +49,13 @@ const Index = () => {
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[linear-gradient(45deg,#1ea2b133,#ed67b133,#f8c32533,#fd602d33)] opacity-20"></div>
           <div className="absolute inset-0 bg-[url('/lovable-uploads/57f51ba8-7a3d-442f-b314-6732a5bd80fe.png')] bg-cover bg-center opacity-10"></div>
+          <div className="absolute inset-0 flex items-center justify-center opacity-5">
+            <img 
+              src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png" 
+              alt="Uthutho Maps Logo Background" 
+              className="w-[800px] h-[800px]"
+            />
+          </div>
         </div>
         <div className="container px-4 mx-auto flex flex-col md:flex-row items-center justify-between relative z-10">
           <div className="text-center md:text-left md:w-1/2 mb-12 md:mb-0">
