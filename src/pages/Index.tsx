@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from 'react';
-import { Bus, Train, MapPin, Users, Clock, Phone, Info } from 'lucide-react';
+import { Bus, Train, MapPin, Users, Clock, Phone } from 'lucide-react';
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -12,19 +11,21 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-black font-quiapo">
       {/* Navigation */}
-      <nav className="fixed w-full z-50 bg-white/95 backdrop-blur-sm">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <span className="text-2xl font-bold text-primary">Uthutho Maps</span>
-            </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-700 hover:text-primary transition-colors">Features</a>
-              <a href="#about" className="text-gray-700 hover:text-primary transition-colors">About Us</a>
-              <button className="bg-highlight text-white px-6 py-2 rounded-full flex items-center space-x-2 hover:bg-highlight/90 transition-colors">
-                <Phone size={18} />
-                <span>Download App</span>
-              </button>
+      <nav className="fixed w-full z-50">
+        <div className="container mx-auto px-4 mt-4">
+          <div className="bg-white/95 backdrop-blur-sm rounded-full mx-auto max-w-3xl">
+            <div className="flex items-center justify-between h-16 px-8">
+              <div className="flex items-center">
+                <span className="text-2xl font-bold text-primary">Uthutho Maps</span>
+              </div>
+              <div className="hidden md:flex items-center space-x-8">
+                <a href="#features" className="text-gray-700 hover:text-primary transition-colors">Features</a>
+                <a href="#about" className="text-gray-700 hover:text-primary transition-colors">About Us</a>
+                <button className="bg-highlight text-white px-6 py-2 rounded-full flex items-center space-x-2 hover:bg-highlight/90 transition-colors">
+                  <Phone size={18} />
+                  <span>Download App</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -34,7 +35,7 @@ const Index = () => {
       <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-16">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[linear-gradient(45deg,#1ea2b133,#ed67b133,#f8c32533,#fd602d33)] opacity-20"></div>
-          <div className="absolute inset-0 bg-[url('/lovable-uploads/f5e9d906-40f5-4654-ac1a-6c887f67a7e3.png')] bg-cover bg-center opacity-10"></div>
+          <div className="absolute inset-0 bg-[url('/lovable-uploads/01b78f5b-4e13-46ad-b9d0-62bb77fe3821.png')] bg-cover bg-center opacity-10"></div>
         </div>
         <div className="container px-4 mx-auto flex flex-col md:flex-row items-center justify-between relative z-10">
           <div className="text-center md:text-left md:w-1/2 mb-12 md:mb-0">
