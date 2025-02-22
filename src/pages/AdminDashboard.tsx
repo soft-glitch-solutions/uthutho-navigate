@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -5,7 +6,9 @@ import { LayoutDashboard, Users, MapPin, Settings, LogOut, Plus, Edit, Trash2, S
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTheme } from '@/components/theme-provider';
 import { Button } from '@/components/ui/button';
-import H from '@here/maps-api-for-javascript';
+import type { Database } from '@/integrations/supabase/types';
+
+type AppRole = Database['public']['Enums']['app_role'];
 
 interface Hub {
   id: string;
@@ -18,7 +21,7 @@ interface Hub {
 interface User {
   id: string;
   email: string;
-  role: 'admin' | 'user';
+  role: AppRole;
 }
 
 interface Profile {
@@ -30,8 +33,6 @@ interface Profile {
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedHub, setSelectedHub] = useState<Hub | null>(null);
-  const [map, setMap] = useState<H.Map | null>(null);
-  const [newHubMarker, setNewHubMarker] = useState<H.Marker | null>(null);
   const [profile, setProfile] = useState<Profile>({
     firstName: '',
     lastName: '',
@@ -40,27 +41,6 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { theme, setTheme } = useTheme();
-
-  // Fetch HERE API credentials from Supabase
-  const { data: hereCredentials } = useQuery({
-    queryKey: ['hereCredentials'],
-    queryFn: async () => {
-      const { data: apiKey } = await supabase.functions.invoke('get-here-credentials');
-      return apiKey;
-    },
-  });
-
-  // Fetch hubs
-  const { data: hubs, isLoading: isLoadingHubs } = useQuery({
-    queryKey: ['hubs'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('hubs')
-        .select('*');
-      if (error) throw error;
-      return data as Hub[];
-    },
-  });
 
   // Fetch users with roles
   const { data: users, isLoading: isLoadingUsers } = useQuery({
@@ -79,102 +59,13 @@ const AdminDashboard = () => {
       return userRoles.map((ur: any) => ({
         id: ur.user_id,
         email: ur.users.email,
-        role: ur.role,
+        role: ur.role as AppRole,
       }));
     },
   });
 
-  // Initialize map
-  useEffect(() => {
-    if (!hereCredentials) return;
-
-    const platform = new H.service.Platform({
-      apikey: hereCredentials.apiKey
-    });
-
-    const defaultLayers = platform.createDefaultLayers();
-    const mapElement = document.getElementById('mapContainer');
-    
-    if (!mapElement) return;
-
-    const newMap = new H.Map(
-      mapElement,
-      defaultLayers.vector.normal.map,
-      {
-        zoom: 10,
-        center: { lat: -33.9249, lng: 18.4241 } // Cape Town center
-      }
-    );
-
-    const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(newMap));
-    const ui = H.ui.UI.createDefault(newMap, defaultLayers);
-
-    setMap(newMap);
-
-    return () => {
-      if (map) {
-        map.dispose();
-      }
-    };
-  }, [hereCredentials]);
-
-  // Add hub markers to map
-  useEffect(() => {
-    if (!map || !hubs) return;
-
-    hubs.forEach(hub => {
-      const marker = new H.map.Marker({ lat: hub.latitude, lng: hub.longitude });
-      map.addObject(marker);
-    });
-  }, [map, hubs]);
-
-  // Mutations
-  const createHub = useMutation({
-    mutationFn: async (newHub: Omit<Hub, 'id'>) => {
-      const { data, error } = await supabase
-        .from('hubs')
-        .insert([newHub])
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['hubs'] });
-    },
-  });
-
-  const updateHub = useMutation({
-    mutationFn: async (hub: Hub) => {
-      const { data, error } = await supabase
-        .from('hubs')
-        .update(hub)
-        .eq('id', hub.id)
-        .select()
-        .single();
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['hubs'] });
-    },
-  });
-
-  const deleteHub = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from('hubs')
-        .delete()
-        .eq('id', id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['hubs'] });
-    },
-  });
-
   const updateUserRole = useMutation({
-    mutationFn: async ({ userId, role }: { userId: string; role: string }) => {
+    mutationFn: async ({ userId, role }: { userId: string; role: AppRole }) => {
       const { error } = await supabase
         .from('user_roles')
         .update({ role })
@@ -222,13 +113,13 @@ const AdminDashboard = () => {
   const fetchProfile = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      const { data: profile } = await supabase
+      const { data: profile, error } = await supabase
         .from('profiles')
         .select('first_name, last_name')
         .eq('id', user.id)
         .single();
 
-      if (profile) {
+      if (profile && !error) {
         setProfile({
           firstName: profile.first_name || '',
           lastName: profile.last_name || '',
@@ -286,13 +177,6 @@ const AdminDashboard = () => {
             Users
           </button>
           <button
-            onClick={() => setActiveTab('hubs')}
-            className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'hubs' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
-          >
-            <MapPin className="h-5 w-5 mr-3" />
-            Hubs
-          </button>
-          <button
             onClick={() => setActiveTab('settings')}
             className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'settings' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
           >
@@ -334,7 +218,7 @@ const AdminDashboard = () => {
               </div>
               <div className="p-6 bg-card backdrop-blur-sm rounded-xl border border-border">
                 <h3 className="text-lg font-semibold text-foreground mb-2">Active Hubs</h3>
-                <p className="text-3xl text-secondary">{hubs?.length || 0}</p>
+                <p className="text-3xl text-secondary">--</p>
               </div>
               <div className="p-6 bg-card backdrop-blur-sm rounded-xl border border-border">
                 <h3 className="text-lg font-semibold text-foreground mb-2">Daily Trips</h3>
@@ -407,7 +291,10 @@ const AdminDashboard = () => {
                         <td className="py-3 px-4">
                           <select
                             value={user.role}
-                            onChange={(e) => updateUserRole.mutate({ userId: user.id, role: e.target.value })}
+                            onChange={(e) => updateUserRole.mutate({ 
+                              userId: user.id, 
+                              role: e.target.value as AppRole 
+                            })}
                             className="bg-background text-foreground p-2 rounded"
                           >
                             <option value="user">User</option>
@@ -418,52 +305,6 @@ const AdminDashboard = () => {
                     ))}
                   </tbody>
                 </table>
-              </div>
-            </div>
-          )}
-          
-          {activeTab === 'hubs' && (
-            <div className="space-y-6">
-              <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-6">
-                <h2 className="text-xl font-semibold text-foreground mb-6">Hub Management</h2>
-                <div id="mapContainer" className="w-full h-[400px] rounded-lg mb-6"></div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-foreground">
-                    <thead>
-                      <tr className="border-b border-border">
-                        <th className="text-left py-3 px-4">Name</th>
-                        <th className="text-left py-3 px-4">Address</th>
-                        <th className="text-left py-3 px-4">Coordinates</th>
-                        <th className="text-right py-3 px-4">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {hubs?.map((hub) => (
-                        <tr key={hub.id} className="border-b border-border">
-                          <td className="py-3 px-4">{hub.name}</td>
-                          <td className="py-3 px-4">{hub.address}</td>
-                          <td className="py-3 px-4">
-                            {hub.latitude.toFixed(6)}, {hub.longitude.toFixed(6)}
-                          </td>
-                          <td className="py-3 px-4 text-right space-x-2">
-                            <button
-                              onClick={() => setSelectedHub(hub)}
-                              className="text-primary hover:text-primary/80"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </button>
-                            <button
-                              onClick={() => deleteHub.mutate(hub.id)}
-                              className="text-red-500 hover:text-red-400"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
               </div>
             </div>
           )}
