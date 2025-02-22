@@ -2,11 +2,176 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { LayoutDashboard, Users, MapPin, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, MapPin, Settings, LogOut, Plus, Edit, Trash2 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import H from '@here/maps-api-for-javascript';
+
+interface Hub {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  address: string | null;
+}
+
+interface User {
+  id: string;
+  email: string;
+  role: string;
+}
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [selectedHub, setSelectedHub] = useState<Hub | null>(null);
+  const [map, setMap] = useState<H.Map | null>(null);
+  const [newHubMarker, setNewHubMarker] = useState<H.Marker | null>(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  // Fetch HERE API credentials from Supabase
+  const { data: hereCredentials } = useQuery({
+    queryKey: ['hereCredentials'],
+    queryFn: async () => {
+      const { data: apiKey } = await supabase.functions.invoke('get-here-credentials');
+      return apiKey;
+    },
+  });
+
+  // Fetch hubs
+  const { data: hubs, isLoading: isLoadingHubs } = useQuery({
+    queryKey: ['hubs'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('hubs')
+        .select('*');
+      if (error) throw error;
+      return data as Hub[];
+    },
+  });
+
+  // Fetch users with roles
+  const { data: users, isLoading: isLoadingUsers } = useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
+      const { data: userRoles, error } = await supabase
+        .from('user_roles')
+        .select(`
+          user_id,
+          role,
+          auth.users!inner (
+            email
+          )
+        `);
+      if (error) throw error;
+      return userRoles.map((ur: any) => ({
+        id: ur.user_id,
+        email: ur.users.email,
+        role: ur.role,
+      }));
+    },
+  });
+
+  // Initialize map
+  useEffect(() => {
+    if (!hereCredentials) return;
+
+    const platform = new H.service.Platform({
+      apikey: hereCredentials.apiKey
+    });
+
+    const defaultLayers = platform.createDefaultLayers();
+    const mapElement = document.getElementById('mapContainer');
+    
+    if (!mapElement) return;
+
+    const newMap = new H.Map(
+      mapElement,
+      defaultLayers.vector.normal.map,
+      {
+        zoom: 10,
+        center: { lat: -33.9249, lng: 18.4241 } // Cape Town center
+      }
+    );
+
+    const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(newMap));
+    const ui = H.ui.UI.createDefault(newMap, defaultLayers);
+
+    setMap(newMap);
+
+    return () => {
+      if (map) {
+        map.dispose();
+      }
+    };
+  }, [hereCredentials]);
+
+  // Add hub markers to map
+  useEffect(() => {
+    if (!map || !hubs) return;
+
+    hubs.forEach(hub => {
+      const marker = new H.map.Marker({ lat: hub.latitude, lng: hub.longitude });
+      map.addObject(marker);
+    });
+  }, [map, hubs]);
+
+  // Mutations
+  const createHub = useMutation({
+    mutationFn: async (newHub: Omit<Hub, 'id'>) => {
+      const { data, error } = await supabase
+        .from('hubs')
+        .insert([newHub])
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['hubs'] });
+    },
+  });
+
+  const updateHub = useMutation({
+    mutationFn: async (hub: Hub) => {
+      const { data, error } = await supabase
+        .from('hubs')
+        .update(hub)
+        .eq('id', hub.id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['hubs'] });
+    },
+  });
+
+  const deleteHub = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('hubs')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['hubs'] });
+    },
+  });
+
+  const updateUserRole = useMutation({
+    mutationFn: async ({ userId, role }: { userId: string; role: string }) => {
+      const { error } = await supabase
+        .from('user_roles')
+        .update({ role })
+        .eq('user_id', userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
 
   useEffect(() => {
     checkAuth();
@@ -55,11 +220,11 @@ const AdminDashboard = () => {
             Users
           </button>
           <button
-            onClick={() => setActiveTab('routes')}
-            className={`flex items-center w-full px-6 py-3 text-white ${activeTab === 'routes' ? 'bg-primary/20' : 'hover:bg-white/5'}`}
+            onClick={() => setActiveTab('hubs')}
+            className={`flex items-center w-full px-6 py-3 text-white ${activeTab === 'hubs' ? 'bg-primary/20' : 'hover:bg-white/5'}`}
           >
             <MapPin className="h-5 w-5 mr-3" />
-            Routes
+            Hubs
           </button>
           <button
             onClick={() => setActiveTab('settings')}
@@ -88,15 +253,15 @@ const AdminDashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
                 <h3 className="text-lg font-semibold text-white mb-2">Total Users</h3>
-                <p className="text-3xl text-primary">1,234</p>
+                <p className="text-3xl text-primary">{users?.length || 0}</p>
               </div>
               <div className="p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
-                <h3 className="text-lg font-semibold text-white mb-2">Active Routes</h3>
-                <p className="text-3xl text-secondary">56</p>
+                <h3 className="text-lg font-semibold text-white mb-2">Active Hubs</h3>
+                <p className="text-3xl text-secondary">{hubs?.length || 0}</p>
               </div>
               <div className="p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
                 <h3 className="text-lg font-semibold text-white mb-2">Daily Trips</h3>
-                <p className="text-3xl text-accent">789</p>
+                <p className="text-3xl text-accent">--</p>
               </div>
             </div>
           )}
@@ -104,14 +269,81 @@ const AdminDashboard = () => {
           {activeTab === 'users' && (
             <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
               <h2 className="text-xl font-semibold text-white mb-6">User Management</h2>
-              {/* Add user management UI here */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-white">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-3 px-4">Email</th>
+                      <th className="text-left py-3 px-4">Role</th>
+                      <th className="text-left py-3 px-4">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users?.map((user) => (
+                      <tr key={user.id} className="border-b border-white/10">
+                        <td className="py-3 px-4">{user.email}</td>
+                        <td className="py-3 px-4">{user.role}</td>
+                        <td className="py-3 px-4">
+                          <select
+                            value={user.role}
+                            onChange={(e) => updateUserRole.mutate({ userId: user.id, role: e.target.value })}
+                            className="bg-white/10 text-white p-2 rounded"
+                          >
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
           
-          {activeTab === 'routes' && (
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
-              <h2 className="text-xl font-semibold text-white mb-6">Route Management</h2>
-              {/* Add route management UI here */}
+          {activeTab === 'hubs' && (
+            <div className="space-y-6">
+              <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 p-6">
+                <h2 className="text-xl font-semibold text-white mb-6">Hub Management</h2>
+                <div id="mapContainer" className="w-full h-[400px] rounded-lg mb-6"></div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-white">
+                    <thead>
+                      <tr className="border-b border-white/10">
+                        <th className="text-left py-3 px-4">Name</th>
+                        <th className="text-left py-3 px-4">Address</th>
+                        <th className="text-left py-3 px-4">Coordinates</th>
+                        <th className="text-right py-3 px-4">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {hubs?.map((hub) => (
+                        <tr key={hub.id} className="border-b border-white/10">
+                          <td className="py-3 px-4">{hub.name}</td>
+                          <td className="py-3 px-4">{hub.address}</td>
+                          <td className="py-3 px-4">
+                            {hub.latitude.toFixed(6)}, {hub.longitude.toFixed(6)}
+                          </td>
+                          <td className="py-3 px-4 text-right space-x-2">
+                            <button
+                              onClick={() => setSelectedHub(hub)}
+                              className="text-primary hover:text-primary/80"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => deleteHub.mutate(hub.id)}
+                              className="text-red-500 hover:text-red-400"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           )}
           
@@ -128,3 +360,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
