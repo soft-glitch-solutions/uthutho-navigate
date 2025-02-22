@@ -9,6 +9,78 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      hubs: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          id: string
+          latitude: number
+          longitude: number
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          id?: string
+          latitude: number
+          longitude: number
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      routes: {
+        Row: {
+          created_at: string | null
+          end_hub_id: string | null
+          id: string
+          name: string
+          start_hub_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          end_hub_id?: string | null
+          id?: string
+          name: string
+          start_hub_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          end_hub_id?: string | null
+          id?: string
+          name?: string
+          start_hub_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "routes_end_hub_id_fkey"
+            columns: ["end_hub_id"]
+            isOneToOne: false
+            referencedRelation: "hubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "routes_start_hub_id_fkey"
+            columns: ["start_hub_id"]
+            isOneToOne: false
+            referencedRelation: "hubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string | null
