@@ -21,6 +21,9 @@ const OverviewPage: React.FC<OverviewPageProps> = ({ usersCount, hubsCount, dail
         <h3 className="text-lg font-semibold text-foreground mb-2">Daily Trips</h3>
         <p className="text-3xl text-accent">{dailyTripsCount}</p>
       </div>
+
+      {/* HERE Maps Container */}
+      <div id="map" style={{ width: '100%', height: '400px', marginTop: '20px' }}></div>
     </div>
   );
 };

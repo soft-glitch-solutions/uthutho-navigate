@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { LayoutDashboard, User, Users, Settings, LogOut, MapPin, Sun, Moon, Route } from 'lucide-react';  // Add Moon here
+import { LayoutDashboard, User, Users, Settings, LogOut, MapPin, Sun, Moon, Route } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 import OverviewPage from './OverviewPage';
 import ProfilePage from './ProfilePage';
 import UsersPage from './UsersPage';
 import SettingsPage from './SettingsPage';
-import HubsPage from './HubsPage'; // Import HubsPage
+import HubsPage from './HubsPage';
 import RoutesPage from './RoutesPage';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [usersCount, setUsersCount] = useState(0);
+  const [hubsCount, setHubsCount] = useState(0);
+  const [dailyTripsCount, setDailyTripsCount] = useState(0);
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
 
@@ -25,7 +28,22 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     checkAuth();
+    fetchOverviewData();
   }, []);
+
+  const fetchOverviewData = async () => {
+    // Fetch users count
+    const { count: usersCount } = await supabase.from('users').select('*', { count: 'exact' });
+    setUsersCount(usersCount);
+
+    // Fetch hubs count
+    const { count: hubsCount } = await supabase.from('hubs').select('*', { count: 'exact' });
+    setHubsCount(hubsCount);
+
+    // Fetch daily trips count (assuming you have a `trips` table)
+    const { count: dailyTripsCount } = await supabase.from('trips').select('*', { count: 'exact' });
+    setDailyTripsCount(dailyTripsCount);
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -124,17 +142,17 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <main className="ml-64 p-8">
         <div className="max-w-7xl mx-auto">
-          {activeTab === 'overview' && <OverviewPage usersCount={0} hubsCount={0} dailyTripsCount={0} />}
-          {activeTab === 'profile' && <ProfilePage profile={{
-            firstName: '',
-            lastName: '',
-            email: ''
-          }} onProfileUpdate={function (profile: { firstName: string; lastName: string; }): void {
-            throw new Error('Function not implemented.');
-          } } />}
+          {activeTab === 'overview' && (
+            <OverviewPage
+              usersCount={usersCount}
+              hubsCount={hubsCount}
+              dailyTripsCount={dailyTripsCount}
+            />
+          )}
+          {activeTab === 'profile' && <ProfilePage profile={{ firstName: '', lastName: '', email: '' }} onProfileUpdate={() => {}} />}
           {activeTab === 'users' && <UsersPage />}
-          {activeTab === 'hubs' && <HubsPage />} {/* New HubsPage */}
-          {activeTab === 'routes' && <RoutesPage />} {/* New HubsPage */}
+          {activeTab === 'hubs' && <HubsPage />}
+          {activeTab === 'routes' && <RoutesPage />}
           {activeTab === 'settings' && <SettingsPage />}
         </div>
       </main>

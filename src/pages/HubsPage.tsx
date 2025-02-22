@@ -17,11 +17,13 @@ const HubsPage = () => {
   const [selectedHub, setSelectedHub] = useState<Hub | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isNewHubModalOpen, setIsNewHubModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);  // Delete modal state
+  const [isEditRouteOverlayOpen, setIsEditRouteOverlayOpen] = useState(false);  // Edit route overlay state
   const queryClient = useQueryClient();
 
   // Fetch hubs from the database
   const { data: hubs, isLoading } = useQuery({
-    queryKey: ['hubs'], 
+    queryKey: ['hubs'],
     queryFn: async () => {
       const { data, error } = await supabase.from('hubs').select('*');
       if (error) throw error;
@@ -44,6 +46,19 @@ const HubsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['hubs']);
       setIsEditModalOpen(false);
+    },
+  });
+
+  // Mutation for deleting a hub
+  const deleteHub = useMutation({
+    mutationFn: async (hubId: string) => {
+      const { error } = await supabase.from('hubs').delete().eq('id', hubId);
+      if (error) throw error;
+      return hubId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['hubs']);
+      setIsDeleteModalOpen(false);  // Close the delete modal
     },
   });
 
@@ -83,14 +98,25 @@ const HubsPage = () => {
 
   return (
     <div className="p-8">
-      {/* Search Input */}
-      <input
-        type="text"
-        placeholder="Search Hubs"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="p-2 rounded-md border border-border mb-4 w-full"
-      />
+      {/* Search Input and Add New Hub Button */}
+      <div className="flex items-center space-x-4 mb-4">
+        <input
+          type="text"
+          placeholder="Search Hubs"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="p-2 rounded-md border border-border w-full"
+        />
+        <Button
+          onClick={() => {
+            setIsNewHubModalOpen(true);
+            setSelectedHub(null); // Reset selected hub for new hub form
+          }}
+        >
+          <Plus className="h-5 w-5 mr-2" />
+          Add New Hub
+        </Button>
+      </div>
 
       {/* Hub List */}
       <div className="space-y-4">
@@ -110,7 +136,13 @@ const HubsPage = () => {
                 <Edit className="h-5 w-5 mr-2" />
                 Edit
               </Button>
-              <Button variant="destructive">
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  setSelectedHub(hub);
+                  setIsDeleteModalOpen(true); // Open delete confirmation modal
+                }}
+              >
                 <Trash2 className="h-5 w-5 mr-2" />
                 Delete
               </Button>
@@ -119,25 +151,16 @@ const HubsPage = () => {
         ))}
       </div>
 
-      {/* Add New Hub Button */}
-      <Button
-        onClick={() => {
-          setIsNewHubModalOpen(true);
-          setSelectedHub(null); // Reset selected hub for new hub form
-        }}
-        className="mt-4"
-      >
-        <Plus className="h-5 w-5 mr-2" />
-        Add New Hub
-      </Button>
-
-      {/* Edit Hub Modal */}
+      {/* Edit Hub Modal (Slide from Right) */}
       <div
         className={`fixed inset-0 bg-gray-800 bg-opacity-50 ${isEditModalOpen ? 'block' : 'hidden'}`}
         onClick={() => setIsEditModalOpen(false)} // Close on outside click
       >
         <div
-          className="bg-white p-6 rounded-md w-1/3 absolute top-1/4 left-1/3"
+          className="bg-white p-6 rounded-md w-1/3 absolute top-0 right-0 h-full transform transition-transform duration-300"
+          style={{
+            transform: isEditModalOpen ? 'translateX(0)' : 'translateX(100%)',
+          }}
           onClick={(e) => e.stopPropagation()} // Stop propagation to avoid closing modal when clicking inside
         >
           <h3 className="text-lg font-semibold mb-4">Edit Hub</h3>
@@ -183,13 +206,16 @@ const HubsPage = () => {
         </div>
       </div>
 
-      {/* New Hub Modal */}
+      {/* New Hub Modal (Slide from Right) */}
       <div
         className={`fixed inset-0 bg-gray-800 bg-opacity-50 ${isNewHubModalOpen ? 'block' : 'hidden'}`}
         onClick={() => setIsNewHubModalOpen(false)} // Close on outside click
       >
         <div
-          className="bg-white p-6 rounded-md w-1/3 absolute top-1/4 left-1/3"
+          className="bg-white p-6 rounded-md w-1/3 absolute top-0 right-0 h-full transform transition-transform duration-300"
+          style={{
+            transform: isNewHubModalOpen ? 'translateX(0)' : 'translateX(100%)',
+          }}
           onClick={(e) => e.stopPropagation()} // Stop propagation to avoid closing modal when clicking inside
         >
           <h3 className="text-lg font-semibold mb-4">Add New Hub</h3>
@@ -234,6 +260,34 @@ const HubsPage = () => {
           </form>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {selectedHub && (
+        <div
+          className={`fixed inset-0 bg-gray-800 bg-opacity-50 ${isDeleteModalOpen ? 'block' : 'hidden'}`}
+          onClick={() => setIsDeleteModalOpen(false)} // Close on outside click
+        >
+          <div
+            className="bg-white p-6 rounded-md w-1/3 absolute top-1/4 left-1/3"
+            onClick={(e) => e.stopPropagation()} // Stop propagation to avoid closing modal when clicking inside
+          >
+            <h3 className="text-lg font-semibold mb-4">Are you sure you want to delete this hub?</h3>
+            <div className="flex space-x-4">
+              <Button
+                variant="destructive"
+                onClick={() => deleteHub.mutate(selectedHub.id)}
+              >
+                Yes, Delete
+              </Button>
+              <Button
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
