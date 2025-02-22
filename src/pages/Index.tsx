@@ -92,6 +92,18 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Motto Section */}
+      <section className="py-20 bg-gradient-to-r from-primary via-secondary to-highlight">
+        <div className="container px-4 mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+            "Hamba ngokukhululeka, yazi indlela yakho!"
+          </h2>
+          <p className="text-lg md:text-xl text-white/90">
+            Travel with ease, know your route!
+          </p>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section id="features" className="py-20 bg-black">
         <div className="container px-4 mx-auto">
@@ -193,18 +205,6 @@ const Index = () => {
               />
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Motto Section */}
-      <section className="py-20 bg-gradient-to-r from-primary via-secondary to-highlight">
-        <div className="container px-4 mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-            "Hamba ngokukhululeka, yazi indlela yakho!"
-          </h2>
-          <p className="text-lg md:text-xl text-white/90">
-            Travel with ease, know your route!
-          </p>
         </div>
       </section>
 
