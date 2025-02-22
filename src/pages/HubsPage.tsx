@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2, Plus } from 'lucide-react'; // Ensure icons are imported
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
 
 interface Hub {
   id: string;
@@ -18,8 +19,8 @@ const HubsPage = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isNewHubModalOpen, setIsNewHubModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);  // Delete modal state
-  const [isEditRouteOverlayOpen, setIsEditRouteOverlayOpen] = useState(false);  // Edit route overlay state
   const queryClient = useQueryClient();
+  const navigate = useNavigate(); // Initialize navigate
 
   // Fetch hubs from the database
   const { data: hubs, isLoading } = useQuery({
@@ -96,6 +97,11 @@ const HubsPage = () => {
     addNewHub.mutate(newHub);
   };
 
+  // Handle selecting a hub and navigating to the HubDetailsPage
+  const handleHubSelect = (hub: Hub) => {
+    navigate(`/hubs/${hub.id}`); // Navigate to the HubDetailsPage with the selected hub's id
+  };
+
   return (
     <div className="p-8">
       {/* Search Input and Add New Hub Button */}
@@ -127,6 +133,11 @@ const HubsPage = () => {
               <p>{hub.address || 'No address available'}</p>
             </div>
             <div className="flex space-x-2">
+              <Button
+                onClick={() => handleHubSelect(hub)} // Select and navigate to HubDetailsPage
+              >
+                View Details
+              </Button>
               <Button
                 onClick={() => {
                   setSelectedHub(hub);

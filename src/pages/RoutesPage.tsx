@@ -16,6 +16,7 @@ const RoutesPage = () => {
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isNewRouteModalOpen, setIsNewRouteModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
   // Fetch routes from the database
@@ -60,6 +61,19 @@ const RoutesPage = () => {
     },
   });
 
+  // Mutation for deleting a route
+  const deleteRoute = useMutation({
+    mutationFn: async (routeId: string) => {
+      const { error } = await supabase.from('routes').delete().eq('id', routeId);
+      if (error) throw error;
+      return routeId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['routes']);
+      setIsDeleteModalOpen(false);
+    },
+  });
+
   // Handle form submission for updating a route
   const handleRouteEdit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,22 +97,33 @@ const RoutesPage = () => {
 
   return (
     <div className="p-8">
-      {/* Search Input */}
-      <input
-        type="text"
-        placeholder="Search Routes"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="p-2 rounded-md border border-border mb-4 w-full"
-      />
+      {/* Search Input and Add Button */}
+      <div className="flex items-center mb-4">
+        <input
+          type="text"
+          placeholder="Search Routes"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="p-2 rounded-md border border-border w-full"
+        />
+        <Button
+          onClick={() => {
+            setIsNewRouteModalOpen(true);
+            setSelectedRoute(null); // Reset selected route for new route form
+          }}
+          className="ml-4"
+        >
+          Add New Route
+        </Button>
+      </div>
 
       {/* Routes List */}
       <div className="space-y-4">
         {filteredRoutes?.map((route) => (
           <div key={route.id} className="flex justify-between items-center p-4 border border-border rounded-md">
             <div>
-              <h4 className="font-semibold">Route from {route.start_point} to {route.end_point}</h4>
-              <p>Cost: ${route.cost}</p>
+              <h4 className="font-semibold">{route.start_point} to {route.end_point}</h4>
+              <p>Cost: R {route.cost}</p>
             </div>
             <div className="flex space-x-2">
               <Button
@@ -109,7 +134,13 @@ const RoutesPage = () => {
               >
                 Edit
               </Button>
-              <Button variant="destructive">
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  setSelectedRoute(route);
+                  setIsDeleteModalOpen(true);
+                }}
+              >
                 Delete
               </Button>
             </div>
@@ -117,24 +148,14 @@ const RoutesPage = () => {
         ))}
       </div>
 
-      {/* Add New Route Button */}
-      <Button
-        onClick={() => {
-          setIsNewRouteModalOpen(true);
-          setSelectedRoute(null); // Reset selected route for new route form
-        }}
-        className="mt-4"
-      >
-        Add New Route
-      </Button>
-
       {/* Edit Route Modal */}
       <div
         className={`fixed inset-0 bg-gray-800 bg-opacity-50 ${isEditModalOpen ? 'block' : 'hidden'}`}
         onClick={() => setIsEditModalOpen(false)} // Close on outside click
       >
         <div
-          className="bg-white p-6 rounded-md w-1/3 absolute top-1/4 left-1/3"
+          className="bg-white p-6 rounded-md w-1/3 absolute top-1/4 left-1/3 transition-transform duration-300 transform"
+          style={{ transform: isEditModalOpen ? 'translateX(0)' : 'translateX(100%)' }}
           onClick={(e) => e.stopPropagation()}
         >
           <h3 className="text-lg font-semibold mb-4">Edit Route</h3>
@@ -177,7 +198,8 @@ const RoutesPage = () => {
         onClick={() => setIsNewRouteModalOpen(false)} // Close on outside click
       >
         <div
-          className="bg-white p-6 rounded-md w-1/3 absolute top-1/4 left-1/3"
+          className="bg-white p-6 rounded-md w-1/3 absolute top-1/4 left-1/3 transition-transform duration-300 transform"
+          style={{ transform: isNewRouteModalOpen ? 'translateX(0)' : 'translateX(100%)' }}
           onClick={(e) => e.stopPropagation()}
         >
           <h3 className="text-lg font-semibold mb-4">Add New Route</h3>
@@ -213,6 +235,34 @@ const RoutesPage = () => {
           </form>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {selectedRoute && (
+        <div
+          className={`fixed inset-0 bg-gray-800 bg-opacity-50 ${isDeleteModalOpen ? 'block' : 'hidden'}`}
+          onClick={() => setIsDeleteModalOpen(false)} // Close on outside click
+        >
+          <div
+            className="bg-white p-6 rounded-md w-1/3 absolute top-1/4 left-1/3"
+            onClick={(e) => e.stopPropagation()} // Stop propagation to avoid closing modal when clicking inside
+          >
+            <h3 className="text-lg font-semibold mb-4">Are you sure you want to delete this route?</h3>
+            <div className="flex space-x-4">
+              <Button
+                variant="destructive"
+                onClick={() => deleteRoute.mutate(selectedRoute.id)}
+              >
+                Yes, Delete
+              </Button>
+              <Button
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
