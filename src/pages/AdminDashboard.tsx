@@ -1,13 +1,14 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon, FileText } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { format } from 'date-fns';
 import type { Database } from '@/integrations/supabase/types';
 
 type AppRole = Database['public']['Enums']['app_role'];
+type ReportStatus = 'pending' | 'approved' | 'rejected';
 
 interface Profile {
   firstName: string;
@@ -15,8 +16,23 @@ interface Profile {
   email: string;
 }
 
+interface TrafficReport {
+  id: string;
+  location: string;
+  description: string;
+  incident_type: string;
+  status: ReportStatus;
+  incident_time: string;
+  created_at: string;
+  reporter: {
+    first_name: string;
+    last_name: string;
+  } | null;
+}
+
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [searchReports, setSearchReports] = useState('');
   const [profile, setProfile] = useState<Profile>({
     firstName: '',
     lastName: '',
@@ -26,7 +42,6 @@ const AdminDashboard = () => {
   const queryClient = useQueryClient();
   const { theme, setTheme } = useTheme();
 
-  // Fetch overview data
   const { data: overviewData } = useQuery({
     queryKey: ['overview'],
     queryFn: async () => {
@@ -50,7 +65,6 @@ const AdminDashboard = () => {
     },
   });
 
-  // Fetch users with roles
   const { data: users } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
@@ -76,6 +90,29 @@ const AdminDashboard = () => {
         lastName: ur.profiles.last_name,
         role: ur.role as AppRole,
       }));
+    },
+  });
+
+  const { data: reports } = useQuery({
+    queryKey: ['traffic-reports'],
+    queryFn: async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const { data, error } = await supabase
+        .from('traffic_reports')
+        .select(`
+          *,
+          reporter:profiles(
+            first_name,
+            last_name
+          )
+        `)
+        .gte('created_at', today.toISOString())
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data as TrafficReport[];
     },
   });
 
@@ -111,6 +148,20 @@ const AdminDashboard = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profile'] });
+    },
+  });
+
+  const updateReportStatus = useMutation({
+    mutationFn: async ({ reportId, status }: { reportId: string; status: ReportStatus }) => {
+      const { error } = await supabase
+        .from('traffic_reports')
+        .update({ status })
+        .eq('id', reportId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['traffic-reports'] });
     },
   });
 
@@ -155,9 +206,14 @@ const AdminDashboard = () => {
     updateProfile.mutate(profile);
   };
 
+  const filteredReports = reports?.filter(report =>
+    report.location.toLowerCase().includes(searchReports.toLowerCase()) ||
+    report.description.toLowerCase().includes(searchReports.toLowerCase()) ||
+    report.incident_type.toLowerCase().includes(searchReports.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Sidebar */}
       <aside className="w-64 bg-card fixed h-full border-r border-border">
         <div className="p-6">
           <div className="flex items-center space-x-3">
@@ -193,6 +249,13 @@ const AdminDashboard = () => {
             Users
           </button>
           <button
+            onClick={() => setActiveTab('reports')}
+            className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'reports' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          >
+            <FileText className="h-5 w-5 mr-3" />
+            Reports
+          </button>
+          <button
             onClick={() => setActiveTab('settings')}
             className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'settings' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
           >
@@ -223,7 +286,6 @@ const AdminDashboard = () => {
         </div>
       </aside>
 
-      {/* Main Content */}
       <main className="ml-64 p-8">
         <div className="max-w-7xl mx-auto">
           {activeTab === 'overview' && (
@@ -328,6 +390,73 @@ const AdminDashboard = () => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          )}
+          
+          {activeTab === 'reports' && (
+            <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-semibold text-foreground">Today's Traffic Reports</h2>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search reports..."
+                    value={searchReports}
+                    onChange={(e) => setSearchReports(e.target.value)}
+                    className="px-4 py-2 border border-border rounded-md bg-background text-foreground"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {filteredReports?.length === 0 ? (
+                  <p className="text-muted-foreground">No traffic reports for today.</p>
+                ) : (
+                  filteredReports?.map((report) => (
+                    <div
+                      key={report.id}
+                      className="bg-background p-4 rounded-lg border border-border"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h3 className="font-medium text-foreground">{report.incident_type}</h3>
+                          <p className="text-sm text-muted-foreground">{report.location}</p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className={`px-2 py-1 text-xs rounded-full ${
+                            report.status === 'pending' ? 'bg-yellow-500/10 text-yellow-500' :
+                            report.status === 'approved' ? 'bg-green-500/10 text-green-500' :
+                            'bg-red-500/10 text-red-500'
+                          }`}>
+                            {report.status.toUpperCase()}
+                          </span>
+                          <select
+                            value={report.status}
+                            onChange={(e) => updateReportStatus.mutate({
+                              reportId: report.id,
+                              status: e.target.value as ReportStatus
+                            })}
+                            className="bg-background text-foreground text-sm border border-border rounded px-2 py-1"
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approve</option>
+                            <option value="rejected">Reject</option>
+                          </select>
+                        </div>
+                      </div>
+                      <p className="text-sm text-foreground mb-2">{report.description}</p>
+                      <div className="flex justify-between items-center text-xs text-muted-foreground">
+                        <span>
+                          Reported by: {report.reporter?.first_name} {report.reporter?.last_name}
+                        </span>
+                        <span>
+                          {format(new Date(report.incident_time), 'MMM d, yyyy HH:mm')}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}

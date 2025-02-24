@@ -107,6 +107,53 @@ export type Database = {
           },
         ]
       }
+      traffic_reports: {
+        Row: {
+          created_at: string | null
+          description: string
+          hub_id: string | null
+          id: string
+          incident_time: string | null
+          incident_type: string
+          location: string
+          reporter_id: string | null
+          status: Database["public"]["Enums"]["report_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          hub_id?: string | null
+          id?: string
+          incident_time?: string | null
+          incident_type: string
+          location: string
+          reporter_id?: string | null
+          status?: Database["public"]["Enums"]["report_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          hub_id?: string | null
+          id?: string
+          incident_time?: string | null
+          incident_type?: string
+          location?: string
+          reporter_id?: string | null
+          status?: Database["public"]["Enums"]["report_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "traffic_reports_hub_id_fkey"
+            columns: ["hub_id"]
+            isOneToOne: false
+            referencedRelation: "hubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -178,6 +225,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      report_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
