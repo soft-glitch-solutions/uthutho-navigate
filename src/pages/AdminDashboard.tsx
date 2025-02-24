@@ -1,64 +1,57 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { LayoutDashboard, User, Users, Settings, LogOut, MapPin, Sun, Moon, Route, Search } from 'lucide-react';
+import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
-import OverviewPage from './OverviewPage';
-import ProfilePage from './ProfilePage';
-import UsersPage from './UsersPage';
-import SettingsPage from './SettingsPage';
-import HubsPage from './HubsPage';
-import RoutesPage from './RoutesPage';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import type { Database } from '@/integrations/supabase/types';
 
-type AppRole = "admin" | "user";
+type AppRole = Database['public']['Enums']['app_role'];
+
+interface Profile {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [usersCount, setUsersCount] = useState(0);
-  const [hubsCount, setHubsCount] = useState(0);
-  const [dailyTripsCount, setDailyTripsCount] = useState(0);
+  const [profile, setProfile] = useState<Profile>({
+    firstName: '',
+    lastName: '',
+    email: ''
+  });
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme();
   const queryClient = useQueryClient();
-
-  // Add search states
-  const [searchUsers, setSearchUsers] = useState('');
-
-  // Function to check if the user is authenticated
-  const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      navigate('/admin');
-    }
-  };
+  const { theme, setTheme } = useTheme();
 
   // Fetch overview data
   const { data: overviewData } = useQuery({
     queryKey: ['overview'],
     queryFn: async () => {
-      const users = await supabase
+      const { count: userCount } = await supabase
         .from('user_roles')
-        .select('*', { count: 'exact' });
+        .select('*', { count: 'exact', head: true });
 
-      const hubs = await supabase
+      const { count: hubCount } = await supabase
         .from('hubs')
-        .select('*', { count: 'exact' });
+        .select('*', { count: 'exact', head: true });
 
-      const routes = await supabase
+      const { count: routeCount } = await supabase
         .from('routes')
-        .select('*', { count: 'exact' });
+        .select('*', { count: 'exact', head: true });
 
       return {
-        usersCount: users.count || 0,
-        hubsCount: hubs.count || 0,
-        routesCount: routes.count || 0,
+        usersCount: userCount || 0,
+        hubsCount: hubCount || 0,
+        routesCount: routeCount || 0,
       };
     },
   });
 
   // Fetch users with roles
-  const { data: users, isLoading: isLoadingUsers } = useQuery({
+  const { data: users } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
       const { data: userRoles, error } = await supabase
@@ -74,43 +67,82 @@ const AdminDashboard = () => {
       
       if (error) throw error;
 
-      // Fetch emails from auth.users (this requires separate query)
-      const { data: authUsers } = await supabase.auth.admin.listUsers();
-      const userMap = new Map(authUsers.users.map(u => [u.id, u.email]));
-
+      const { data: { users: authUsers } } = await supabase.auth.admin.listUsers();
+      
       return userRoles.map((ur: any) => ({
         id: ur.user_id,
-        email: userMap.get(ur.user_id) || '',
+        email: authUsers.find(u => u.id === ur.user_id)?.email || '',
         firstName: ur.profiles.first_name,
         lastName: ur.profiles.last_name,
-        role: ur.role,
+        role: ur.role as AppRole,
       }));
     },
   });
 
-  const filteredUsers = users?.filter(user =>
-    user.email.toLowerCase().includes(searchUsers.toLowerCase()) ||
-    (user.firstName && user.firstName.toLowerCase().includes(searchUsers.toLowerCase())) ||
-    (user.lastName && user.lastName.toLowerCase().includes(searchUsers.toLowerCase()))
-  );
+  const updateUserRole = useMutation({
+    mutationFn: async (variables: { userId: string; role: AppRole }) => {
+      const { error } = await supabase
+        .from('user_roles')
+        .update({ role: variables.role })
+        .eq('user_id', variables.userId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+
+  const updateProfile = useMutation({
+    mutationFn: async (updatedProfile: Profile) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No user found');
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          first_name: updatedProfile.firstName,
+          last_name: updatedProfile.lastName
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      return updatedProfile;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
+    },
+  });
 
   useEffect(() => {
     checkAuth();
-    fetchOverviewData();
+    fetchProfile();
   }, []);
 
-  const fetchOverviewData = async () => {
-    // Fetch users count
-    const { count: usersCount } = await supabase.from('users').select('*', { count: 'exact' });
-    setUsersCount(usersCount);
+  const checkAuth = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      navigate('/admin');
+    }
+  };
 
-    // Fetch hubs count
-    const { count: hubsCount } = await supabase.from('hubs').select('*', { count: 'exact' });
-    setHubsCount(hubsCount);
+  const fetchProfile = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('first_name, last_name')
+        .eq('id', user.id)
+        .single();
 
-    // Fetch daily trips count (assuming you have a `trips` table)
-    const { count: dailyTripsCount } = await supabase.from('trips').select('*', { count: 'exact' });
-    setDailyTripsCount(dailyTripsCount);
+      if (profileData) {
+        setProfile({
+          firstName: profileData.first_name || '',
+          lastName: profileData.last_name || '',
+          email: user.email || '',
+        });
+      }
+    }
   };
 
   const handleLogout = async () => {
@@ -118,35 +150,10 @@ const AdminDashboard = () => {
     navigate('/admin');
   };
 
-  // Handle theme toggle
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+  const handleProfileUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateProfile.mutate(profile);
   };
-
-  const updateUserRole = useMutation(
-    async ({ userId, role }: { userId: string; role: AppRole }) => {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .update({ role })
-        .eq('user_id', userId)
-        .select();
-  
-      if (error) {
-        console.error('Update role failed:', error);
-        throw error;
-      }
-  
-      return data;
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['users']);
-      },
-      onError: (error) => {
-        console.error('Update role mutation error:', error);
-      },
-    }
-  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -170,21 +177,6 @@ const AdminDashboard = () => {
           >
             <LayoutDashboard className="h-5 w-5 mr-3" />
             Overview
-          </button>
-
-          <button
-            onClick={() => setActiveTab('hubs')}
-            className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'hubs' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
-          >
-            <MapPin className="h-5 w-5 mr-3" />
-            Hubs
-          </button>
-          <button
-            onClick={() => setActiveTab('routes')}
-            className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'routes' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
-          >
-            <Route className="h-5 w-5 mr-3" />
-            Routes
           </button>
           <button
             onClick={() => setActiveTab('profile')}
@@ -211,10 +203,9 @@ const AdminDashboard = () => {
 
         <div className="absolute bottom-0 w-64 p-6 space-y-4">
           <button
-            onClick={toggleTheme}
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             className="flex items-center w-full px-4 py-2 text-foreground hover:bg-accent/10 rounded-lg"
           >
-            {/* Theme switch */}
             {theme === 'dark' ? (
               <Sun className="h-5 w-5 mr-3" />
             ) : (
@@ -251,25 +242,57 @@ const AdminDashboard = () => {
               </div>
             </div>
           )}
-
-          {activeTab === 'profile' && <ProfilePage profile={{ firstName: '', lastName: '', email: '' }} onProfileUpdate={() => {}} />}
-
-          {activeTab === 'users' && (
+          
+          {activeTab === 'profile' && (
             <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-foreground">User Management</h2>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <h2 className="text-xl font-semibold text-foreground mb-6">Profile Settings</h2>
+              <form onSubmit={handleProfileUpdate} className="space-y-4 max-w-md">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">
+                    First Name
+                  </label>
                   <input
                     type="text"
-                    placeholder="Search users..."
-                    value={searchUsers}
-                    onChange={(e) => setSearchUsers(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground"
+                    value={profile.firstName}
+                    onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
+                    className="w-full p-2 rounded-md bg-background border border-border text-foreground"
                   />
                 </div>
-              </div>
-
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    value={profile.lastName}
+                    onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
+                    className="w-full p-2 rounded-md bg-background border border-border text-foreground"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={profile.email}
+                    disabled
+                    className="w-full p-2 rounded-md bg-background/50 border border-border text-foreground/50"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+                >
+                  Save Changes
+                </button>
+              </form>
+            </div>
+          )}
+          
+          {activeTab === 'users' && (
+            <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-6">User Management</h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-foreground">
                   <thead>
@@ -281,7 +304,7 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredUsers?.map((user) => (
+                    {users?.map((user) => (
                       <tr key={user.id} className="border-b border-border">
                         <td className="py-3 px-4">{user.email}</td>
                         <td className="py-3 px-4">
@@ -308,10 +331,28 @@ const AdminDashboard = () => {
               </div>
             </div>
           )}
-
-          {activeTab === 'hubs' && <HubsPage />}
-          {activeTab === 'routes' && <RoutesPage />}
-          {activeTab === 'settings' && <SettingsPage />}
+          
+          {activeTab === 'settings' && (
+            <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-6">Appearance</h2>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-foreground">Theme</span>
+                  <button
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                    className="px-4 py-2 border border-border rounded-md bg-background text-foreground hover:bg-accent/10"
+                  >
+                    {theme === 'dark' ? (
+                      <Sun className="h-5 w-5 mr-2 inline-block" />
+                    ) : (
+                      <Moon className="h-5 w-5 mr-2 inline-block" />
+                    )}
+                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>
