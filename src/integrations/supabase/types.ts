@@ -17,6 +17,7 @@ export type Database = {
           latitude: number
           longitude: number
           name: string
+          transport_type: string | null
           updated_at: string | null
         }
         Insert: {
@@ -26,6 +27,7 @@ export type Database = {
           latitude: number
           longitude: number
           name: string
+          transport_type?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -35,6 +37,7 @@ export type Database = {
           latitude?: number
           longitude?: number
           name?: string
+          transport_type?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -62,40 +65,42 @@ export type Database = {
       }
       routes: {
         Row: {
+          cost: number
           created_at: string | null
-          end_hub_id: string | null
+          end_point: string
+          hub_id: string | null
           id: string
           name: string
-          start_hub_id: string | null
+          start_point: string
+          transport_type: string
           updated_at: string | null
         }
         Insert: {
+          cost: number
           created_at?: string | null
-          end_hub_id?: string | null
+          end_point: string
+          hub_id?: string | null
           id?: string
           name: string
-          start_hub_id?: string | null
+          start_point: string
+          transport_type: string
           updated_at?: string | null
         }
         Update: {
+          cost?: number
           created_at?: string | null
-          end_hub_id?: string | null
+          end_point?: string
+          hub_id?: string | null
           id?: string
           name?: string
-          start_hub_id?: string | null
+          start_point?: string
+          transport_type?: string
           updated_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "routes_end_hub_id_fkey"
-            columns: ["end_hub_id"]
-            isOneToOne: false
-            referencedRelation: "hubs"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "routes_start_hub_id_fkey"
-            columns: ["start_hub_id"]
+            foreignKeyName: "fk_hub"
+            columns: ["hub_id"]
             isOneToOne: false
             referencedRelation: "hubs"
             referencedColumns: ["id"]
