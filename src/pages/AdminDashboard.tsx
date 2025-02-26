@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon, FileText } from 'lucide-react';
+import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon, FileText, MapPin, Route } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import type { Database } from '@/integrations/supabase/types';
 
 type AppRole = Database['public']['Enums']['app_role'];
-type ReportStatus = 'pending' | 'approved' | 'rejected';
+type ReportStatus = Database['public']['Enums']['report_status'];
 
 interface Profile {
   firstName: string;
@@ -25,8 +25,8 @@ interface TrafficReport {
   incident_time: string;
   created_at: string;
   reporter: {
-    first_name: string;
-    last_name: string;
+    first_name: string | null;
+    last_name: string | null;
   } | null;
 }
 
@@ -83,7 +83,7 @@ const AdminDashboard = () => {
 
       const { data: { users: authUsers } } = await supabase.auth.admin.listUsers();
       
-      return userRoles.map((ur: any) => ({
+      return userRoles?.map((ur: any) => ({
         id: ur.user_id,
         email: authUsers.find(u => u.id === ur.user_id)?.email || '',
         firstName: ur.profiles.first_name,
@@ -112,7 +112,7 @@ const AdminDashboard = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as TrafficReport[];
+      return data as unknown as TrafficReport[];
     },
   });
 
@@ -130,27 +130,6 @@ const AdminDashboard = () => {
     },
   });
 
-  const updateProfile = useMutation({
-    mutationFn: async (updatedProfile: Profile) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user found');
-
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          first_name: updatedProfile.firstName,
-          last_name: updatedProfile.lastName
-        })
-        .eq('id', user.id);
-
-      if (error) throw error;
-      return updatedProfile;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
-    },
-  });
-
   const updateReportStatus = useMutation({
     mutationFn: async ({ reportId, status }: { reportId: string; status: ReportStatus }) => {
       const { error } = await supabase
@@ -164,6 +143,12 @@ const AdminDashboard = () => {
       queryClient.invalidateQueries({ queryKey: ['traffic-reports'] });
     },
   });
+
+  const filteredReports = reports?.filter(report =>
+    report.location.toLowerCase().includes(searchReports.toLowerCase()) ||
+    report.description.toLowerCase().includes(searchReports.toLowerCase()) ||
+    report.incident_type.toLowerCase().includes(searchReports.toLowerCase())
+  );
 
   useEffect(() => {
     checkAuth();
@@ -201,17 +186,6 @@ const AdminDashboard = () => {
     navigate('/admin');
   };
 
-  const handleProfileUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateProfile.mutate(profile);
-  };
-
-  const filteredReports = reports?.filter(report =>
-    report.location.toLowerCase().includes(searchReports.toLowerCase()) ||
-    report.description.toLowerCase().includes(searchReports.toLowerCase()) ||
-    report.incident_type.toLowerCase().includes(searchReports.toLowerCase())
-  );
-
   return (
     <div className="min-h-screen bg-background">
       <aside className="w-64 bg-card fixed h-full border-r border-border">
@@ -233,6 +207,20 @@ const AdminDashboard = () => {
           >
             <LayoutDashboard className="h-5 w-5 mr-3" />
             Overview
+          </button>
+          <button
+            onClick={() => navigate('/admin/hubs')}
+            className="flex items-center w-full px-6 py-3 text-foreground hover:bg-accent/10"
+          >
+            <MapPin className="h-5 w-5 mr-3" />
+            Hubs
+          </button>
+          <button
+            onClick={() => navigate('/admin/routes')}
+            className="flex items-center w-full px-6 py-3 text-foreground hover:bg-accent/10"
+          >
+            <Route className="h-5 w-5 mr-3" />
+            Routes
           </button>
           <button
             onClick={() => setActiveTab('profile')}
