@@ -6,6 +6,15 @@ import type { Database } from '@/integrations/supabase/types';
 
 type AppRole = Database['public']['Enums']['app_role'];
 
+interface UserData {
+  user_id: string;
+  role: AppRole;
+  profiles: {
+    first_name: string | null;
+    last_name: string | null;
+  };
+}
+
 const UsersManagement = () => {
   const queryClient = useQueryClient();
 
@@ -27,12 +36,12 @@ const UsersManagement = () => {
 
       const { data: { users: authUsers } } = await supabase.auth.admin.listUsers();
       
-      return userRoles?.map((ur: any) => ({
+      return userRoles?.map((ur: UserData) => ({
         id: ur.user_id,
         email: authUsers.find(u => u.id === ur.user_id)?.email || '',
         firstName: ur.profiles.first_name,
         lastName: ur.profiles.last_name,
-        role: ur.role as AppRole,
+        role: ur.role,
       }));
     },
   });

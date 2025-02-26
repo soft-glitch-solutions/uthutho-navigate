@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import Sidebar from '@/components/admin/Sidebar';
 import Overview from '@/components/admin/Overview';
@@ -12,10 +12,15 @@ import { useTheme } from '@/components/theme-provider';
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const navigate = useNavigate();
+  const location = useLocation();
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     checkAuth();
-  }, []);
+    // Set active tab based on current path
+    const path = location.pathname.split('/').pop() || 'overview';
+    setActiveTab(path);
+  }, [location]);
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
