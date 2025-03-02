@@ -6,13 +6,20 @@ import type { Database } from '@/integrations/supabase/types';
 
 type AppRole = Database['public']['Enums']['app_role'];
 
+interface UserProfile {
+  first_name: string | null;
+  last_name: string | null;
+}
+
 interface UserData {
   user_id: string;
   role: AppRole;
-  profiles: {
-    first_name: string | null;
-    last_name: string | null;
-  };
+  profiles: UserProfile;
+}
+
+interface UserAuthData {
+  id: string;
+  email: string;
 }
 
 const UsersManagement = () => {
@@ -26,7 +33,7 @@ const UsersManagement = () => {
         .select(`
           user_id,
           role,
-          profiles!inner (
+          profiles:profiles!inner (
             first_name,
             last_name
           )
@@ -34,15 +41,16 @@ const UsersManagement = () => {
       
       if (error) throw error;
 
-      const { data: { users: authUsers } } = await supabase.auth.admin.listUsers();
+      const { data: authUsers } = await supabase.auth.admin.listUsers();
+      const authUsersData = authUsers?.users || [];
       
-      return userRoles?.map((ur: UserData) => ({
+      return userRoles?.map((ur: any) => ({
         id: ur.user_id,
-        email: authUsers.find(u => u.id === ur.user_id)?.email || '',
-        firstName: ur.profiles.first_name,
-        lastName: ur.profiles.last_name,
+        email: authUsersData.find((u: UserAuthData) => u.id === ur.user_id)?.email || '',
+        firstName: ur.profiles?.first_name || '',
+        lastName: ur.profiles?.last_name || '',
         role: ur.role,
-      }));
+      })) || [];
     },
   });
 
