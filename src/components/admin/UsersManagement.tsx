@@ -17,9 +17,9 @@ interface UserData {
   profiles: UserProfile;
 }
 
-interface UserAuthData {
+interface AuthUser {
   id: string;
-  email: string;
+  email?: string;
 }
 
 const UsersManagement = () => {
@@ -46,7 +46,7 @@ const UsersManagement = () => {
       
       return userRoles?.map((ur: any) => ({
         id: ur.user_id,
-        email: authUsersData.find((u: UserAuthData) => u.id === ur.user_id)?.email || '',
+        email: authUsersData.find((u: AuthUser) => u.id === ur.user_id)?.email || '',
         firstName: ur.profiles?.first_name || '',
         lastName: ur.profiles?.last_name || '',
         role: ur.role,
