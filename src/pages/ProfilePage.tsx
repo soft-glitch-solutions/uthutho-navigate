@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Camera } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client'; // Adjust the import path if necessary
 
 interface ProfilePageProps {
   onProfileUpdate: (profile: { firstName: string; lastName: string; avatar: string | null }) => void;
@@ -14,8 +13,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
     firstName: '',
     lastName: '',
     email: '',
-    role: 'User', // Default role
-    avatar: null as string | null,
+    role: '',
+    avatar: null,
   });
   const [updatedProfile, setUpdatedProfile] = useState(profile);
   const [editingAvatar, setEditingAvatar] = useState(false);
@@ -24,51 +23,38 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
   // Fetch the current user profile from Supabase
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data: userData, error: userError } = await supabase.auth.getUser();
-      
-      if (userError) {
-        console.error('Error fetching user:', userError.message);
+      const { data: user, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error('Error fetching user:', error.message);
         setIsLoading(false);
-        return;
       }
 
-      if (userData && userData.user) {
-        // Fetch user profile data from profiles table
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
+      if (user) {
+        // Fetch user profile data from a table called "profiles" or similar
+        const { data, error: profileError } = await supabase
+          .from('profiles') // Adjust table name if necessary
           .select('*')
-          .eq('id', userData.user.id)
-          .single();
+          .eq('id', user.id)
+          .single(); // Assuming the profile is unique per user
 
         if (profileError) {
           console.error('Error fetching profile:', profileError.message);
           setIsLoading(false);
         } else {
-          // Get user role
-          const { data: roleData } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', userData.user.id)
-            .single();
-
-          const userRole = roleData?.role || 'User';
-          
           setProfile({
-            firstName: profileData.first_name || '',
-            lastName: profileData.last_name || '',
-            email: userData.user.email || '',
-            role: userRole,
-            avatar: profileData.avatar_url || null,
+            firstName: data.first_name || '',
+            lastName: data.last_name || '',
+            email: user.email || '',
+            role: data.role || 'User',
+            avatar: data.avatar || null,
           });
-          
           setUpdatedProfile({
-            firstName: profileData.first_name || '',
-            lastName: profileData.last_name || '',
-            email: userData.user.email || '',
-            role: userRole,
-            avatar: profileData.avatar_url || null,
+            firstName: data.first_name || '',
+            lastName: data.last_name || '',
+            email: user.email || '',
+            role: data.role || 'User',
+            avatar: data.avatar || null,
           });
-          
           setIsLoading(false);
         }
       }
@@ -84,9 +70,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
       const reader = new FileReader();
       reader.onloadend = async () => {
         const avatarUrl = reader.result as string;
-        setUpdatedProfile({ ...updatedProfile, avatar: avatarUrl });
         setEditingAvatar(false);
-        onAvatarChange(avatarUrl);
+        onAvatarChange(avatarUrl); // Pass the avatar URL to the parent component (e.g., save to Supabase Storage)
       };
       reader.readAsDataURL(file);
     }
@@ -95,34 +80,30 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
   // Handle profile update submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { data: userData } = await supabase.auth.getUser();
+    const { data: user } = await supabase.auth.getUser(); // Updated to use getUser()
 
-    if (userData && userData.user) {
+    if (user) {
       const updatedData = {
         first_name: updatedProfile.firstName,
         last_name: updatedProfile.lastName,
-        avatar_url: updatedProfile.avatar,
+        avatar: updatedProfile.avatar,
       };
 
       // Update the user profile in Supabase
       const { error } = await supabase
-        .from('profiles')
-        .upsert([{ ...updatedData, id: userData.user.id }]);
+        .from('profiles') // Adjust table name if necessary
+        .upsert([{ ...updatedData, id: user.id }]);
 
       if (error) {
         console.error('Error updating profile:', error.message);
       } else {
-        onProfileUpdate({
-          firstName: updatedProfile.firstName,
-          lastName: updatedProfile.lastName,
-          avatar: updatedProfile.avatar
-        });
+        onProfileUpdate(updatedProfile); // Notify parent component of profile update
       }
     }
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // Show loading state
   }
 
   return (
