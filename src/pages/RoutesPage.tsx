@@ -9,8 +9,6 @@ interface Route {
   end_point: string;
   hub_id: string;
   cost: number;
-  name?: string;
-  transport_type?: string;
 }
 
 const RoutesPage = () => {
@@ -40,22 +38,12 @@ const RoutesPage = () => {
   // Mutation for updating a route
   const updateRoute = useMutation({
     mutationFn: async (updatedRoute: Route) => {
-      const { error } = await supabase
-        .from('routes')
-        .update({
-          start_point: updatedRoute.start_point,
-          end_point: updatedRoute.end_point,
-          cost: updatedRoute.cost,
-          name: updatedRoute.name || `${updatedRoute.start_point} to ${updatedRoute.end_point}`,
-          transport_type: updatedRoute.transport_type || 'bus',
-        })
-        .eq('id', updatedRoute.id);
-      
+      const { error } = await supabase.from('routes').update(updatedRoute).eq('id', updatedRoute.id);
       if (error) throw error;
       return updatedRoute;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['routes'] });
+      queryClient.invalidateQueries(['routes']);
       setIsEditModalOpen(false);
     },
   });
@@ -63,22 +51,12 @@ const RoutesPage = () => {
   // Mutation for adding a new route
   const addNewRoute = useMutation({
     mutationFn: async (newRoute: Route) => {
-      const routeData = {
-        id: Math.random().toString(36).substr(2, 9),
-        start_point: newRoute.start_point,
-        end_point: newRoute.end_point,
-        hub_id: newRoute.hub_id || null,
-        cost: newRoute.cost,
-        name: newRoute.name || `${newRoute.start_point} to ${newRoute.end_point}`,
-        transport_type: newRoute.transport_type || 'bus',
-      };
-      
-      const { error } = await supabase.from('routes').insert([routeData]);
+      const { error } = await supabase.from('routes').insert([newRoute]);
       if (error) throw error;
       return newRoute;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['routes'] });
+      queryClient.invalidateQueries(['routes']);
       setIsNewRouteModalOpen(false);
     },
   });
@@ -91,7 +69,7 @@ const RoutesPage = () => {
       return routeId;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['routes'] });
+      queryClient.invalidateQueries(['routes']);
       setIsDeleteModalOpen(false);
     },
   });
@@ -108,13 +86,11 @@ const RoutesPage = () => {
   const handleNewRoute = (e: React.FormEvent) => {
     e.preventDefault();
     const newRoute = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: Math.random().toString(36).substr(2, 9), // Random ID for new route
       start_point: selectedRoute?.start_point || '',
       end_point: selectedRoute?.end_point || '',
       hub_id: selectedRoute?.hub_id || '',
       cost: selectedRoute?.cost || 0,
-      name: `${selectedRoute?.start_point || ''} to ${selectedRoute?.end_point || ''}`,
-      transport_type: 'bus',
     };
     addNewRoute.mutate(newRoute);
   };
