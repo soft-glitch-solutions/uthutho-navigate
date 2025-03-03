@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import Sidebar from '@/components/admin/Sidebar';
-import Overview from '@/components/admin/Overview';
 import { useToast } from '@/components/ui/use-toast';
 
 const AdminDashboard = () => {
@@ -14,9 +13,12 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     checkAuth();
-    // Set active tab based on current path
-    const path = location.pathname.split('/').pop() || 'dashboard';
-    setActiveTab(path);
+    
+    // Extract the active tab from the URL path
+    const pathParts = location.pathname.split('/');
+    // Get the last part of the path, or 'dashboard' if it's just /admin/dashboard
+    const currentPath = pathParts.length > 2 ? pathParts[pathParts.length - 1] : 'dashboard';
+    setActiveTab(currentPath);
   }, [location]);
 
   const checkAuth = async () => {
@@ -63,8 +65,6 @@ const AdminDashboard = () => {
 
       <main className="ml-64 p-8">
         <div className="max-w-7xl mx-auto">
-          {/* We only show Overview directly in this component, all other views are rendered via routing */}
-          {location.pathname === '/admin/dashboard' && <Overview />}
           <Outlet />
         </div>
       </main>

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon, FileText, MapPin, Route, StopCircle, Inbox } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 
@@ -12,16 +12,7 @@ interface SidebarProps {
 
 const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { theme, setTheme } = useTheme();
-
-  // Determine active tab from URL if not set
-  React.useEffect(() => {
-    const path = location.pathname.split('/').pop() || 'dashboard';
-    if (path !== activeTab) {
-      setActiveTab(path);
-    }
-  }, [location, activeTab, setActiveTab]);
 
   const handleTabClick = (tab: string, path: string) => {
     setActiveTab(tab);
@@ -42,69 +33,78 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
       </div>
 
       <nav className="mt-6">
-        <button
-          onClick={() => handleTabClick('dashboard', '/admin/dashboard')}
+        <Link
+          to="/admin/dashboard"
           className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'dashboard' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('dashboard')}
         >
           <LayoutDashboard className="h-5 w-5 mr-3" />
           Overview
-        </button>
-        <button
-          onClick={() => handleTabClick('hubs', '/admin/hubs')}
+        </Link>
+        <Link
+          to="/admin/dashboard/hubs"
           className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'hubs' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('hubs')}
         >
           <MapPin className="h-5 w-5 mr-3" />
           Hubs
-        </button>
-        <button
-          onClick={() => handleTabClick('routes', '/admin/routes')}
+        </Link>
+        <Link
+          to="/admin/dashboard/routes"
           className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'routes' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('routes')}
         >
           <Route className="h-5 w-5 mr-3" />
           Routes
-        </button>
-        <button
-          onClick={() => handleTabClick('stops', '/admin/stops')}
+        </Link>
+        <Link
+          to="/admin/dashboard/stops"
           className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'stops' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('stops')}
         >
           <StopCircle className="h-5 w-5 mr-3" />
           Stops
-        </button>
-        <button
-          onClick={() => handleTabClick('requests', '/admin/requests')}
+        </Link>
+        <Link
+          to="/admin/dashboard/requests"
           className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'requests' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('requests')}
         >
           <Inbox className="h-5 w-5 mr-3" />
           Requests
-        </button>
-        <button
-          onClick={() => handleTabClick('profile', '/admin/profile')}
+        </Link>
+        <Link
+          to="/admin/dashboard/profile"
           className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'profile' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('profile')}
         >
           <User className="h-5 w-5 mr-3" />
           Profile
-        </button>
-        <button
-          onClick={() => handleTabClick('users', '/admin/users')}
+        </Link>
+        <Link
+          to="/admin/dashboard/users"
           className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'users' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('users')}
         >
           <Users className="h-5 w-5 mr-3" />
           Users
-        </button>
-        <button
-          onClick={() => handleTabClick('reports', '/admin/reports')}
+        </Link>
+        <Link
+          to="/admin/dashboard/reports"
           className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'reports' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('reports')}
         >
           <FileText className="h-5 w-5 mr-3" />
           Reports
-        </button>
-        <button
-          onClick={() => handleTabClick('settings', '/admin/settings')}
+        </Link>
+        <Link
+          to="/admin/dashboard/settings"
           className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'settings' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('settings')}
         >
           <Settings className="h-5 w-5 mr-3" />
           Settings
-        </button>
+        </Link>
       </nav>
 
       <div className="absolute bottom-0 w-64 p-6 space-y-4">

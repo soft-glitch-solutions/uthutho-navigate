@@ -18,6 +18,7 @@ import ProfilePage from "./pages/ProfilePage";
 import UsersPage from "./pages/UsersPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
+import Overview from "./components/admin/Overview";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,16 +55,50 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/hubs" element={<HubsPage />} />
-            <Route path="/admin/hubs/:hubId" element={<HubDetailsPage />} />
-            <Route path="/admin/routes" element={<RoutesPage />} />
-            <Route path="/admin/stops" element={<StopsPage />} />
-            <Route path="/admin/requests" element={<RequestsPage />} />
-            <Route path="/admin/profile" element={<ProfilePage {...mockProfileProps} />} />
-            <Route path="/admin/users" element={<UsersPage {...mockUsersProps} />} />
-            <Route path="/admin/reports" element={<ReportsPage />} />
-            <Route path="/admin/settings" element={<SettingsPage {...mockSettingsProps} />} />
+            
+            {/* Admin dashboard layout with nested routes */}
+            <Route path="/admin/dashboard" element={<AdminDashboard />}>
+              <Route index element={<Overview />} />
+              <Route path="hubs" element={<HubsPage />} />
+              <Route path="hubs/:hubId" element={<HubDetailsPage />} />
+              <Route path="routes" element={<RoutesPage />} />
+              <Route path="stops" element={<StopsPage />} />
+              <Route path="requests" element={<RequestsPage />} />
+              <Route path="profile" element={<ProfilePage {...mockProfileProps} />} />
+              <Route path="users" element={<UsersPage {...mockUsersProps} />} />
+              <Route path="reports" element={<ReportsPage />} />
+              <Route path="settings" element={<SettingsPage {...mockSettingsProps} />} />
+            </Route>
+            
+            {/* Redirects for old paths - preserve these for backward compatibility */}
+            <Route path="/admin/hubs" element={<AdminDashboard />}>
+              <Route index element={<HubsPage />} />
+            </Route>
+            <Route path="/admin/hubs/:hubId" element={<AdminDashboard />}>
+              <Route index element={<HubDetailsPage />} />
+            </Route>
+            <Route path="/admin/routes" element={<AdminDashboard />}>
+              <Route index element={<RoutesPage />} />
+            </Route>
+            <Route path="/admin/stops" element={<AdminDashboard />}>
+              <Route index element={<StopsPage />} />
+            </Route>
+            <Route path="/admin/requests" element={<AdminDashboard />}>
+              <Route index element={<RequestsPage />} />
+            </Route>
+            <Route path="/admin/profile" element={<AdminDashboard />}>
+              <Route index element={<ProfilePage {...mockProfileProps} />} />
+            </Route>
+            <Route path="/admin/users" element={<AdminDashboard />}>
+              <Route index element={<UsersPage {...mockUsersProps} />} />
+            </Route>
+            <Route path="/admin/reports" element={<AdminDashboard />}>
+              <Route index element={<ReportsPage />} />
+            </Route>
+            <Route path="/admin/settings" element={<AdminDashboard />}>
+              <Route index element={<SettingsPage {...mockSettingsProps} />} />
+            </Route>
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
