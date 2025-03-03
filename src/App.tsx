@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import Index from "./pages/Index";
 import AdminLogin from "./pages/AdminLogin";
@@ -70,34 +70,16 @@ const App = () => (
               <Route path="settings" element={<SettingsPage {...mockSettingsProps} />} />
             </Route>
             
-            {/* Redirects for old paths - preserve these for backward compatibility */}
-            <Route path="/admin/hubs" element={<AdminDashboard />}>
-              <Route index element={<HubsPage />} />
-            </Route>
-            <Route path="/admin/hubs/:hubId" element={<AdminDashboard />}>
-              <Route index element={<HubDetailsPage />} />
-            </Route>
-            <Route path="/admin/routes" element={<AdminDashboard />}>
-              <Route index element={<RoutesPage />} />
-            </Route>
-            <Route path="/admin/stops" element={<AdminDashboard />}>
-              <Route index element={<StopsPage />} />
-            </Route>
-            <Route path="/admin/requests" element={<AdminDashboard />}>
-              <Route index element={<RequestsPage />} />
-            </Route>
-            <Route path="/admin/profile" element={<AdminDashboard />}>
-              <Route index element={<ProfilePage {...mockProfileProps} />} />
-            </Route>
-            <Route path="/admin/users" element={<AdminDashboard />}>
-              <Route index element={<UsersPage {...mockUsersProps} />} />
-            </Route>
-            <Route path="/admin/reports" element={<AdminDashboard />}>
-              <Route index element={<ReportsPage />} />
-            </Route>
-            <Route path="/admin/settings" element={<AdminDashboard />}>
-              <Route index element={<SettingsPage {...mockSettingsProps} />} />
-            </Route>
+            {/* Redirect old URLs to the new structure */}
+            <Route path="/admin/hubs" element={<Navigate to="/admin/dashboard/hubs" replace />} />
+            <Route path="/admin/hubs/:hubId" element={<Navigate to="/admin/dashboard/hubs/:hubId" replace />} />
+            <Route path="/admin/routes" element={<Navigate to="/admin/dashboard/routes" replace />} />
+            <Route path="/admin/stops" element={<Navigate to="/admin/dashboard/stops" replace />} />
+            <Route path="/admin/requests" element={<Navigate to="/admin/dashboard/requests" replace />} />
+            <Route path="/admin/profile" element={<Navigate to="/admin/dashboard/profile" replace />} />
+            <Route path="/admin/users" element={<Navigate to="/admin/dashboard/users" replace />} />
+            <Route path="/admin/reports" element={<Navigate to="/admin/dashboard/reports" replace />} />
+            <Route path="/admin/settings" element={<Navigate to="/admin/dashboard/settings" replace />} />
             
             <Route path="*" element={<NotFound />} />
           </Routes>

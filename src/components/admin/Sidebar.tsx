@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon, FileText, MapPin, Route, StopCircle, Inbox } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 
@@ -11,13 +11,8 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
-  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
-
-  const handleTabClick = (tab: string, path: string) => {
-    setActiveTab(tab);
-    navigate(path);
-  };
+  const location = useLocation();
 
   return (
     <aside className="w-64 bg-card fixed h-full border-r border-border">

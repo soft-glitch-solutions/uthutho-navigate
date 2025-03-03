@@ -19,7 +19,7 @@ const AdminDashboard = () => {
     // Get the last part of the path, or 'dashboard' if it's just /admin/dashboard
     const currentPath = pathParts.length > 2 ? pathParts[pathParts.length - 1] : 'dashboard';
     setActiveTab(currentPath);
-  }, [location]);
+  }, [location.pathname]);
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();

@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Plus } from 'lucide-react'; // Ensure icons are imported
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
+import { Edit, Trash2, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface Hub {
   id: string;
@@ -18,9 +18,9 @@ const HubsPage = () => {
   const [selectedHub, setSelectedHub] = useState<Hub | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isNewHubModalOpen, setIsNewHubModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);  // Delete modal state
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const queryClient = useQueryClient();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
   // Fetch hubs from the database
   const { data: hubs, isLoading } = useQuery({
@@ -45,7 +45,7 @@ const HubsPage = () => {
       return updatedHub;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['hubs']);
+      queryClient.invalidateQueries({ queryKey: ['hubs'] });
       setIsEditModalOpen(false);
     },
   });
@@ -58,8 +58,8 @@ const HubsPage = () => {
       return hubId;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['hubs']);
-      setIsDeleteModalOpen(false);  // Close the delete modal
+      queryClient.invalidateQueries({ queryKey: ['hubs'] });
+      setIsDeleteModalOpen(false);
     },
   });
 
@@ -71,7 +71,7 @@ const HubsPage = () => {
       return newHub;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['hubs']);
+      queryClient.invalidateQueries({ queryKey: ['hubs'] });
       setIsNewHubModalOpen(false);
     },
   });
@@ -99,7 +99,7 @@ const HubsPage = () => {
 
   // Handle selecting a hub and navigating to the HubDetailsPage
   const handleHubSelect = (hub: Hub) => {
-    navigate(`/hubs/${hub.id}`); // Navigate to the HubDetailsPage with the selected hub's id
+    navigate(`/admin/dashboard/hubs/${hub.id}`);
   };
 
   return (
@@ -116,7 +116,7 @@ const HubsPage = () => {
         <Button
           onClick={() => {
             setIsNewHubModalOpen(true);
-            setSelectedHub(null); // Reset selected hub for new hub form
+            setSelectedHub(null);
           }}
         >
           <Plus className="h-5 w-5 mr-2" />
@@ -134,7 +134,7 @@ const HubsPage = () => {
             </div>
             <div className="flex space-x-2">
               <Button
-                onClick={() => handleHubSelect(hub)} // Select and navigate to HubDetailsPage
+                onClick={() => handleHubSelect(hub)}
               >
                 View Details
               </Button>
@@ -151,7 +151,7 @@ const HubsPage = () => {
                 variant="destructive"
                 onClick={() => {
                   setSelectedHub(hub);
-                  setIsDeleteModalOpen(true); // Open delete confirmation modal
+                  setIsDeleteModalOpen(true);
                 }}
               >
                 <Trash2 className="h-5 w-5 mr-2" />
@@ -165,14 +165,14 @@ const HubsPage = () => {
       {/* Edit Hub Modal (Slide from Right) */}
       <div
         className={`fixed inset-0 bg-gray-800 bg-opacity-50 ${isEditModalOpen ? 'block' : 'hidden'}`}
-        onClick={() => setIsEditModalOpen(false)} // Close on outside click
+        onClick={() => setIsEditModalOpen(false)}
       >
         <div
           className="bg-white p-6 rounded-md w-1/3 absolute top-0 right-0 h-full transform transition-transform duration-300"
           style={{
             transform: isEditModalOpen ? 'translateX(0)' : 'translateX(100%)',
           }}
-          onClick={(e) => e.stopPropagation()} // Stop propagation to avoid closing modal when clicking inside
+          onClick={(e) => e.stopPropagation()}
         >
           <h3 className="text-lg font-semibold mb-4">Edit Hub</h3>
           <form onSubmit={handleHubEdit}>
@@ -220,14 +220,14 @@ const HubsPage = () => {
       {/* New Hub Modal (Slide from Right) */}
       <div
         className={`fixed inset-0 bg-gray-800 bg-opacity-50 ${isNewHubModalOpen ? 'block' : 'hidden'}`}
-        onClick={() => setIsNewHubModalOpen(false)} // Close on outside click
+        onClick={() => setIsNewHubModalOpen(false)}
       >
         <div
           className="bg-white p-6 rounded-md w-1/3 absolute top-0 right-0 h-full transform transition-transform duration-300"
           style={{
             transform: isNewHubModalOpen ? 'translateX(0)' : 'translateX(100%)',
           }}
-          onClick={(e) => e.stopPropagation()} // Stop propagation to avoid closing modal when clicking inside
+          onClick={(e) => e.stopPropagation()}
         >
           <h3 className="text-lg font-semibold mb-4">Add New Hub</h3>
           <form onSubmit={handleNewHub}>
@@ -276,11 +276,11 @@ const HubsPage = () => {
       {selectedHub && (
         <div
           className={`fixed inset-0 bg-gray-800 bg-opacity-50 ${isDeleteModalOpen ? 'block' : 'hidden'}`}
-          onClick={() => setIsDeleteModalOpen(false)} // Close on outside click
+          onClick={() => setIsDeleteModalOpen(false)}
         >
           <div
             className="bg-white p-6 rounded-md w-1/3 absolute top-1/4 left-1/3"
-            onClick={(e) => e.stopPropagation()} // Stop propagation to avoid closing modal when clicking inside
+            onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold mb-4">Are you sure you want to delete this hub?</h3>
             <div className="flex space-x-4">

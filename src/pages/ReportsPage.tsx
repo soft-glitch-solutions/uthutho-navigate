@@ -1,176 +1,140 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, 
-  Legend, ResponsiveContainer, PieChart, Pie, Cell 
-} from 'recharts';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { FileText, Download } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
-const reportData = {
-  monthly: [
-    { name: 'Jan', users: 400, routes: 240, hubs: 20 },
-    { name: 'Feb', users: 500, routes: 280, hubs: 28 },
-    { name: 'Mar', users: 600, routes: 320, hubs: 26 },
-    { name: 'Apr', users: 800, routes: 380, hubs: 30 },
-    { name: 'May', users: 1000, routes: 470, hubs: 32 },
-    { name: 'Jun', users: 1200, routes: 520, hubs: 38 },
-  ],
-  daily: [
-    { name: 'Mon', users: 240, routes: 120, hubs: 10 },
-    { name: 'Tue', users: 300, routes: 150, hubs: 14 },
-    { name: 'Wed', users: 320, routes: 180, hubs: 12 },
-    { name: 'Thu', users: 280, routes: 160, hubs: 10 },
-    { name: 'Fri', users: 350, routes: 210, hubs: 15 },
-    { name: 'Sat', users: 400, routes: 230, hubs: 18 },
-    { name: 'Sun', users: 280, routes: 120, hubs: 8 },
-  ],
-  usage: [
-    { name: 'Routes', value: 450 },
-    { name: 'Stops', value: 300 },
-    { name: 'Hubs', value: 150 },
-    { name: 'Requests', value: 100 },
-  ]
-};
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+interface Report {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  type: string;
+}
 
 const ReportsPage = () => {
-  const [timeframe, setTimeframe] = useState('monthly');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedReportType, setSelectedReportType] = useState('all');
+
+  // Fetch reports from the database
+  const { data: reports, isLoading } = useQuery({
+    queryKey: ['reports'],
+    queryFn: async () => {
+      // This would be replaced with actual Supabase query for reports
+      const mockReports: Report[] = [
+        {
+          id: '1',
+          title: 'Monthly Traffic Summary',
+          description: 'Summary of all traffic across hubs for the month',
+          date: '2023-04-01',
+          type: 'traffic'
+        },
+        {
+          id: '2',
+          title: 'User Activity Report',
+          description: 'Analysis of user engagement and activity',
+          date: '2023-04-10',
+          type: 'user'
+        },
+        {
+          id: '3',
+          title: 'Route Performance',
+          description: 'Performance metrics for all routes',
+          date: '2023-04-15',
+          type: 'route'
+        }
+      ];
+      return mockReports;
+    },
+  });
+
+  // Filter reports based on search query and selected type
+  const filteredReports = reports?.filter((report) => {
+    const matchesSearch = report.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         report.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = selectedReportType === 'all' || report.type === selectedReportType;
+    return matchesSearch && matchesType;
+  });
+
+  const handleDownloadReport = (reportId: string) => {
+    // This would be implementation for downloading the report
+    console.log(`Downloading report ${reportId}`);
+  };
+
+  const reportTypes = [
+    { value: 'all', label: 'All Reports' },
+    { value: 'traffic', label: 'Traffic Reports' },
+    { value: 'user', label: 'User Reports' },
+    { value: 'route', label: 'Route Reports' }
+  ];
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-64">Loading reports...</div>;
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold tracking-tight">Analytics Report</h2>
+    <div>
+      <h1 className="text-2xl font-bold mb-6">Reports</h1>
+      
+      <div className="flex items-center space-x-4 mb-8">
+        <input
+          type="text"
+          placeholder="Search reports..."
+          className="flex-1 p-2 border border-border rounded-md"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+
+        <select
+          className="p-2 border border-border rounded-md"
+          value={selectedReportType}
+          onChange={(e) => setSelectedReportType(e.target.value)}
+        >
+          {reportTypes.map(type => (
+            <option key={type.value} value={type.value}>{type.label}</option>
+          ))}
+        </select>
       </div>
 
-      <Tabs defaultValue="usage" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="usage">Usage</TabsTrigger>
-          <TabsTrigger value="trends">Trends</TabsTrigger>
-          <TabsTrigger value="traffic">Traffic</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="usage" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Distribution by Service</CardTitle>
-              </CardHeader>
-              <CardContent className="pl-2">
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={reportData.usage}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      >
-                        {reportData.usage.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {filteredReports?.map((report) => (
+          <Card key={report.id} className="shadow-sm">
+            <CardHeader className="pb-2">
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-lg">{report.title}</CardTitle>
+                <div className="p-2 bg-primary/10 rounded-full">
+                  <FileText className="h-5 w-5 text-primary" />
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle>User Activity</CardTitle>
-                <div className="space-x-2">
-                  <button
-                    onClick={() => setTimeframe('daily')}
-                    className={`px-2 py-1 text-xs rounded ${timeframe === 'daily' ? 'bg-primary text-white' : 'bg-secondary'}`}
-                  >
-                    Daily
-                  </button>
-                  <button
-                    onClick={() => setTimeframe('monthly')}
-                    className={`px-2 py-1 text-xs rounded ${timeframe === 'monthly' ? 'bg-primary text-white' : 'bg-secondary'}`}
-                  >
-                    Monthly
-                  </button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={reportData[timeframe as keyof typeof reportData]}
-                      margin={{
-                        top: 20,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                      }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="users" fill="#8884d8" />
-                      <Bar dataKey="routes" fill="#82ca9d" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="trends" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Growth Trends</CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={reportData.monthly}
-                    margin={{
-                      top: 5,
-                      right: 30,
-                      left: 20,
-                      bottom: 5,
-                    }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="users" stroke="#8884d8" activeDot={{ r: 8 }} />
-                    <Line type="monotone" dataKey="routes" stroke="#82ca9d" />
-                    <Line type="monotone" dataKey="hubs" stroke="#ffc658" />
-                  </LineChart>
-                </ResponsiveContainer>
+              <p className="text-sm text-muted-foreground mb-3">{report.description}</p>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-muted-foreground">
+                  {new Date(report.date).toLocaleDateString()}
+                </span>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="flex items-center gap-1"
+                  onClick={() => handleDownloadReport(report.id)}
+                >
+                  <Download className="h-4 w-4" />
+                  Download
+                </Button>
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-        
-        <TabsContent value="traffic" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Traffic Analysis</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Traffic analysis data will be available soon.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+        ))}
+      </div>
+
+      {filteredReports?.length === 0 && (
+        <div className="text-center py-12 text-muted-foreground">
+          No reports found matching your criteria
+        </div>
+      )}
     </div>
   );
 };
