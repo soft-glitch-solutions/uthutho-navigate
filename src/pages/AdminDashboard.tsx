@@ -1,24 +1,21 @@
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import Sidebar from '@/components/admin/Sidebar';
 import Overview from '@/components/admin/Overview';
-import ProfileSettings from '@/components/admin/ProfileSettings';
-import UsersManagement from '@/components/admin/UsersManagement';
-import Reports from '@/components/admin/Reports';
-import { useTheme } from '@/components/theme-provider';
+import { useToast } from '@/components/ui/use-toast';
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const navigate = useNavigate();
   const location = useLocation();
-  const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
 
   useEffect(() => {
     checkAuth();
     // Set active tab based on current path
-    const path = location.pathname.split('/').pop() || 'overview';
+    const path = location.pathname.split('/').pop() || 'dashboard';
     setActiveTab(path);
   }, [location]);
 
@@ -26,12 +23,34 @@ const AdminDashboard = () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       navigate('/admin');
+      return;
+    }
+
+    // Check if user has admin role
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', session.user.id)
+      .single();
+
+    if (error || (data && data.role !== 'admin')) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to access this area.",
+        variant: "destructive"
+      });
+      await supabase.auth.signOut();
+      navigate('/admin');
     }
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/admin');
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out."
+    });
   };
 
   return (
@@ -44,26 +63,9 @@ const AdminDashboard = () => {
 
       <main className="ml-64 p-8">
         <div className="max-w-7xl mx-auto">
-          {activeTab === 'overview' && <Overview />}
-          {activeTab === 'profile' && <ProfileSettings />}
-          {activeTab === 'users' && <UsersManagement />}
-          {activeTab === 'reports' && <Reports />}
-          {activeTab === 'settings' && (
-            <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-6">Settings</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-foreground">Theme</span>
-                  <button
-                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                    className="px-4 py-2 border border-border rounded-md bg-background text-foreground hover:bg-accent/10"
-                  >
-                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* We only show Overview directly in this component, all other views are rendered via routing */}
+          {location.pathname === '/admin/dashboard' && <Overview />}
+          <Outlet />
         </div>
       </main>
     </div>

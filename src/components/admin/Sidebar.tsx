@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon, FileText, MapPin, Route, StopCircle } from 'lucide-react';
+import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon, FileText, MapPin, Route, StopCircle, Inbox } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 
 interface SidebarProps {
@@ -12,7 +12,16 @@ interface SidebarProps {
 
 const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, setTheme } = useTheme();
+
+  // Determine active tab from URL if not set
+  React.useEffect(() => {
+    const path = location.pathname.split('/').pop() || 'dashboard';
+    if (path !== activeTab) {
+      setActiveTab(path);
+    }
+  }, [location, activeTab, setActiveTab]);
 
   const handleTabClick = (tab: string, path: string) => {
     setActiveTab(tab);
@@ -34,8 +43,8 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
 
       <nav className="mt-6">
         <button
-          onClick={() => handleTabClick('overview', '/admin/dashboard')}
-          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'overview' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => handleTabClick('dashboard', '/admin/dashboard')}
+          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'dashboard' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
         >
           <LayoutDashboard className="h-5 w-5 mr-3" />
           Overview
@@ -60,6 +69,13 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
         >
           <StopCircle className="h-5 w-5 mr-3" />
           Stops
+        </button>
+        <button
+          onClick={() => handleTabClick('requests', '/admin/requests')}
+          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'requests' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+        >
+          <Inbox className="h-5 w-5 mr-3" />
+          Requests
         </button>
         <button
           onClick={() => handleTabClick('profile', '/admin/profile')}
