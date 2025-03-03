@@ -19,7 +19,30 @@ import UsersPage from "./pages/UsersPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
+
+// Temporary mock props for pages that require props
+const mockProfileProps = {
+  onProfileUpdate: (profile: any) => console.log('Profile updated:', profile),
+  onAvatarChange: (avatar: string | null) => console.log('Avatar changed:', avatar)
+};
+
+const mockUsersProps = {
+  users: [],
+  onRoleChange: (userId: string, role: string) => console.log(`Changed role for ${userId} to ${role}`)
+};
+
+const mockSettingsProps = {
+  theme: 'light',
+  toggleTheme: () => console.log('Theme toggled')
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -37,10 +60,10 @@ const App = () => (
             <Route path="/admin/routes" element={<RoutesPage />} />
             <Route path="/admin/stops" element={<StopsPage />} />
             <Route path="/admin/requests" element={<RequestsPage />} />
-            <Route path="/admin/profile" element={<ProfilePage />} />
-            <Route path="/admin/users" element={<UsersPage />} />
+            <Route path="/admin/profile" element={<ProfilePage {...mockProfileProps} />} />
+            <Route path="/admin/users" element={<UsersPage {...mockUsersProps} />} />
             <Route path="/admin/reports" element={<ReportsPage />} />
-            <Route path="/admin/settings" element={<SettingsPage />} />
+            <Route path="/admin/settings" element={<SettingsPage {...mockSettingsProps} />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

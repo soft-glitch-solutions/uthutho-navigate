@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Camera } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client'; // Adjust the import path if necessary
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
 
 interface ProfilePageProps {
   onProfileUpdate: (profile: { firstName: string; lastName: string; avatar: string | null }) => void;
@@ -14,46 +16,56 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
     lastName: '',
     email: '',
     role: '',
-    avatar: null,
+    avatar_url: null as string | null,
   });
   const [updatedProfile, setUpdatedProfile] = useState(profile);
   const [editingAvatar, setEditingAvatar] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   // Fetch the current user profile from Supabase
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data: user, error } = await supabase.auth.getUser();
+      const { data: userData, error } = await supabase.auth.getUser();
+      
       if (error) {
         console.error('Error fetching user:', error.message);
         setIsLoading(false);
+        return;
       }
 
-      if (user) {
-        // Fetch user profile data from a table called "profiles" or similar
+      if (userData && userData.user) {
+        // Fetch user profile data from profiles table
         const { data, error: profileError } = await supabase
-          .from('profiles') // Adjust table name if necessary
+          .from('profiles')
           .select('*')
-          .eq('id', user.id)
-          .single(); // Assuming the profile is unique per user
+          .eq('id', userData.user.id)
+          .single();
 
         if (profileError) {
           console.error('Error fetching profile:', profileError.message);
           setIsLoading(false);
-        } else {
+        } else if (data) {
+          // Get user role from user_roles table
+          const { data: roleData } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', userData.user.id)
+            .single();
+
           setProfile({
             firstName: data.first_name || '',
             lastName: data.last_name || '',
-            email: user.email || '',
-            role: data.role || 'User',
-            avatar: data.avatar || null,
+            email: userData.user.email || '',
+            role: roleData?.role || 'User',
+            avatar_url: data.avatar_url || null,
           });
           setUpdatedProfile({
             firstName: data.first_name || '',
             lastName: data.last_name || '',
-            email: user.email || '',
-            role: data.role || 'User',
-            avatar: data.avatar || null,
+            email: userData.user.email || '',
+            role: roleData?.role || 'User',
+            avatar_url: data.avatar_url || null,
           });
           setIsLoading(false);
         }
@@ -70,8 +82,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
       const reader = new FileReader();
       reader.onloadend = async () => {
         const avatarUrl = reader.result as string;
+        setUpdatedProfile({ ...updatedProfile, avatar_url: avatarUrl });
         setEditingAvatar(false);
-        onAvatarChange(avatarUrl); // Pass the avatar URL to the parent component (e.g., save to Supabase Storage)
+        onAvatarChange(avatarUrl); // Pass the avatar URL to the parent component
       };
       reader.readAsDataURL(file);
     }
@@ -80,30 +93,43 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
   // Handle profile update submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { data: user } = await supabase.auth.getUser(); // Updated to use getUser()
+    const { data: userData } = await supabase.auth.getUser();
 
-    if (user) {
+    if (userData && userData.user) {
       const updatedData = {
         first_name: updatedProfile.firstName,
         last_name: updatedProfile.lastName,
-        avatar: updatedProfile.avatar,
+        avatar_url: updatedProfile.avatar_url,
       };
 
       // Update the user profile in Supabase
       const { error } = await supabase
-        .from('profiles') // Adjust table name if necessary
-        .upsert([{ ...updatedData, id: user.id }]);
+        .from('profiles')
+        .upsert([{ ...updatedData, id: userData.user.id }]);
 
       if (error) {
         console.error('Error updating profile:', error.message);
+        toast({
+          title: "Error",
+          description: "Failed to update profile. Please try again.",
+          variant: "destructive"
+        });
       } else {
-        onProfileUpdate(updatedProfile); // Notify parent component of profile update
+        toast({
+          title: "Success",
+          description: "Profile updated successfully.",
+        });
+        onProfileUpdate({
+          firstName: updatedProfile.firstName,
+          lastName: updatedProfile.lastName,
+          avatar: updatedProfile.avatar_url
+        });
       }
     }
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; // Show loading state
+    return <div className="p-6">Loading...</div>;
   }
 
   return (
@@ -114,7 +140,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
       <div className="flex items-center space-x-4 mb-6">
         <div className="relative">
           <img
-            src={updatedProfile.avatar || '/default-avatar.png'}
+            src={updatedProfile.avatar_url || '/default-avatar.png'}
             alt="Profile Picture"
             className="w-24 h-24 rounded-full object-cover border-2 border-primary"
           />
@@ -170,7 +196,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
       {/* Modal for Avatar Upload */}
       {editingAvatar && (
         <div
-          className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
+          className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50"
           onClick={() => setEditingAvatar(false)} // Close modal on outside click
         >
           <div
