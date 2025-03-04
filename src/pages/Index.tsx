@@ -146,19 +146,17 @@ const Index = () => {
         </div>
       </section>
 
-            {/* Motto Section */}
-{/* Motto Section */}
-<section className="py-20 bg-gradient-to-r from-primary via-secondary to-highlight">
-  <div className="container px-4 mx-auto text-center">
-    <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-      "Izindlela zakho ziqinisekisa impumelelo!"
-    </h2>
-    <p className="text-lg md:text-xl text-white/90">
-      Your journey leads to success – keep moving forward!
-    </p>
-  </div>
-</section>
-
+      {/* Motto Section */}
+      <section className="py-20 bg-gradient-to-r from-primary via-secondary to-highlight">
+        <div className="container px-4 mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+            "Izindlela zakho ziqinisekisa impumelelo!"
+          </h2>
+          <p className="text-lg md:text-xl text-white/90">
+            Your journey leads to success – keep moving forward!
+          </p>
+        </div>
+      </section>
 
       {/* Awards Section */}
       <section className="py-20 bg-black">
@@ -268,7 +266,7 @@ const Index = () => {
             {/* Social Media */}
             <div>
               <h3 className="text-white font-semibold mb-4">Follow Us</h3>
-              <div className="flex space-x-4">
+              <div className="flex space-x-4 mb-6">
                 <a href="#" className="text-gray-400 hover:text-primary transition-colors">
                   <Facebook className="h-6 w-6" />
                 </a>
@@ -281,6 +279,16 @@ const Index = () => {
                 <a href="#" className="text-gray-400 hover:text-primary transition-colors">
                   <Linkedin className="h-6 w-6" />
                 </a>
+              </div>
+              
+              {/* Legal Links */}
+              <div className="space-y-2">
+                <Link to="/privacy-policy" className="text-gray-400 hover:text-primary transition-colors block">
+                  Privacy Policy
+                </Link>
+                <Link to="/terms-and-conditions" className="text-gray-400 hover:text-primary transition-colors block">
+                  Terms & Conditions
+                </Link>
               </div>
             </div>
           </div>

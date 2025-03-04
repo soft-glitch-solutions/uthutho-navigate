@@ -12,12 +12,16 @@ import NotFound from "./pages/NotFound";
 import HubsPage from "./pages/HubsPage";
 import HubDetailsPage from "./pages/HubDetailsPage";
 import RoutesPage from "./pages/RoutesPage";
+import RouteDetailsPage from "./pages/RouteDetailsPage";
 import StopsPage from "./pages/StopsPage";
+import StopDetailsPage from "./pages/StopDetailsPage";
 import RequestsPage from "./pages/RequestsPage";
 import ProfilePage from "./pages/ProfilePage";
 import UsersPage from "./pages/UsersPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsAndConditions from "./pages/TermsAndConditions";
 import Overview from "./components/admin/Overview";
 
 const queryClient = new QueryClient({
@@ -54,6 +58,8 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
             <Route path="/admin" element={<AdminLogin />} />
             
             {/* Admin dashboard layout with nested routes */}
@@ -62,7 +68,9 @@ const App = () => (
               <Route path="hubs" element={<HubsPage />} />
               <Route path="hubs/:hubId" element={<HubDetailsPage />} />
               <Route path="routes" element={<RoutesPage />} />
+              <Route path="routes/:routeId" element={<RouteDetailsPage />} />
               <Route path="stops" element={<StopsPage />} />
+              <Route path="stops/:stopId" element={<StopDetailsPage />} />
               <Route path="requests" element={<RequestsPage />} />
               <Route path="profile" element={<ProfilePage {...mockProfileProps} />} />
               <Route path="users" element={<UsersPage {...mockUsersProps} />} />
@@ -74,7 +82,9 @@ const App = () => (
             <Route path="/admin/hubs" element={<Navigate to="/admin/dashboard/hubs" replace />} />
             <Route path="/admin/hubs/:hubId" element={<Navigate to="/admin/dashboard/hubs/:hubId" replace />} />
             <Route path="/admin/routes" element={<Navigate to="/admin/dashboard/routes" replace />} />
+            <Route path="/admin/routes/:routeId" element={<Navigate to="/admin/dashboard/routes/:routeId" replace />} />
             <Route path="/admin/stops" element={<Navigate to="/admin/dashboard/stops" replace />} />
+            <Route path="/admin/stops/:stopId" element={<Navigate to="/admin/dashboard/stops/:stopId" replace />} />
             <Route path="/admin/requests" element={<Navigate to="/admin/dashboard/requests" replace />} />
             <Route path="/admin/profile" element={<Navigate to="/admin/dashboard/profile" replace />} />
             <Route path="/admin/users" element={<Navigate to="/admin/dashboard/users" replace />} />

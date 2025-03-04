@@ -1,104 +1,167 @@
 
-import React from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import type { Database } from '@/integrations/supabase/types';
-
-type AppRole = Database['public']['Enums']['app_role'];
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/components/ui/use-toast';
 
 interface UserData {
   user_id: string;
-  role: AppRole;
+  email: string;
+  role: 'admin' | 'user';
   profiles: {
-    first_name: string | null;
-    last_name: string | null;
+    first_name: string;
+    last_name: string;
   };
 }
 
-const UsersManagement = () => {
-  const queryClient = useQueryClient();
+export const UsersManagement = ({ onRoleChange }: { 
+  onRoleChange: (userId: string, role: string) => void 
+}) => {
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const { data: users } = useQuery({
-    queryKey: ['users'],
-    queryFn: async () => {
-      const { data: userRoles, error } = await supabase
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch users with roles and profiles
+      const { data, error } = await supabase
         .from('user_roles')
         .select(`
           user_id,
           role,
-          profiles!inner (
-            first_name,
-            last_name
-          )
-        `);
+          profiles:user_id(first_name, last_name)
+        `)
+        .order('role', { ascending: false });
       
       if (error) throw error;
-
-      const { data: { users: authUsers } } = await supabase.auth.admin.listUsers();
       
-      return userRoles?.map((ur: UserData) => ({
-        id: ur.user_id,
-        email: authUsers.find(u => u.id === ur.user_id)?.email || '',
-        firstName: ur.profiles.first_name,
-        lastName: ur.profiles.last_name,
-        role: ur.role,
-      }));
-    },
-  });
+      // Also fetch user emails from auth.users
+      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
+      
+      if (authError) throw authError;
+      
+      // Combine the data
+      const combinedData = data.map(ur => {
+        const authUser = authData.users.find(u => u.id === ur.user_id);
+        return {
+          user_id: ur.user_id,
+          email: authUser?.email || 'Unknown',
+          role: ur.role,
+          profiles: ur.profiles || { first_name: '', last_name: '' }
+        };
+      });
+      
+      setUsers(combinedData);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load users',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const updateUserRole = useMutation({
-    mutationFn: async (variables: { userId: string; role: AppRole }) => {
+  const handleRoleChange = async (userId: string, newRole: 'admin' | 'user') => {
+    try {
       const { error } = await supabase
         .from('user_roles')
-        .update({ role: variables.role })
-        .eq('user_id', variables.userId);
-
+        .update({ role: newRole })
+        .eq('user_id', userId);
+      
       if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-    },
-  });
+      
+      // Update local state
+      setUsers(users.map(user => 
+        user.user_id === userId ? { ...user, role: newRole } : user
+      ));
+      
+      // Notify parent component
+      onRoleChange(userId, newRole);
+      
+      toast({
+        title: 'Role Updated',
+        description: `User role changed to ${newRole}`,
+      });
+    } catch (error) {
+      console.error('Error updating role:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update user role',
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
-    <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-6">
-      <h2 className="text-xl font-semibold text-foreground mb-6">User Management</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full text-foreground">
-          <thead>
-            <tr className="border-b border-border">
-              <th className="text-left py-3 px-4">Email</th>
-              <th className="text-left py-3 px-4">Name</th>
-              <th className="text-left py-3 px-4">Role</th>
-              <th className="text-left py-3 px-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users?.map((user) => (
-              <tr key={user.id} className="border-b border-border">
-                <td className="py-3 px-4">{user.email}</td>
-                <td className="py-3 px-4">
-                  {user.firstName} {user.lastName}
-                </td>
-                <td className="py-3 px-4">{user.role}</td>
-                <td className="py-3 px-4">
-                  <select
-                    value={user.role}
-                    onChange={(e) => updateUserRole.mutate({ 
-                      userId: user.id, 
-                      role: e.target.value as AppRole 
-                    })}
-                    className="bg-background text-foreground p-2 rounded"
-                  >
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold">User Management</h2>
+      
+      {loading ? (
+        <div className="flex justify-center p-8">
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+        </div>
+      ) : (
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Email</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center">No users found</TableCell>
+                </TableRow>
+              ) : (
+                users.map((user) => (
+                  <TableRow key={user.user_id}>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      {user.profiles.first_name} {user.profiles.last_name}
+                    </TableCell>
+                    <TableCell>{user.role}</TableCell>
+                    <TableCell>
+                      <Select
+                        value={user.role}
+                        onValueChange={(value: 'admin' | 'user') => handleRoleChange(user.user_id, value)}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="admin">Admin</SelectItem>
+                          <SelectItem value="user">User</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   );
 };
