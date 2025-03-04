@@ -30,7 +30,7 @@ const Index = () => {
                   alt="Uthutho Maps Logo" 
                   className="h-8 w-8"
                 />
-                <span className="text-2xl font-bold text-primary">Uthutho Maps</span>
+                <span className="text-2xl font-bold text-primary">Uthutho</span>
               </div>
               <div className="hidden md:flex items-center space-x-8">
                 <a href="#features" className="text-gray-700 hover:text-primary transition-colors">Features</a>
@@ -81,7 +81,7 @@ const Index = () => {
               <div className="relative z-10 bg-black rounded-[40px] p-3 shadow-2xl">
                 <div className="relative overflow-hidden rounded-[32px] h-[570px]">
                   <img 
-                    src="/lovable-uploads/f5e9d906-40f5-4654-ac1a-6c887f67a7e3.png"
+                    src="/lovable-uploads/Uthuthophone.png"
                     alt="Uthutho Maps App"
                     className="w-full h-full object-cover"
                   />
