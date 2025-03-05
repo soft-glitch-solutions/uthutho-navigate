@@ -22,6 +22,8 @@ import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import DeleteAccountLogin from "./pages/DeleteAccountLogin";
+import ConfirmDeleteAccount from "./pages/ConfirmDeleteAccount";
 import Overview from "./components/admin/Overview";
 
 const queryClient = new QueryClient({
@@ -60,6 +62,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+            <Route path="/delete-account" element={<DeleteAccountLogin />} />
+            <Route path="/confirm-delete" element={<ConfirmDeleteAccount />} />
             <Route path="/admin" element={<AdminLogin />} />
             
             {/* Admin dashboard layout with nested routes */}

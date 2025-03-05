@@ -1,6 +1,7 @@
 
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const PrivacyPolicy = () => {
   return (
@@ -103,6 +104,19 @@ const PrivacyPolicy = () => {
               <p>If you have any questions, please contact us at:</p>
               <p className="mt-2">📧 Email: info@uthuthomaps.com</p>
               <p>🌐 Website: www.uthuthomaps.com</p>
+            </section>
+            
+            <section className="border-t pt-8 mt-12">
+              <h2 className="text-2xl font-semibold mb-4">Data Deletion</h2>
+              <p className="mb-6">
+                As per our privacy commitment, you have the right to request deletion of your personal data from our services.
+                If you would like to delete your account and all associated data, please click the button below.
+              </p>
+              <Link to="/delete-account">
+                <Button variant="destructive" className="mt-2">
+                  Request Data Deletion
+                </Button>
+              </Link>
             </section>
           </div>
         </div>
