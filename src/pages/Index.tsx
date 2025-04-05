@@ -1,20 +1,13 @@
+
 import { useState, useEffect } from 'react';
 import { Bus, Train, MapPin, Users, Clock, Phone, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [currentPartnerIndex, setCurrentPartnerIndex] = useState(0);
 
   useEffect(() => {
     setIsVisible(true);
-    
-    // Auto-advance partners carousel
-    const interval = setInterval(() => {
-      setCurrentPartnerIndex((prev) => (prev + 1) % partners.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -158,51 +151,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Awards Section */}
-      <section className="py-20 bg-black">
-        <div className="container px-4 mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-white">Our Awards</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <AwardCard
-              logo="Meek Ventures"
-              title="Africa Start Up Of"
-              description="Winner of Meek Ventures Innovation Challenge 2023"
-            />
-            <AwardCard
-              logo="Innovation City"
-              title="Start-up of the Year"
-              description="Innovation City's Most Promising Startup 2023"
-            />
-            <AwardCard
-              logo="City of Cape Town"
-              title="City Hustlers"
-              description="Cape Town's Urban Mobility Champion 2023"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Partners Section */}
-      <section className="py-20 bg-black">
-        <div className="container px-4 mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-white">Our Partners</h2>
-          <div className="relative overflow-hidden">
-            <div className="flex transition-transform duration-500 ease-in-out"
-                 style={{ transform: `translateX(-${currentPartnerIndex * 100}%)` }}>
-              {partners.map((partner, index) => (
-                <div key={index} className="min-w-full flex justify-center items-center space-x-8">
-                  {partner.map((logo, i) => (
-                    <div key={i} className="w-32 h-16 bg-white/10 rounded-lg p-4 flex items-center justify-center">
-                      <img src={logo} alt="Partner logo" className="max-w-full max-h-full object-contain invert" />
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Team Section */}
       <section className="py-20 bg-black">
         <div className="container px-4 mx-auto">
@@ -310,14 +258,6 @@ const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; titl
   </div>
 );
 
-const AwardCard = ({ logo, title, description }: { logo: string; title: string; description: string }) => (
-  <div className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-primary/50 transition-all animate-fade-up">
-    <div className="mb-4 text-white font-bold text-lg">{logo}</div>
-    <h3 className="text-xl font-semibold mb-2 text-white">{title}</h3>
-    <p className="text-gray-400">{description}</p>
-  </div>
-);
-
 const TeamCard = ({ name, role, image }: { name: string; role: string; image: string }) => (
   <div className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-primary/50 transition-all animate-fade-up text-center">
     <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
@@ -335,11 +275,6 @@ const goals = [
   "Reduce traffic congestion",
   "Improve urban mobility",
   "Bridge the information gap"
-];
-
-const partners = [
-  ['/google-logo.svg', '/visa-logo.svg', '/amazon-logo.svg'],
-  ['/cape-town-logo.svg', '/labs-logo.svg', '/university-logo.svg'],
 ];
 
 const team = [

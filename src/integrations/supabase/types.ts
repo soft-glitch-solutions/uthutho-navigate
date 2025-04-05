@@ -254,37 +254,97 @@ export type Database = {
         }
         Relationships: []
       }
+      nearby_spots: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          distance_meters: number | null
+          id: string
+          image_url: string | null
+          latitude: number
+          longitude: number
+          name: string
+          stop_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          distance_meters?: number | null
+          id?: string
+          image_url?: string | null
+          latitude: number
+          longitude: number
+          name: string
+          stop_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          distance_meters?: number | null
+          id?: string
+          image_url?: string | null
+          latitude?: number
+          longitude?: number
+          name?: string
+          stop_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nearby_spots_stop_id_fkey"
+            columns: ["stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_comments: {
         Row: {
           content: string
           created_at: string | null
+          hub_post: string | null
           id: string
-          post_id: string
+          stop_post: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
           content: string
           created_at?: string | null
+          hub_post?: string | null
           id?: string
-          post_id: string
+          stop_post?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
           content?: string
           created_at?: string | null
+          hub_post?: string | null
           id?: string
-          post_id?: string
+          stop_post?: string | null
           updated_at?: string | null
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "post_comments_post_id_fkey"
-            columns: ["post_id"]
+            foreignKeyName: "post_comments_hub_post_fkey"
+            columns: ["hub_post"]
             isOneToOne: false
             referencedRelation: "hub_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_comments_stop_post_fkey"
+            columns: ["stop_post"]
+            isOneToOne: false
+            referencedRelation: "stop_posts"
             referencedColumns: ["id"]
           },
           {
@@ -300,30 +360,40 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
-          post_id: string
+          post_hub_id: string | null
+          post_stop_id: string | null
           reaction_type: string
           user_id: string
         }
         Insert: {
           created_at?: string | null
           id?: string
-          post_id: string
+          post_hub_id?: string | null
+          post_stop_id?: string | null
           reaction_type: string
           user_id: string
         }
         Update: {
           created_at?: string | null
           id?: string
-          post_id?: string
+          post_hub_id?: string | null
+          post_stop_id?: string | null
           reaction_type?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "post_reactions_post_id_fkey"
-            columns: ["post_id"]
+            foreignKeyName: "post_reactions_post_hub_id_fkey"
+            columns: ["post_hub_id"]
             isOneToOne: false
             referencedRelation: "hub_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_reactions_post_stop_id_fkey"
+            columns: ["post_stop_id"]
+            isOneToOne: false
+            referencedRelation: "stop_posts"
             referencedColumns: ["id"]
           },
           {
@@ -476,6 +546,48 @@ export type Database = {
           },
         ]
       }
+      route_stops: {
+        Row: {
+          created_at: string | null
+          id: string
+          order_number: number
+          route_id: string
+          stop_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          order_number: number
+          route_id: string
+          stop_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          order_number?: number
+          route_id?: string
+          stop_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_stops_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "route_stops_stop_id_fkey"
+            columns: ["stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       routes: {
         Row: {
           cost: number
@@ -520,11 +632,53 @@ export type Database = {
           },
         ]
       }
+      stop_busy_times: {
+        Row: {
+          busyness_level: number
+          created_at: string | null
+          day_of_week: number
+          hour_of_day: number
+          id: string
+          safety_level: number
+          stop_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          busyness_level: number
+          created_at?: string | null
+          day_of_week: number
+          hour_of_day: number
+          id?: string
+          safety_level: number
+          stop_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          busyness_level?: number
+          created_at?: string | null
+          day_of_week?: number
+          hour_of_day?: number
+          id?: string
+          safety_level?: number
+          stop_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stop_busy_times_stop_id_fkey"
+            columns: ["stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stop_posts: {
         Row: {
           content: string
           created_at: string | null
           id: string
+          route_id: string | null
           stop_id: string
           transport_waiting_for: string | null
           updated_at: string | null
@@ -534,6 +688,7 @@ export type Database = {
           content: string
           created_at?: string | null
           id?: string
+          route_id?: string | null
           stop_id: string
           transport_waiting_for?: string | null
           updated_at?: string | null
@@ -543,12 +698,20 @@ export type Database = {
           content?: string
           created_at?: string | null
           id?: string
+          route_id?: string | null
           stop_id?: string
           transport_waiting_for?: string | null
           updated_at?: string | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "stop_posts_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "stop_posts_stop_id_fkey"
             columns: ["stop_id"]
@@ -627,6 +790,7 @@ export type Database = {
           created_at: string | null
           expires_at: string
           id: string
+          route_id: string | null
           stop_id: string
           transport_type: string
           user_id: string
@@ -635,6 +799,7 @@ export type Database = {
           created_at?: string | null
           expires_at?: string
           id?: string
+          route_id?: string | null
           stop_id: string
           transport_type: string
           user_id: string
@@ -643,11 +808,19 @@ export type Database = {
           created_at?: string | null
           expires_at?: string
           id?: string
+          route_id?: string | null
           stop_id?: string
           transport_type?: string
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "stop_waiting_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "stop_waiting_stop_id_fkey"
             columns: ["stop_id"]
@@ -848,6 +1021,16 @@ export type Database = {
       cleanup_old_posts: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      handle_login_streak: {
+        Args: {
+          input_user_id: string
+        }
+        Returns: {
+          current_streak: number
+          max_streak: number
+          points_earned: number
+        }[]
       }
       is_admin: {
         Args: {
