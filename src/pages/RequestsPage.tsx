@@ -5,7 +5,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, X, MapPin, Route as RouteIcon, StopCircle } from 'lucide-react';
+import { 
+  Check, X, MapPin, Route as RouteIcon, 
+  StopCircle, Inbox, Banknote 
+} from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 interface HubRequest {
@@ -44,6 +47,17 @@ interface StopRequest {
   status: string;
   created_at: string;
   user_id: string;
+}
+
+interface PriceChangeRequest {
+  id: string;
+  route_id: string;
+  user_id: string;
+  current_price: number;
+  new_price: number;
+  created_at: string;
+  status: string;
+  updated_at: string;
 }
 
 const RequestsPage = () => {
@@ -90,6 +104,23 @@ const RequestsPage = () => {
       
       if (error) throw error;
       return data as StopRequest[];
+    },
+  });
+
+  // Fetch price change requests
+  const { data: priceChangeRequests, isLoading: priceChangeLoading } = useQuery({
+    queryKey: ['price-change-requests'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('price_change_requests')
+        .select(`
+          *,
+          routes(name)
+        `)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data as (PriceChangeRequest & { routes: { name: string } })[];
     },
   });
 
@@ -149,6 +180,38 @@ const RequestsPage = () => {
       toast({
         title: "Status updated",
         description: `Stop request status changed to ${data.status}`,
+      });
+    },
+  });
+
+  // Mutation to update price change request status
+  const updatePriceChangeRequestStatus = useMutation({
+    mutationFn: async ({ id, status, routeId, newPrice }: { id: string; status: string; routeId?: string; newPrice?: number }) => {
+      const { error } = await supabase
+        .from('price_change_requests')
+        .update({ status })
+        .eq('id', id);
+      
+      if (error) throw error;
+      
+      // If approved, update the route price
+      if (status === 'approved' && routeId && newPrice !== undefined) {
+        const { error: routeError } = await supabase
+          .from('routes')
+          .update({ cost: newPrice })
+          .eq('id', routeId);
+        
+        if (routeError) throw routeError;
+      }
+      
+      return { id, status };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['price-change-requests'] });
+      queryClient.invalidateQueries({ queryKey: ['routes'] });
+      toast({
+        title: "Status updated",
+        description: `Price change request ${data.status}`,
       });
     },
   });
@@ -295,6 +358,9 @@ const RequestsPage = () => {
           </TabsTrigger>
           <TabsTrigger value="stop-requests" className="flex items-center">
             <StopCircle className="mr-2 h-4 w-4" /> Stop Requests
+          </TabsTrigger>
+          <TabsTrigger value="price-change-requests" className="flex items-center">
+            <Banknote className="mr-2 h-4 w-4" /> Price Changes
           </TabsTrigger>
         </TabsList>
         
@@ -476,6 +542,77 @@ const RequestsPage = () => {
                       <Button 
                         variant="destructive"
                         onClick={() => updateStopRequestStatus.mutate({ id: request.id, status: 'rejected' })}
+                        className="flex items-center"
+                      >
+                        <X className="mr-1 h-4 w-4" /> Reject
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="price-change-requests">
+          <div className="space-y-4">
+            {priceChangeLoading ? (
+              <div>Loading price change requests...</div>
+            ) : priceChangeRequests?.length === 0 ? (
+              <div>No price change requests found</div>
+            ) : (
+              priceChangeRequests?.map((request) => (
+                <div key={request.id} className="p-4 border border-border rounded-lg">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="text-lg font-semibold">Price Change Request</h3>
+                      <p className="text-muted-foreground">
+                        Route: {request.routes?.name || `ID: ${request.route_id}`}
+                      </p>
+                    </div>
+                    {getStatusBadge(request.status)}
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Current Price</p>
+                      <p>R{request.current_price}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Requested New Price</p>
+                      <p>R{request.new_price}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Price Difference</p>
+                      <p className={request.new_price > request.current_price ? "text-red-500" : "text-green-500"}>
+                        {request.new_price > request.current_price ? "+" : ""}
+                        R{(request.new_price - request.current_price).toFixed(2)}
+                        {" "}
+                        ({((request.new_price - request.current_price) / request.current_price * 100).toFixed(1)}%)
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Submitted</p>
+                      <p>{new Date(request.created_at).toLocaleString()}</p>
+                    </div>
+                  </div>
+                  
+                  {request.status === 'pending' && (
+                    <div className="flex space-x-2">
+                      <Button 
+                        onClick={() => updatePriceChangeRequestStatus.mutate({ 
+                          id: request.id, 
+                          status: 'approved', 
+                          routeId: request.route_id,
+                          newPrice: request.new_price
+                        })}
+                        className="flex items-center"
+                      >
+                        <Check className="mr-1 h-4 w-4" /> Approve Change
+                      </Button>
+                      <Button 
+                        variant="destructive"
+                        onClick={() => updatePriceChangeRequestStatus.mutate({ id: request.id, status: 'rejected' })}
                         className="flex items-center"
                       >
                         <X className="mr-1 h-4 w-4" /> Reject
