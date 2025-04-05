@@ -11,15 +11,20 @@ import {
 } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { RotateCw } from 'lucide-react';
+
+interface UserProfile {
+  first_name: string;
+  last_name: string;
+}
 
 interface UserData {
   user_id: string;
   email: string;
   role: 'admin' | 'user';
-  profiles: {
-    first_name: string;
-    last_name: string;
-  };
+  profiles: UserProfile;
 }
 
 export const UsersManagement = ({ onRoleChange }: { 
@@ -28,6 +33,7 @@ export const UsersManagement = ({ onRoleChange }: {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const [resetLoading, setResetLoading] = useState<string | null>(null);
 
   useEffect(() => {
     fetchUsers();
@@ -38,16 +44,15 @@ export const UsersManagement = ({ onRoleChange }: {
       setLoading(true);
       
       // Fetch users with roles and profiles
-      const { data, error } = await supabase
+      const { data: userRolesData, error: rolesError } = await supabase
         .from('user_roles')
         .select(`
           user_id,
           role,
           profiles:user_id(first_name, last_name)
-        `)
-        .order('role', { ascending: false });
+        `);
       
-      if (error) throw error;
+      if (rolesError) throw rolesError;
       
       // Also fetch user emails from auth.users
       const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
@@ -55,13 +60,21 @@ export const UsersManagement = ({ onRoleChange }: {
       if (authError) throw authError;
       
       // Combine the data
-      const combinedData = data.map(ur => {
+      const combinedData = userRolesData.map(ur => {
         const authUser = authData.users.find(u => u.id === ur.user_id);
+        
+        // Handle possible errors in the profiles relation by providing defaults
+        const profileData = ur.profiles as unknown;
+        const profile: UserProfile = 
+          profileData && typeof profileData === 'object' && !('error' in profileData)
+            ? profileData as UserProfile
+            : { first_name: '', last_name: '' };
+            
         return {
           user_id: ur.user_id,
           email: authUser?.email || 'Unknown',
           role: ur.role,
-          profiles: ur.profiles || { first_name: '', last_name: '' }
+          profiles: profile
         };
       });
       
@@ -109,15 +122,37 @@ export const UsersManagement = ({ onRoleChange }: {
     }
   };
 
+  const handlePasswordReset = async (email: string, userId: string) => {
+    try {
+      setResetLoading(userId);
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/password-reset`
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Password Reset Email Sent',
+        description: `An email with reset instructions was sent to ${email}`,
+      });
+    } catch (error: any) {
+      console.error('Error sending reset email:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to send reset email',
+        variant: 'destructive',
+      });
+    } finally {
+      setResetLoading(null);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">User Management</h2>
       
       {loading ? (
-        <div className="flex justify-center p-8">
-          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-        </div>
-      ) : (
         <div className="rounded-md border">
           <Table>
             <TableHeader>
@@ -129,9 +164,33 @@ export const UsersManagement = ({ onRoleChange }: {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {Array(5).fill(0).map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell><Skeleton className="h-6 w-[200px]" /></TableCell>
+                  <TableCell><Skeleton className="h-6 w-[150px]" /></TableCell>
+                  <TableCell><Skeleton className="h-6 w-[100px]" /></TableCell>
+                  <TableCell><Skeleton className="h-10 w-[180px]" /></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Email</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Actions</TableHead>
+                <TableHead>Password</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {users.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center">No users found</TableCell>
+                  <TableCell colSpan={5} className="text-center">No users found</TableCell>
                 </TableRow>
               ) : (
                 users.map((user) => (
@@ -154,6 +213,19 @@ export const UsersManagement = ({ onRoleChange }: {
                           <SelectItem value="user">User</SelectItem>
                         </SelectContent>
                       </Select>
+                    </TableCell>
+                    <TableCell>
+                      <Button 
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePasswordReset(user.email, user.user_id)}
+                        disabled={resetLoading === user.user_id}
+                      >
+                        {resetLoading === user.user_id ? (
+                          <RotateCw className="h-4 w-4 mr-2 animate-spin" />
+                        ) : null}
+                        Reset Password
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
