@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Check, X, MapPin, Route as RouteIcon, 
-  StopCircle, Inbox, Banknote 
+  StopCircle, Inbox, Banknote, User 
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface HubRequest {
   id: string;
@@ -22,6 +23,7 @@ interface HubRequest {
   status: string;
   created_at: string;
   user_id: string;
+  profiles?: UserProfile | null;
 }
 
 interface RouteRequest {
@@ -34,6 +36,7 @@ interface RouteRequest {
   start_point: string;
   end_point: string;
   cost: number | null;
+  profiles?: UserProfile | null;
 }
 
 interface StopRequest {
@@ -47,6 +50,7 @@ interface StopRequest {
   status: string;
   created_at: string;
   user_id: string;
+  profiles?: UserProfile | null;
 }
 
 interface PriceChangeRequest {
@@ -58,12 +62,23 @@ interface PriceChangeRequest {
   created_at: string;
   status: string;
   updated_at: string;
+  routes: { name: string };
+  profiles?: UserProfile | null;
+}
+
+interface UserProfile {
+  first_name: string | null;
+  last_name: string | null;
+  points: number | null;
+  avatar_url: string | null;
+  selected_title: string | null;
 }
 
 const RequestsPage = () => {
   const [activeTab, setActiveTab] = useState('hub-requests');
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // Fetch hub requests
   const { data: hubRequests, isLoading: hubsLoading } = useQuery({
@@ -71,7 +86,16 @@ const RequestsPage = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('hub_requests')
-        .select('*')
+        .select(`
+          *,
+          profiles:user_id(
+            first_name,
+            last_name,
+            points,
+            avatar_url,
+            selected_title
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -85,7 +109,16 @@ const RequestsPage = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('route_requests')
-        .select('*')
+        .select(`
+          *,
+          profiles:user_id(
+            first_name,
+            last_name,
+            points,
+            avatar_url,
+            selected_title
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -99,7 +132,16 @@ const RequestsPage = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('stop_requests')
-        .select('*')
+        .select(`
+          *,
+          profiles:user_id(
+            first_name,
+            last_name,
+            points,
+            avatar_url,
+            selected_title
+          )
+        `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -115,12 +157,19 @@ const RequestsPage = () => {
         .from('price_change_requests')
         .select(`
           *,
-          routes(name)
+          routes(name),
+          profiles:user_id(
+            first_name,
+            last_name,
+            points,
+            avatar_url,
+            selected_title
+          )
         `)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data as (PriceChangeRequest & { routes: { name: string } })[];
+      return data as (PriceChangeRequest)[];
     },
   });
 
@@ -344,6 +393,34 @@ const RequestsPage = () => {
     }
   };
 
+  const viewUserProfile = (userId: string) => {
+    navigate(`/admin/dashboard/users/${userId}`);
+  };
+
+  const renderUserInfo = (profile: UserProfile | null | undefined, userId: string) => {
+    return (
+      <div className="flex items-center space-x-2">
+        <div>
+          <p className="font-medium">
+            {profile?.first_name || ''} {profile?.last_name || ''}
+            {(!profile?.first_name && !profile?.last_name) && 'Unknown User'}
+          </p>
+          {profile?.points !== null && (
+            <p className="text-xs text-muted-foreground">Points: {profile?.points || 0}</p>
+          )}
+        </div>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={() => viewUserProfile(userId)}
+          className="ml-2 flex items-center"
+        >
+          <User className="mr-1 h-4 w-4" /> View Profile
+        </Button>
+      </div>
+    );
+  };
+
   return (
     <div className="p-6 bg-card rounded-lg border border-border">
       <h1 className="text-2xl font-bold mb-6">Manage Requests</h1>
@@ -407,6 +484,11 @@ const RequestsPage = () => {
                     </div>
                   )}
                   
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-muted-foreground">Requested by:</p>
+                    {renderUserInfo(request.profiles, request.user_id)}
+                  </div>
+                  
                   {request.status === 'pending' && (
                     <div className="flex space-x-2">
                       <Button 
@@ -464,6 +546,11 @@ const RequestsPage = () => {
                       <p>{request.description}</p>
                     </div>
                   )}
+                  
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-muted-foreground">Requested by:</p>
+                    {renderUserInfo(request.profiles, request.user_id)}
+                  </div>
                   
                   {request.status === 'pending' && (
                     <div className="flex space-x-2">
@@ -531,6 +618,11 @@ const RequestsPage = () => {
                     </div>
                   )}
                   
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-muted-foreground">Requested by:</p>
+                    {renderUserInfo(request.profiles, request.user_id)}
+                  </div>
+                  
                   {request.status === 'pending' && (
                     <div className="flex space-x-2">
                       <Button 
@@ -595,6 +687,11 @@ const RequestsPage = () => {
                       <p className="text-sm text-muted-foreground">Submitted</p>
                       <p>{new Date(request.created_at).toLocaleString()}</p>
                     </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <p className="text-sm font-medium text-muted-foreground">Requested by:</p>
+                    {renderUserInfo(request.profiles, request.user_id)}
                   </div>
                   
                   {request.status === 'pending' && (

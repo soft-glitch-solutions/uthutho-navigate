@@ -25,6 +25,7 @@ import TermsAndConditions from "./pages/TermsAndConditions";
 import DeleteAccountLogin from "./pages/DeleteAccountLogin";
 import ConfirmDeleteAccount from "./pages/ConfirmDeleteAccount";
 import Overview from "./components/admin/Overview";
+import UserProfilePage from "./pages/UserProfilePage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -78,6 +79,7 @@ const App = () => (
               <Route path="requests" element={<RequestsPage />} />
               <Route path="profile" element={<ProfilePage {...mockProfileProps} />} />
               <Route path="users" element={<UsersPage {...mockUsersProps} />} />
+              <Route path="users/:userId" element={<UserProfilePage />} />
               <Route path="reports" element={<ReportsPage />} />
               <Route path="settings" element={<SettingsPage {...mockSettingsProps} />} />
             </Route>
