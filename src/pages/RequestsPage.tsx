@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,6 +10,14 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
+
+interface UserProfile {
+  first_name: string | null;
+  last_name: string | null;
+  points: number | null;
+  avatar_url: string | null;
+  selected_title: string | null;
+}
 
 interface HubRequest {
   id: string;
@@ -64,14 +71,6 @@ interface PriceChangeRequest {
   updated_at: string;
   routes: { name: string };
   profiles?: UserProfile | null;
-}
-
-interface UserProfile {
-  first_name: string | null;
-  last_name: string | null;
-  points: number | null;
-  avatar_url: string | null;
-  selected_title: string | null;
 }
 
 const RequestsPage = () => {
@@ -169,9 +168,15 @@ const RequestsPage = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data as (PriceChangeRequest)[];
+      return data as PriceChangeRequest[];
     },
   });
+
+  // Calculate pending counts for notification badges
+  const pendingHubRequests = hubRequests?.filter(req => req.status === 'pending').length || 0;
+  const pendingRouteRequests = routeRequests?.filter(req => req.status === 'pending').length || 0;
+  const pendingStopRequests = stopRequests?.filter(req => req.status === 'pending').length || 0;
+  const pendingPriceChangeRequests = priceChangeRequests?.filter(req => req.status === 'pending').length || 0;
 
   // Mutation to update hub request status
   const updateHubRequestStatus = useMutation({
@@ -421,6 +426,14 @@ const RequestsPage = () => {
     );
   };
 
+  const renderNotificationBadge = (count: number) => {
+    if (count <= 0) return null;
+    
+    return (
+      <Badge className="ml-2 bg-red-500 text-white">{count}</Badge>
+    );
+  };
+
   return (
     <div className="p-6 bg-card rounded-lg border border-border">
       <h1 className="text-2xl font-bold mb-6">Manage Requests</h1>
@@ -428,16 +441,24 @@ const RequestsPage = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-6">
           <TabsTrigger value="hub-requests" className="flex items-center">
-            <MapPin className="mr-2 h-4 w-4" /> Hub Requests
+            <MapPin className="mr-2 h-4 w-4" /> 
+            Hub Requests
+            {renderNotificationBadge(pendingHubRequests)}
           </TabsTrigger>
           <TabsTrigger value="route-requests" className="flex items-center">
-            <RouteIcon className="mr-2 h-4 w-4" /> Route Requests
+            <RouteIcon className="mr-2 h-4 w-4" /> 
+            Route Requests
+            {renderNotificationBadge(pendingRouteRequests)}
           </TabsTrigger>
           <TabsTrigger value="stop-requests" className="flex items-center">
-            <StopCircle className="mr-2 h-4 w-4" /> Stop Requests
+            <StopCircle className="mr-2 h-4 w-4" /> 
+            Stop Requests
+            {renderNotificationBadge(pendingStopRequests)}
           </TabsTrigger>
           <TabsTrigger value="price-change-requests" className="flex items-center">
-            <Banknote className="mr-2 h-4 w-4" /> Price Changes
+            <Banknote className="mr-2 h-4 w-4" /> 
+            Price Changes
+            {renderNotificationBadge(pendingPriceChangeRequests)}
           </TabsTrigger>
         </TabsList>
         
