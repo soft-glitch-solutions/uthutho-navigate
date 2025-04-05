@@ -207,6 +207,7 @@ const Index = () => {
               <ul className="space-y-2">
                 <li className="text-gray-400">Cape Town, South Africa</li>
                 <li className="text-gray-400">info@uthuthomaps.com</li>
+                <li className="text-gray-400">+27 123 456 789</li>
               </ul>
             </div>
 
