@@ -145,7 +145,10 @@ const Index = () => {
               <button className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors">
                 Get Started
               </button>
-              <button className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-primary hover:bg-primary/10 transition-colors">
+              <button 
+                onClick={() => window.open("https://www.mobile.uthutho.co.za/", "_blank")}
+                className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-primary hover:bg-primary/10 transition-colors"
+              >
                 Data Free Portal
               </button>
             </div>
