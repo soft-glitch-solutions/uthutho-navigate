@@ -20,7 +20,7 @@ const Index = () => {
       name: 'Shaqeel Less',
       title: 'Founder & CEO',
       description: 'Shaqeel is the visionary behind Uthutho, building a smarter way for communities to navigate and access public transport information.',
-      image: '/lovable-uploads/b3a46f4f-ab9c-4d12-a070-741cd4fa8fce.png',
+      image: '/lovable-uploads/97f89484-6b1f-4dcd-ad4b-1136e91da5ab.jpg',
       socialLinks: {
         linkedin: 'https://www.linkedin.com/in/shaqeellink',
         x: 'https://twitter.com/shaqeel',
@@ -29,6 +29,18 @@ const Index = () => {
     },
     {
       id: 2,
+      name: 'Delisha-Ann Naicker',
+      title: 'Head of Operations & Design',
+      description: 'Delisha ensures the Uthutho experience is smooth, functional, and beautifully designed — for every commuter and community.',
+      image: '/lovable-uploads/images (1).jpg',
+      socialLinks: {
+        linkedin: 'https://www.linkedin.com/in/delishasmith',
+        x: 'https://twitter.com/delisha',
+        github: 'https://github.com/delisha',
+      },
+    },
+    {
+      id: 3,
       name: 'Malakai Johnson',
       title: 'Head of Sales & Community Partnerships',
       description: 'Malakai leads Uthutho\'s outreach and partnerships, helping us connect with commuters, operators, and local businesses.',
@@ -39,24 +51,13 @@ const Index = () => {
         github: 'https://github.com/malakai',
       },
     },
-    {
-      id: 3,
-      name: 'Delisha-Ann Naicker',
-      title: 'Head of Operations & Design',
-      description: 'Delisha ensures the Uthutho experience is smooth, functional, and beautifully designed — for every commuter and community.',
-      image: '/lovable-uploads/100e0ad5-0e76-4ae5-8d98-a110cd2e4425.png',
-      socialLinks: {
-        linkedin: 'https://www.linkedin.com/in/delishasmith',
-        x: 'https://twitter.com/delisha',
-        github: 'https://github.com/delisha',
-      },
-    },
+
     {
       id: 4,
       name: 'Ishmael Sikhikhi',
       title: 'Quality Assurance & Software Development',
       description: 'Ishmael ensures our applications meet the highest standards through rigorous testing and quality control, while also contributing to our software development.',
-      image: '/lovable-uploads/f5a15602-c45d-4933-b4bb-a0671d0c7a88.png',
+      image: '/lovable-uploads/70352247.jpg',
       socialLinks: {
         linkedin: 'https://www.linkedin.com/in/ishmael',
         x: 'https://twitter.com/ishmael',
@@ -125,7 +126,7 @@ const Index = () => {
             <img 
               src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png" 
               alt="Uthutho Maps Logo Background" 
-              className="w-[800px] h-[800px]"
+              className="w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] max-w-[800px] max-h-[800px]"
             />
           </div>
         </div>
