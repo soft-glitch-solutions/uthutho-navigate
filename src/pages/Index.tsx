@@ -142,9 +142,22 @@ const Index = () => {
               No Data No problem, Join our data free web app version. 
             </p>
             <div className={`flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-              <button className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors">
-                Get Started
-              </button>
+            <button className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 4.5h18v15a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-15zm9 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                </svg>
+                <span>Download Now</span>
+              </div>
+              <div className="flex items-center space-x-1 pl-2 border-l border-white/20">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.8 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.04zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+                </svg>
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5zm9 2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3.5a3.5 3.5 0 1 0 0-7H12zm0 2h2.5a1.5 1.5 0 0 1 0 3H12V9z" />
+                </svg>
+              </div>
+            </button>
               <button 
                 onClick={() => window.open("https://www.mobile.uthutho.co.za/", "_blank")}
                 className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-primary hover:bg-primary/10 transition-colors"
