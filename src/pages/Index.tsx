@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Bus, Train, MapPin, Users, Clock, Phone, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -27,7 +28,7 @@ const Index = () => {
       id: 2,
       name: 'Malakai Johnson',
       title: 'Head of Sales & Community Partnerships',
-      description: 'Malakai leads Uthutho's outreach and partnerships, helping us connect with commuters, operators, and local businesses.',
+      description: "Malakai leads Uthutho's outreach and partnerships, helping us connect with commuters, operators, and local businesses.",
       image: '/lovable-uploads/43556a9b-2082-4701-a4d1-44a59d0e66ea.png',
       socialLinks: {
         linkedin: 'https://www.linkedin.com/in/malakailink',
