@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { Bus, Train, MapPin, Users, Clock, Phone, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import TeamMember, { TeamMemberProps } from '../components/TeamMember';
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -9,6 +9,57 @@ const Index = () => {
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  const teamMembers: TeamMemberProps[] = [
+    {
+      id: 1,
+      name: 'Shaqeel Less',
+      title: 'Founder & CEO',
+      description: 'Shaqeel is the visionary behind Uthutho, building a smarter way for communities to navigate and access public transport information.',
+      image: '/lovable-uploads/b3a46f4f-ab9c-4d12-a070-741cd4fa8fce.png',
+      socialLinks: {
+        linkedin: 'https://www.linkedin.com/in/shaqeellink',
+        x: 'https://twitter.com/shaqeel',
+        github: 'https://github.com/shaqeel',
+      },
+    },
+    {
+      id: 2,
+      name: 'Malakai Johnson',
+      title: 'Head of Sales & Community Partnerships',
+      description: 'Malakai leads Uthutho's outreach and partnerships, helping us connect with commuters, operators, and local businesses.',
+      image: '/lovable-uploads/43556a9b-2082-4701-a4d1-44a59d0e66ea.png',
+      socialLinks: {
+        linkedin: 'https://www.linkedin.com/in/malakailink',
+        x: 'https://twitter.com/malakai',
+        github: 'https://github.com/malakai',
+      },
+    },
+    {
+      id: 3,
+      name: 'Delisha-Ann Naicker',
+      title: 'Head of Operations & Design',
+      description: 'Delisha ensures the Uthutho experience is smooth, functional, and beautifully designed — for every commuter and community.',
+      image: '/lovable-uploads/100e0ad5-0e76-4ae5-8d98-a110cd2e4425.png',
+      socialLinks: {
+        linkedin: 'https://www.linkedin.com/in/delishasmith',
+        x: 'https://twitter.com/delisha',
+        github: 'https://github.com/delisha',
+      },
+    },
+    {
+      id: 4,
+      name: 'Ishmael Sikhikhi',
+      title: 'Quality Assurance & Software Development',
+      description: 'Ishmael ensures our applications meet the highest standards through rigorous testing and quality control, while also contributing to our software development.',
+      image: '/lovable-uploads/f5a15602-c45d-4933-b4bb-a0671d0c7a88.png',
+      socialLinks: {
+        linkedin: 'https://www.linkedin.com/in/ishmael',
+        x: 'https://twitter.com/ishmael',
+        github: 'https://github.com/ishmael',
+      },
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-black font-quiapo">
@@ -154,14 +205,15 @@ const Index = () => {
       {/* Team Section */}
       <section className="py-20 bg-black">
         <div className="container px-4 mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-white">Our Team</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
-            {team.map((member, index) => (
-              <TeamCard
-                key={index}
-                name={member.name}
-                role={member.role}
-                image={member.image}
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-6 text-white">Our Team</h2>
+          <p className="text-gray-300 text-center mb-16 max-w-3xl mx-auto">
+            Meet the dedicated team behind Uthutho Maps, working tirelessly to transform public transport in South Africa.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {teamMembers.map((member) => (
+              <TeamMember
+                key={member.id}
+                {...member}
               />
             ))}
           </div>
@@ -257,16 +309,6 @@ const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; titl
   </div>
 );
 
-const TeamCard = ({ name, role, image }: { name: string; role: string; image: string }) => (
-  <div className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-primary/50 transition-all animate-fade-up text-center">
-    <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
-      <img src={image} alt={name} className="w-full h-full object-cover" />
-    </div>
-    <h3 className="text-xl font-semibold mb-2 text-white">{name}</h3>
-    <p className="text-gray-400">{role}</p>
-  </div>
-);
-
 const goals = [
   "Provide real-time route and schedule updates",
   "Make public transport easier to understand",
@@ -274,29 +316,6 @@ const goals = [
   "Reduce traffic congestion",
   "Improve urban mobility",
   "Bridge the information gap"
-];
-
-const team = [
-  {
-    name: "John Doe",
-    role: "CEO & Founder",
-    image: "/team-member-1.jpg"
-  },
-  {
-    name: "Jane Smith",
-    role: "CTO",
-    image: "/team-member-2.jpg"
-  },
-  {
-    name: "Mike Johnson",
-    role: "Lead Developer",
-    image: "/team-member-3.jpg"
-  },
-  {
-    name: "Sarah Williams",
-    role: "Design Lead",
-    image: "/team-member-4.jpg"
-  }
 ];
 
 export default Index;
