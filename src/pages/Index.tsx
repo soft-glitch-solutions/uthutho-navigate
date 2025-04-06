@@ -44,7 +44,7 @@ const Index = () => {
       name: 'Malakai Johnson',
       title: 'Head of Sales & Community Partnerships',
       description: 'Malakai leads Uthutho\'s outreach and partnerships, helping us connect with commuters, operators, and local businesses.',
-      image: '/lovable-uploads/43556a9b-2082-4701-a4d1-44a59d0e66ea.png',
+      image: '/lovable-uploads/images (2).jpg',
       socialLinks: {
         linkedin: 'https://www.linkedin.com/in/malakailink',
         x: 'https://twitter.com/malakai',
