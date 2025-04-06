@@ -17,8 +17,8 @@ interface UserData {
   email: string;
   role: 'admin' | 'user';
   profiles: {
-    first_name: string;
-    last_name: string;
+    first_name: string | null;
+    last_name: string | null;
   };
 }
 
@@ -57,11 +57,16 @@ export const UsersManagement = ({ onRoleChange }: {
       // Combine the data
       const combinedData = data.map(ur => {
         const authUser = authData.users.find(u => u.id === ur.user_id);
+        // Handle possible SelectQueryError for profiles
+        const profileData = typeof ur.profiles === 'object' && !('error' in ur.profiles) 
+          ? ur.profiles 
+          : { first_name: null, last_name: null };
+          
         return {
           user_id: ur.user_id,
           email: authUser?.email || 'Unknown',
           role: ur.role,
-          profiles: ur.profiles || { first_name: '', last_name: '' }
+          profiles: profileData
         };
       });
       

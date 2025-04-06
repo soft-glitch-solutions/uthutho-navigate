@@ -98,7 +98,16 @@ const RequestsPage = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data as HubRequest[];
+
+      // Handle potential errors with profiles join
+      return data.map(item => {
+        // Fix profiles property if it's an error object
+        const profiles = typeof item.profiles === 'object' && !('error' in item.profiles)
+          ? item.profiles
+          : { first_name: null, last_name: null, points: null, avatar_url: null, selected_title: null };
+          
+        return { ...item, profiles };
+      }) as HubRequest[];
     },
   });
 
@@ -121,7 +130,16 @@ const RequestsPage = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data as RouteRequest[];
+      
+      // Handle potential errors with profiles join
+      return data.map(item => {
+        // Fix profiles property if it's an error object
+        const profiles = typeof item.profiles === 'object' && !('error' in item.profiles)
+          ? item.profiles
+          : { first_name: null, last_name: null, points: null, avatar_url: null, selected_title: null };
+          
+        return { ...item, profiles };
+      }) as RouteRequest[];
     },
   });
 
@@ -144,7 +162,16 @@ const RequestsPage = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data as StopRequest[];
+      
+      // Handle potential errors with profiles join
+      return data.map(item => {
+        // Fix profiles property if it's an error object
+        const profiles = typeof item.profiles === 'object' && !('error' in item.profiles)
+          ? item.profiles
+          : { first_name: null, last_name: null, points: null, avatar_url: null, selected_title: null };
+          
+        return { ...item, profiles };
+      }) as StopRequest[];
     },
   });
 
@@ -168,7 +195,16 @@ const RequestsPage = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data as PriceChangeRequest[];
+      
+      // Handle potential errors with profiles join
+      return data.map(item => {
+        // Fix profiles property if it's an error object
+        const profiles = typeof item.profiles === 'object' && !('error' in item.profiles)
+          ? item.profiles
+          : { first_name: null, last_name: null, points: null, avatar_url: null, selected_title: null };
+          
+        return { ...item, profiles };
+      }) as PriceChangeRequest[];
     },
   });
 
