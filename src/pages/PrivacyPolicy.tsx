@@ -19,7 +19,7 @@ const PrivacyPolicy = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
               <p>
-                Welcome to Uthutho Maps ("we," "our," or "us"). Your privacy is important to us, and we are committed to 
+                Welcome to Uthutho ("we," "our," or "us"). Your privacy is important to us, and we are committed to 
                 protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your 
                 data when you use our app.
               </p>
@@ -88,7 +88,7 @@ const PrivacyPolicy = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">7. Children's Privacy</h2>
               <p>
-                Uthutho Maps is not intended for children under 13. We do not knowingly collect data from minors.
+                Uthutho is not intended for children under 13. We do not knowingly collect data from minors.
               </p>
             </section>
             
@@ -102,8 +102,8 @@ const PrivacyPolicy = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">9. Contact Us</h2>
               <p>If you have any questions, please contact us at:</p>
-              <p className="mt-2">📧 Email: info@uthuthomaps.com</p>
-              <p>🌐 Website: www.uthuthomaps.com</p>
+              <p className="mt-2">📧 Email: info@uthutho.com</p>
+              <p>🌐 Website: www.uthutho.com</p>
             </section>
             
             <section className="border-t pt-8 mt-12">

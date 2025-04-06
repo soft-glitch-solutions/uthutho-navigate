@@ -20,7 +20,7 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
         <div className="flex items-center space-x-3">
           <img
             src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png"
-            alt="Uthutho Maps Logo"
+            alt="Uthutho Logo"
             className="h-8 w-8"
           />
           <span className="text-xl font-bold text-primary">Admin</span>

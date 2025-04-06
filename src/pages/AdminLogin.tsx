@@ -36,7 +36,7 @@ const AdminLogin = () => {
           <div className="flex justify-center">
             <img 
               src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png" 
-              alt="Uthutho Maps Logo" 
+              alt="Uthutho Logo" 
               className="h-12 w-12"
             />
           </div>

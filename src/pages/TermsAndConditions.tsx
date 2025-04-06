@@ -18,7 +18,7 @@ const TermsAndConditions = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
               <p>
-                By accessing or using the Uthutho Maps application ("App"), you agree to be bound by these Terms and 
+                By accessing or using the Uthutho application ("App"), you agree to be bound by these Terms and 
                 Conditions ("Terms"). If you do not agree to these Terms, please do not use the App.
               </p>
             </section>
@@ -86,7 +86,7 @@ const TermsAndConditions = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">7. Intellectual Property</h2>
               <p>
-                The App and its content, features, and functionality are owned by Uthutho Maps and are protected by 
+                The App and its content, features, and functionality are owned by Uthutho and are protected by 
                 international copyright, trademark, patent, trade secret, and other intellectual property laws. You may not 
                 copy, modify, distribute, or create derivative works based on our App without express written permission.
               </p>
@@ -103,7 +103,7 @@ const TermsAndConditions = () => {
             <section>
               <h2 className="text-2xl font-semibold mb-4">9. Limitation of Liability</h2>
               <p>
-                To the maximum extent permitted by law, Uthutho Maps shall not be liable for any indirect, incidental, 
+                To the maximum extent permitted by law, Uthutho shall not be liable for any indirect, incidental, 
                 special, consequential, or punitive damages resulting from your use or inability to use the App, including 
                 but not limited to loss of profits, data, or goodwill.
               </p>
@@ -130,8 +130,8 @@ const TermsAndConditions = () => {
               <p>
                 For questions about these Terms, please contact us at:
               </p>
-              <p className="mt-2">📧 Email: legal@uthuthomaps.com</p>
-              <p>🌐 Website: www.uthuthomaps.com</p>
+              <p className="mt-2">📧 Email: legal@uthutho.com</p>
+              <p>🌐 Website: www.uthutho.com</p>
             </section>
           </div>
         </div>

@@ -32,7 +32,7 @@ const Index = () => {
       name: 'Delisha-Ann Naicker',
       title: 'Head of Operations & Design',
       description: 'Delisha ensures the Uthutho experience is smooth, functional, and beautifully designed — for every commuter and community.',
-      image: '/lovable-uploads/images (1).jpg',
+      image: '/lovable-uploads/delisha (1).png',
       socialLinks: {
         linkedin: 'https://www.linkedin.com/in/delishasmith',
         x: 'https://twitter.com/delisha',
@@ -76,7 +76,7 @@ const Index = () => {
               <div className="flex items-center space-x-3">
                 <img 
                   src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png" 
-                  alt="Uthutho Maps Logo" 
+                  alt="Uthutho Logo" 
                   className="h-8 w-8"
                 />
                 <span className="text-xl md:text-2xl font-bold text-primary">Uthutho</span>
@@ -125,7 +125,7 @@ const Index = () => {
           <div className="absolute inset-0 flex items-center justify-center opacity-5">
             <img 
               src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png" 
-              alt="Uthutho Maps Logo Background" 
+              alt="Uthutho Logo Background" 
               className="w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] max-w-[800px] max-h-[800px]"
             />
           </div>
@@ -157,7 +157,7 @@ const Index = () => {
                 <div className="relative overflow-hidden rounded-[32px] h-[470px] sm:h-[570px]">
                   <img 
                     src="/lovable-uploads/Uthuthophone.png"
-                    alt="Uthutho Maps App"
+                    alt="Uthutho App"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -238,7 +238,7 @@ const Index = () => {
         <div className="container px-4 mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-white">Our Team</h2>
           <p className="text-gray-300 text-center mb-8 md:mb-16 max-w-3xl mx-auto">
-            Meet the dedicated team behind Uthutho Maps, working tirelessly to transform public transport in South Africa.
+            Meet the dedicated team behind Uthutho, working tirelessly to transform public transport in South Africa.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {teamMembers.map((member) => (
@@ -260,10 +260,10 @@ const Index = () => {
               <div className="flex items-center space-x-3 mb-6">
                 <img 
                   src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png" 
-                  alt="Uthutho Maps Logo" 
+                  alt="Uthutho Logo" 
                   className="h-8 w-8"
                 />
-                <span className="text-xl font-bold text-primary">Uthutho Maps</span>
+                <span className="text-xl font-bold text-primary">Uthutho</span>
               </div>
               <p className="text-gray-400">Transforming local travel in South Africa through smart public transport solutions.</p>
             </div>
@@ -289,7 +289,7 @@ const Index = () => {
               <h3 className="text-white font-semibold mb-4">Contact</h3>
               <ul className="space-y-2">
                 <li className="text-gray-400">Cape Town, South Africa</li>
-                <li className="text-gray-400">info@uthuthomaps.com</li>
+                <li className="text-gray-400">info@uthutho.com</li>
               </ul>
             </div>
 
@@ -324,7 +324,7 @@ const Index = () => {
           </div>
 
           <div className="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-white/10">
-            <p className="text-center text-gray-400">&copy; {new Date().getFullYear()} Uthutho Maps. All rights reserved.</p>
+            <p className="text-center text-gray-400">&copy; {new Date().getFullYear()} Uthutho. All rights reserved.</p>
           </div>
         </div>
       </footer>
