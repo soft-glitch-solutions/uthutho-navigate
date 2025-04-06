@@ -1,779 +1,242 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+
+import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Check, X, MapPin, Route as RouteIcon, 
-  StopCircle, Inbox, Banknote, User 
-} from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
 
 interface UserProfile {
-  first_name: string | null;
-  last_name: string | null;
-  points: number | null;
-  avatar_url: string | null;
-  selected_title: string | null;
+  first_name: string;
+  last_name: string;
+  points?: number;
+  avatar_url?: string;
+  selected_title?: string;
 }
 
 interface HubRequest {
   id: string;
   name: string;
-  address: string;
+  description: string;
   latitude: number;
   longitude: number;
+  address: string;
   transport_type: string;
-  description: string | null;
   status: string;
   created_at: string;
+  updated_at: string;
   user_id: string;
-  profiles?: UserProfile | null;
+  profiles: UserProfile | null;
 }
 
 interface RouteRequest {
   id: string;
-  transport_type: string;
-  description: string | null;
-  status: string;
-  created_at: string;
-  user_id: string;
   start_point: string;
   end_point: string;
-  cost: number | null;
-  profiles?: UserProfile | null;
-}
-
-interface StopRequest {
-  id: string;
-  name: string;
-  latitude: number;
-  longitude: number;
-  route_id: string;
-  cost: number | null;
-  description: string | null;
+  description: string;
+  transport_type: string;
+  cost: number;
   status: string;
   created_at: string;
-  user_id: string;
-  profiles?: UserProfile | null;
-}
-
-interface PriceChangeRequest {
-  id: string;
-  route_id: string;
-  user_id: string;
-  current_price: number;
-  new_price: number;
-  created_at: string;
-  status: string;
   updated_at: string;
-  routes: { name: string };
-  profiles?: UserProfile | null;
+  user_id: string;
+  profiles: UserProfile | null;
 }
 
 const RequestsPage = () => {
-  const [activeTab, setActiveTab] = useState('hub-requests');
+  const [hubRequests, setHubRequests] = useState<HubRequest[]>([]);
+  const [routeRequests, setRouteRequests] = useState<RouteRequest[]>([]);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  // Fetch hub requests
-  const { data: hubRequests, isLoading: hubsLoading } = useQuery({
-    queryKey: ['hub-requests'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('hub_requests')
-        .select(`
-          *,
-          profiles:user_id(
-            first_name,
-            last_name,
-            points,
-            avatar_url,
-            selected_title
-          )
-        `)
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
+  useEffect(() => {
+    fetchRequests();
+  }, []);
 
-      // Handle potential errors with profiles join
-      return data.map(item => {
-        // Fix profiles property if it's an error object
-        const profiles = typeof item.profiles === 'object' && !('error' in item.profiles)
-          ? item.profiles
-          : { first_name: null, last_name: null, points: null, avatar_url: null, selected_title: null };
-          
-        return { ...item, profiles };
-      }) as HubRequest[];
-    },
-  });
-
-  // Fetch route requests
-  const { data: routeRequests, isLoading: routesLoading } = useQuery({
-    queryKey: ['route-requests'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('route_requests')
-        .select(`
-          *,
-          profiles:user_id(
-            first_name,
-            last_name,
-            points,
-            avatar_url,
-            selected_title
-          )
-        `)
-        .order('created_at', { ascending: false });
+  const fetchRequests = async () => {
+    setLoading(true);
+    try {
+      // Fetch hub requests with profile info
+      await fetchHubRequests();
       
-      if (error) throw error;
-      
-      // Handle potential errors with profiles join
-      return data.map(item => {
-        // Fix profiles property if it's an error object
-        const profiles = typeof item.profiles === 'object' && !('error' in item.profiles)
-          ? item.profiles
-          : { first_name: null, last_name: null, points: null, avatar_url: null, selected_title: null };
-          
-        return { ...item, profiles };
-      }) as RouteRequest[];
-    },
-  });
-
-  // Fetch stop requests
-  const { data: stopRequests, isLoading: stopsLoading } = useQuery({
-    queryKey: ['stop-requests'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('stop_requests')
-        .select(`
-          *,
-          profiles:user_id(
-            first_name,
-            last_name,
-            points,
-            avatar_url,
-            selected_title
-          )
-        `)
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      
-      // Handle potential errors with profiles join
-      return data.map(item => {
-        // Fix profiles property if it's an error object
-        const profiles = typeof item.profiles === 'object' && !('error' in item.profiles)
-          ? item.profiles
-          : { first_name: null, last_name: null, points: null, avatar_url: null, selected_title: null };
-          
-        return { ...item, profiles };
-      }) as StopRequest[];
-    },
-  });
-
-  // Fetch price change requests
-  const { data: priceChangeRequests, isLoading: priceChangeLoading } = useQuery({
-    queryKey: ['price-change-requests'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('price_change_requests')
-        .select(`
-          *,
-          routes(name),
-          profiles:user_id(
-            first_name,
-            last_name,
-            points,
-            avatar_url,
-            selected_title
-          )
-        `)
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      
-      // Handle potential errors with profiles join
-      return data.map(item => {
-        // Fix profiles property if it's an error object
-        const profiles = typeof item.profiles === 'object' && !('error' in item.profiles)
-          ? item.profiles
-          : { first_name: null, last_name: null, points: null, avatar_url: null, selected_title: null };
-          
-        return { ...item, profiles };
-      }) as PriceChangeRequest[];
-    },
-  });
-
-  // Calculate pending counts for notification badges
-  const pendingHubRequests = hubRequests?.filter(req => req.status === 'pending').length || 0;
-  const pendingRouteRequests = routeRequests?.filter(req => req.status === 'pending').length || 0;
-  const pendingStopRequests = stopRequests?.filter(req => req.status === 'pending').length || 0;
-  const pendingPriceChangeRequests = priceChangeRequests?.filter(req => req.status === 'pending').length || 0;
-
-  // Mutation to update hub request status
-  const updateHubRequestStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase
-        .from('hub_requests')
-        .update({ status })
-        .eq('id', id);
-      
-      if (error) throw error;
-      return { id, status };
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['hub-requests'] });
+      // Fetch route requests with profile info
+      await fetchRouteRequests();
+    } catch (error) {
+      console.error('Error fetching requests:', error);
       toast({
-        title: "Status updated",
-        description: `Hub request status changed to ${data.status}`,
+        title: "Error",
+        description: "Failed to fetch requests. Please try again.",
+        variant: "destructive",
       });
-    },
-  });
-
-  // Mutation to update route request status
-  const updateRouteRequestStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase
-        .from('route_requests')
-        .update({ status })
-        .eq('id', id);
-      
-      if (error) throw error;
-      return { id, status };
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['route-requests'] });
-      toast({
-        title: "Status updated",
-        description: `Route request status changed to ${data.status}`,
-      });
-    },
-  });
-
-  // Mutation to update stop request status
-  const updateStopRequestStatus = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase
-        .from('stop_requests')
-        .update({ status })
-        .eq('id', id);
-      
-      if (error) throw error;
-      return { id, status };
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['stop-requests'] });
-      toast({
-        title: "Status updated",
-        description: `Stop request status changed to ${data.status}`,
-      });
-    },
-  });
-
-  // Mutation to update price change request status
-  const updatePriceChangeRequestStatus = useMutation({
-    mutationFn: async ({ id, status, routeId, newPrice }: { id: string; status: string; routeId?: string; newPrice?: number }) => {
-      const { error } = await supabase
-        .from('price_change_requests')
-        .update({ status })
-        .eq('id', id);
-      
-      if (error) throw error;
-      
-      // If approved, update the route price
-      if (status === 'approved' && routeId && newPrice !== undefined) {
-        const { error: routeError } = await supabase
-          .from('routes')
-          .update({ cost: newPrice })
-          .eq('id', routeId);
-        
-        if (routeError) throw routeError;
-      }
-      
-      return { id, status };
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['price-change-requests'] });
-      queryClient.invalidateQueries({ queryKey: ['routes'] });
-      toast({
-        title: "Status updated",
-        description: `Price change request ${data.status}`,
-      });
-    },
-  });
-
-  // Mutation to approve and create a hub from a request
-  const approveAndCreateHub = useMutation({
-    mutationFn: async (hubRequest: HubRequest) => {
-      // First create the hub
-      const { data: hub, error: hubError } = await supabase
-        .from('hubs')
-        .insert([{
-          name: hubRequest.name,
-          address: hubRequest.address,
-          latitude: hubRequest.latitude,
-          longitude: hubRequest.longitude,
-          transport_type: hubRequest.transport_type
-        }])
-        .select()
-        .single();
-      
-      if (hubError) throw hubError;
-      
-      // Then update the request status
-      const { error: requestError } = await supabase
-        .from('hub_requests')
-        .update({ status: 'approved' })
-        .eq('id', hubRequest.id);
-      
-      if (requestError) throw requestError;
-      
-      return hub;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['hub-requests'] });
-      queryClient.invalidateQueries({ queryKey: ['hubs'] });
-      toast({
-        title: "Hub created",
-        description: "Hub request approved and new hub created",
-      });
-    },
-  });
-
-  // Mutation to approve and create a route from a request
-  const approveAndCreateRoute = useMutation({
-    mutationFn: async (routeRequest: RouteRequest) => {
-      // First create the route
-      const { data: route, error: routeError } = await supabase
-        .from('routes')
-        .insert([{
-          start_point: routeRequest.start_point,
-          end_point: routeRequest.end_point,
-          cost: routeRequest.cost || 0,
-          transport_type: routeRequest.transport_type,
-          name: `${routeRequest.start_point} to ${routeRequest.end_point}`
-        }])
-        .select()
-        .single();
-      
-      if (routeError) throw routeError;
-      
-      // Then update the request status
-      const { error: requestError } = await supabase
-        .from('route_requests')
-        .update({ status: 'approved' })
-        .eq('id', routeRequest.id);
-      
-      if (requestError) throw requestError;
-      
-      return route;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['route-requests'] });
-      queryClient.invalidateQueries({ queryKey: ['routes'] });
-      toast({
-        title: "Route created",
-        description: "Route request approved and new route created",
-      });
-    },
-  });
-
-  // Mutation to approve and create a stop from a request
-  const approveAndCreateStop = useMutation({
-    mutationFn: async (stopRequest: StopRequest) => {
-      // First create the stop
-      const { data: stop, error: stopError } = await supabase
-        .from('stops')
-        .insert([{
-          name: stopRequest.name,
-          latitude: stopRequest.latitude,
-          longitude: stopRequest.longitude,
-          route_id: stopRequest.route_id,
-          cost: stopRequest.cost || 0,
-          order_number: 1 // Default order, would need logic to determine proper order
-        }])
-        .select()
-        .single();
-      
-      if (stopError) throw stopError;
-      
-      // Then update the request status
-      const { error: requestError } = await supabase
-        .from('stop_requests')
-        .update({ status: 'approved' })
-        .eq('id', stopRequest.id);
-      
-      if (requestError) throw requestError;
-      
-      return stop;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['stop-requests'] });
-      queryClient.invalidateQueries({ queryKey: ['stops'] });
-      toast({
-        title: "Stop created",
-        description: "Stop request approved and new stop created",
-      });
-    },
-  });
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <Badge className="bg-yellow-500">Pending</Badge>;
-      case 'approved':
-        return <Badge className="bg-green-500">Approved</Badge>;
-      case 'rejected':
-        return <Badge className="bg-red-500">Rejected</Badge>;
-      default:
-        return <Badge>{status}</Badge>;
+    } finally {
+      setLoading(false);
     }
   };
 
-  const viewUserProfile = (userId: string) => {
-    navigate(`/admin/dashboard/users/${userId}`);
+  const fetchHubRequests = async () => {
+    const { data, error } = await supabase
+      .from('hub_requests')
+      .select(`
+        *,
+        profiles (
+          first_name,
+          last_name,
+          points,
+          avatar_url,
+          selected_title
+        )
+      `)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    
+    if (data) {
+      const formattedData: HubRequest[] = data.map(item => ({
+        ...item,
+        profiles: item.profiles || null
+      }));
+      setHubRequests(formattedData);
+    }
   };
 
-  const renderUserInfo = (profile: UserProfile | null | undefined, userId: string) => {
+  const fetchRouteRequests = async () => {
+    const { data, error } = await supabase
+      .from('route_requests')
+      .select(`
+        *,
+        profiles (
+          first_name,
+          last_name,
+          points,
+          avatar_url,
+          selected_title
+        )
+      `)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    
+    if (data) {
+      const formattedData: RouteRequest[] = data.map(item => ({
+        ...item,
+        profiles: item.profiles || null
+      }));
+      setRouteRequests(formattedData);
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'approved':
+        return <Badge className="bg-green-600"><CheckCircle className="w-4 h-4 mr-1" /> Approved</Badge>;
+      case 'rejected':
+        return <Badge variant="destructive"><XCircle className="w-4 h-4 mr-1" /> Rejected</Badge>;
+      case 'pending':
+      default:
+        return <Badge variant="outline" className="border-orange-400 text-orange-400"><Clock className="w-4 h-4 mr-1" /> Pending</Badge>;
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  if (loading) {
     return (
-      <div className="flex items-center space-x-2">
-        <div>
-          <p className="font-medium">
-            {profile?.first_name || ''} {profile?.last_name || ''}
-            {(!profile?.first_name && !profile?.last_name) && 'Unknown User'}
-          </p>
-          {profile?.points !== null && (
-            <p className="text-xs text-muted-foreground">Points: {profile?.points || 0}</p>
-          )}
-        </div>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={() => viewUserProfile(userId)}
-          className="ml-2 flex items-center"
-        >
-          <User className="mr-1 h-4 w-4" /> View Profile
-        </Button>
+      <div className="flex items-center justify-center h-[calc(100vh-100px)]">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
-  };
-
-  const renderNotificationBadge = (count: number) => {
-    if (count <= 0) return null;
-    
-    return (
-      <Badge className="ml-2 bg-red-500 text-white">{count}</Badge>
-    );
-  };
+  }
 
   return (
-    <div className="p-6 bg-card rounded-lg border border-border">
-      <h1 className="text-2xl font-bold mb-6">Manage Requests</h1>
-      
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-6">
-          <TabsTrigger value="hub-requests" className="flex items-center">
-            <MapPin className="mr-2 h-4 w-4" /> 
-            Hub Requests
-            {renderNotificationBadge(pendingHubRequests)}
-          </TabsTrigger>
-          <TabsTrigger value="route-requests" className="flex items-center">
-            <RouteIcon className="mr-2 h-4 w-4" /> 
-            Route Requests
-            {renderNotificationBadge(pendingRouteRequests)}
-          </TabsTrigger>
-          <TabsTrigger value="stop-requests" className="flex items-center">
-            <StopCircle className="mr-2 h-4 w-4" /> 
-            Stop Requests
-            {renderNotificationBadge(pendingStopRequests)}
-          </TabsTrigger>
-          <TabsTrigger value="price-change-requests" className="flex items-center">
-            <Banknote className="mr-2 h-4 w-4" /> 
-            Price Changes
-            {renderNotificationBadge(pendingPriceChangeRequests)}
-          </TabsTrigger>
+    <div className="container mx-auto p-4 md:p-8">
+      <div className="mb-8">
+        <h2 className="text-2xl md:text-4xl font-bold mb-2">Requests Management</h2>
+        <p className="text-muted-foreground">Review and manage route and hub requests submitted by users</p>
+      </div>
+
+      <Tabs defaultValue="hub-requests" className="w-full">
+        <TabsList className="grid w-full md:w-[400px] grid-cols-2">
+          <TabsTrigger value="hub-requests">Hub Requests</TabsTrigger>
+          <TabsTrigger value="route-requests">Route Requests</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="hub-requests">
-          <div className="space-y-4">
-            {hubsLoading ? (
-              <div>Loading hub requests...</div>
-            ) : hubRequests?.length === 0 ? (
-              <div>No hub requests found</div>
+        <TabsContent value="hub-requests" className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {hubRequests.length === 0 ? (
+              <p className="text-center col-span-full py-8">No hub requests found</p>
             ) : (
-              hubRequests?.map((request) => (
-                <div key={request.id} className="p-4 border border-border rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="text-lg font-semibold">{request.name}</h3>
-                      <p className="text-muted-foreground">{request.address}</p>
+              hubRequests.map((request) => (
+                <Card key={request.id} className="overflow-hidden">
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <CardTitle className="text-xl">{request.name}</CardTitle>
+                      {getStatusBadge(request.status)}
                     </div>
-                    {getStatusBadge(request.status)}
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Latitude</p>
-                      <p>{request.latitude}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {request.description}
+                    </p>
+                    <div className="space-y-2 text-sm">
+                      <div><span className="font-medium">Address:</span> {request.address}</div>
+                      <div><span className="font-medium">Transport Type:</span> {request.transport_type}</div>
+                      <div><span className="font-medium">Submitted by:</span> {request.profiles ? `${request.profiles.first_name} ${request.profiles.last_name}` : 'Unknown'}</div>
+                      <div><span className="font-medium">Submitted on:</span> {formatDate(request.created_at)}</div>
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Longitude</p>
-                      <p>{request.longitude}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Transport Type</p>
-                      <p>{request.transport_type}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Submitted</p>
-                      <p>{new Date(request.created_at).toLocaleString()}</p>
-                    </div>
-                  </div>
-                  
-                  {request.description && (
-                    <div className="mb-4">
-                      <p className="text-sm text-muted-foreground">Description</p>
-                      <p>{request.description}</p>
-                    </div>
-                  )}
-                  
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-muted-foreground">Requested by:</p>
-                    {renderUserInfo(request.profiles, request.user_id)}
-                  </div>
-                  
-                  {request.status === 'pending' && (
-                    <div className="flex space-x-2">
-                      <Button 
-                        onClick={() => approveAndCreateHub.mutate(request)}
-                        className="flex items-center"
-                      >
-                        <Check className="mr-1 h-4 w-4" /> Approve & Create
-                      </Button>
-                      <Button 
-                        variant="destructive"
-                        onClick={() => updateHubRequestStatus.mutate({ id: request.id, status: 'rejected' })}
-                        className="flex items-center"
-                      >
-                        <X className="mr-1 h-4 w-4" /> Reject
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                    <Button 
+                      className="w-full mt-4" 
+                      onClick={() => navigate(`/requests/hub/${request.id}`)}
+                    >
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
               ))
             )}
           </div>
         </TabsContent>
         
-        <TabsContent value="route-requests">
-          <div className="space-y-4">
-            {routesLoading ? (
-              <div>Loading route requests...</div>
-            ) : routeRequests?.length === 0 ? (
-              <div>No route requests found</div>
+        <TabsContent value="route-requests" className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {routeRequests.length === 0 ? (
+              <p className="text-center col-span-full py-8">No route requests found</p>
             ) : (
-              routeRequests?.map((request) => (
-                <div key={request.id} className="p-4 border border-border rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="text-lg font-semibold">{request.start_point} to {request.end_point}</h3>
-                      <p className="text-muted-foreground">Transport: {request.transport_type}</p>
+              routeRequests.map((request) => (
+                <Card key={request.id} className="overflow-hidden">
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <CardTitle className="text-lg">{request.start_point} → {request.end_point}</CardTitle>
+                      {getStatusBadge(request.status)}
                     </div>
-                    {getStatusBadge(request.status)}
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Suggested Cost</p>
-                      <p>{request.cost ? `R${request.cost}` : 'Not specified'}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {request.description}
+                    </p>
+                    <div className="space-y-2 text-sm">
+                      <div><span className="font-medium">Transport Type:</span> {request.transport_type}</div>
+                      <div><span className="font-medium">Cost:</span> R{request.cost.toFixed(2)}</div>
+                      <div><span className="font-medium">Submitted by:</span> {request.profiles ? `${request.profiles.first_name} ${request.profiles.last_name}` : 'Unknown'}</div>
+                      <div><span className="font-medium">Submitted on:</span> {formatDate(request.created_at)}</div>
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Submitted</p>
-                      <p>{new Date(request.created_at).toLocaleString()}</p>
-                    </div>
-                  </div>
-                  
-                  {request.description && (
-                    <div className="mb-4">
-                      <p className="text-sm text-muted-foreground">Description</p>
-                      <p>{request.description}</p>
-                    </div>
-                  )}
-                  
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-muted-foreground">Requested by:</p>
-                    {renderUserInfo(request.profiles, request.user_id)}
-                  </div>
-                  
-                  {request.status === 'pending' && (
-                    <div className="flex space-x-2">
-                      <Button 
-                        onClick={() => approveAndCreateRoute.mutate(request)}
-                        className="flex items-center"
-                      >
-                        <Check className="mr-1 h-4 w-4" /> Approve & Create
-                      </Button>
-                      <Button 
-                        variant="destructive"
-                        onClick={() => updateRouteRequestStatus.mutate({ id: request.id, status: 'rejected' })}
-                        className="flex items-center"
-                      >
-                        <X className="mr-1 h-4 w-4" /> Reject
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="stop-requests">
-          <div className="space-y-4">
-            {stopsLoading ? (
-              <div>Loading stop requests...</div>
-            ) : stopRequests?.length === 0 ? (
-              <div>No stop requests found</div>
-            ) : (
-              stopRequests?.map((request) => (
-                <div key={request.id} className="p-4 border border-border rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="text-lg font-semibold">{request.name}</h3>
-                      <p className="text-muted-foreground">For Route ID: {request.route_id}</p>
-                    </div>
-                    {getStatusBadge(request.status)}
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Latitude</p>
-                      <p>{request.latitude}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Longitude</p>
-                      <p>{request.longitude}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Suggested Cost</p>
-                      <p>{request.cost ? `R${request.cost}` : 'Not specified'}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Submitted</p>
-                      <p>{new Date(request.created_at).toLocaleString()}</p>
-                    </div>
-                  </div>
-                  
-                  {request.description && (
-                    <div className="mb-4">
-                      <p className="text-sm text-muted-foreground">Description</p>
-                      <p>{request.description}</p>
-                    </div>
-                  )}
-                  
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-muted-foreground">Requested by:</p>
-                    {renderUserInfo(request.profiles, request.user_id)}
-                  </div>
-                  
-                  {request.status === 'pending' && (
-                    <div className="flex space-x-2">
-                      <Button 
-                        onClick={() => approveAndCreateStop.mutate(request)}
-                        className="flex items-center"
-                      >
-                        <Check className="mr-1 h-4 w-4" /> Approve & Create
-                      </Button>
-                      <Button 
-                        variant="destructive"
-                        onClick={() => updateStopRequestStatus.mutate({ id: request.id, status: 'rejected' })}
-                        className="flex items-center"
-                      >
-                        <X className="mr-1 h-4 w-4" /> Reject
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="price-change-requests">
-          <div className="space-y-4">
-            {priceChangeLoading ? (
-              <div>Loading price change requests...</div>
-            ) : priceChangeRequests?.length === 0 ? (
-              <div>No price change requests found</div>
-            ) : (
-              priceChangeRequests?.map((request) => (
-                <div key={request.id} className="p-4 border border-border rounded-lg">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="text-lg font-semibold">Price Change Request</h3>
-                      <p className="text-muted-foreground">
-                        Route: {request.routes?.name || `ID: ${request.route_id}`}
-                      </p>
-                    </div>
-                    {getStatusBadge(request.status)}
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Current Price</p>
-                      <p>R{request.current_price}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Requested New Price</p>
-                      <p>R{request.new_price}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Price Difference</p>
-                      <p className={request.new_price > request.current_price ? "text-red-500" : "text-green-500"}>
-                        {request.new_price > request.current_price ? "+" : ""}
-                        R{(request.new_price - request.current_price).toFixed(2)}
-                        {" "}
-                        ({((request.new_price - request.current_price) / request.current_price * 100).toFixed(1)}%)
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Submitted</p>
-                      <p>{new Date(request.created_at).toLocaleString()}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-4">
-                    <p className="text-sm font-medium text-muted-foreground">Requested by:</p>
-                    {renderUserInfo(request.profiles, request.user_id)}
-                  </div>
-                  
-                  {request.status === 'pending' && (
-                    <div className="flex space-x-2">
-                      <Button 
-                        onClick={() => updatePriceChangeRequestStatus.mutate({ 
-                          id: request.id, 
-                          status: 'approved', 
-                          routeId: request.route_id,
-                          newPrice: request.new_price
-                        })}
-                        className="flex items-center"
-                      >
-                        <Check className="mr-1 h-4 w-4" /> Approve Change
-                      </Button>
-                      <Button 
-                        variant="destructive"
-                        onClick={() => updatePriceChangeRequestStatus.mutate({ id: request.id, status: 'rejected' })}
-                        className="flex items-center"
-                      >
-                        <X className="mr-1 h-4 w-4" /> Reject
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                    <Button 
+                      className="w-full mt-4" 
+                      onClick={() => navigate(`/requests/route/${request.id}`)}
+                    >
+                      View Details
+                    </Button>
+                  </CardContent>
+                </Card>
               ))
             )}
           </div>

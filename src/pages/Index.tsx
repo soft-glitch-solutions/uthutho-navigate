@@ -1,11 +1,14 @@
 
 import { useState, useEffect } from 'react';
-import { Bus, Train, MapPin, Users, Clock, Phone, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { MapPin, Users, Clock, Phone, Facebook, Twitter, Instagram, Linkedin, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import TeamMember, { TeamMemberProps } from '../components/TeamMember';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setIsVisible(true);
@@ -28,7 +31,7 @@ const Index = () => {
       id: 2,
       name: 'Malakai Johnson',
       title: 'Head of Sales & Community Partnerships',
-      description: "Malakai leads Uthutho's outreach and partnerships, helping us connect with commuters, operators, and local businesses.",
+      description: 'Malakai leads Uthutho\'s outreach and partnerships, helping us connect with commuters, operators, and local businesses.',
       image: '/lovable-uploads/43556a9b-2082-4701-a4d1-44a59d0e66ea.png',
       socialLinks: {
         linkedin: 'https://www.linkedin.com/in/malakailink',
@@ -66,17 +69,19 @@ const Index = () => {
     <div className="min-h-screen bg-black font-quiapo">
       {/* Navigation */}
       <nav className="fixed w-full z-50">
-        <div className="container mx-auto px-4 mt-4">
+        <div className="container mx-auto px-4 pt-4 pb-2">
           <div className="bg-white/95 backdrop-blur-sm rounded-full mx-auto max-w-3xl">
-            <div className="flex items-center justify-between h-16 px-8">
+            <div className="flex items-center justify-between h-16 px-4 md:px-8">
               <div className="flex items-center space-x-3">
                 <img 
                   src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png" 
                   alt="Uthutho Maps Logo" 
                   className="h-8 w-8"
                 />
-                <span className="text-2xl font-bold text-primary">Uthutho</span>
+                <span className="text-xl md:text-2xl font-bold text-primary">Uthutho</span>
               </div>
+              
+              {/* Desktop Menu */}
               <div className="hidden md:flex items-center space-x-8">
                 <a href="#features" className="text-gray-700 hover:text-primary transition-colors">Features</a>
                 <a href="#about" className="text-gray-700 hover:text-primary transition-colors">About Us</a>
@@ -85,6 +90,27 @@ const Index = () => {
                   <span>Download App</span>
                 </button>
               </div>
+              
+              {/* Mobile Menu */}
+              {isMobile && (
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <button className="md:hidden text-gray-700">
+                      <Menu size={24} />
+                    </button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-full sm:w-80 bg-black border-white/10">
+                    <div className="flex flex-col h-full pt-10 space-y-6">
+                      <a href="#features" className="text-white text-lg hover:text-primary transition-colors py-2">Features</a>
+                      <a href="#about" className="text-white text-lg hover:text-primary transition-colors py-2">About Us</a>
+                      <button className="bg-highlight text-white px-6 py-3 rounded-full flex items-center justify-center space-x-2 hover:bg-highlight/90 transition-colors">
+                        <Phone size={18} />
+                        <span>Download App</span>
+                      </button>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              )}
             </div>
           </div>
         </div>
@@ -103,18 +129,18 @@ const Index = () => {
             />
           </div>
         </div>
-        <div className="container px-4 mx-auto flex flex-col md:flex-row items-center justify-between relative z-10">
+        <div className="container px-4 mx-auto flex flex-col md:flex-row items-center justify-between relative z-10 py-8 md:py-16">
           <div className="text-center md:text-left md:w-1/2 mb-12 md:mb-0">
-            <h1 className={`text-4xl md:text-6xl font-bold mb-6 text-white transform transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white transform transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
               Transform Your Daily Commute
             </h1>
-            <p className={`text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <p className={`text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
               South Africa's smart public transport companion
             </p>
-            <p className={`text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-              No Data No problem , Join our data free web app version. 
+            <p className={`text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+              No Data No problem, Join our data free web app version. 
             </p>
-            <div className={`space-x-4 transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <div className={`flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
               <button className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors">
                 Get Started
               </button>
@@ -124,10 +150,10 @@ const Index = () => {
             </div>
           </div>
           <div className={`md:w-1/2 transform transition-all duration-1000 delay-500 ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-20 opacity-0'}`}>
-            <div className="relative w-[300px] h-[600px] mx-auto">
+            <div className="relative w-[250px] sm:w-[300px] h-[500px] sm:h-[600px] mx-auto">
               <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-highlight opacity-20 blur-xl rounded-full"></div>
               <div className="relative z-10 bg-black rounded-[40px] p-3 shadow-2xl">
-                <div className="relative overflow-hidden rounded-[32px] h-[570px]">
+                <div className="relative overflow-hidden rounded-[32px] h-[470px] sm:h-[570px]">
                   <img 
                     src="/lovable-uploads/Uthuthophone.png"
                     alt="Uthutho Maps App"
@@ -141,22 +167,22 @@ const Index = () => {
       </section>
 
       {/* Motto Section */}
-      <section className="py-20 bg-gradient-to-r from-primary via-secondary to-highlight">
+      <section className="py-12 md:py-20 bg-gradient-to-r from-primary via-secondary to-highlight">
         <div className="container px-4 mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-white">
             "Hamba ngokukhululeka, yazi indlela yakho!"
           </h2>
-          <p className="text-lg md:text-xl text-white/90">
+          <p className="text-base sm:text-lg md:text-xl text-white/90">
             Travel with ease, know your route!
           </p>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-black">
+      <section id="features" className="py-12 md:py-20 bg-black">
         <div className="container px-4 mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-white">Our Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-white">Our Features</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             <FeatureCard
               icon={<MapPin className="h-8 w-8 text-primary" />}
               title="Real-time Updates"
@@ -164,8 +190,8 @@ const Index = () => {
             />
             <FeatureCard
               icon={<Users className="h-8 w-8 text-secondary" />}
-              title="Carpooling"
-              description="Connect with fellow travelers to share rides and reduce costs."
+              title="Stop Waiting"
+              description="Mark yourself as waiting at a stop to help others know about crowding and queue status."
             />
             <FeatureCard
               icon={<Clock className="h-8 w-8 text-accent" />}
@@ -177,17 +203,17 @@ const Index = () => {
       </section>
 
       {/* Goals Section */}
-      <section className="py-20 bg-black">
+      <section className="py-12 md:py-20 bg-black">
         <div className="container px-4 mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-white">Our Goals</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-white">Our Goals</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
             {goals.map((goal, index) => (
               <div
                 key={index}
                 className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-primary/50 transition-all animate-fade-up"
                 style={{ animationDelay: `${index * 150}ms` }}
               >
-                <p className="text-lg text-gray-300">{goal}</p>
+                <p className="text-base md:text-lg text-gray-300">{goal}</p>
               </div>
             ))}
           </div>
@@ -195,25 +221,25 @@ const Index = () => {
       </section>
 
       {/* Motto Section */}
-      <section className="py-20 bg-gradient-to-r from-primary via-secondary to-highlight">
+      <section className="py-12 md:py-20 bg-gradient-to-r from-primary via-secondary to-highlight">
         <div className="container px-4 mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-white">
             "Izindlela zakho ziqinisekisa impumelelo!"
           </h2>
-          <p className="text-lg md:text-xl text-white/90">
+          <p className="text-base sm:text-lg md:text-xl text-white/90">
             Your journey leads to success – keep moving forward!
           </p>
         </div>
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-black">
+      <section id="about" className="py-12 md:py-20 bg-black">
         <div className="container px-4 mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-6 text-white">Our Team</h2>
-          <p className="text-gray-300 text-center mb-16 max-w-3xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-white">Our Team</h2>
+          <p className="text-gray-300 text-center mb-8 md:mb-16 max-w-3xl mx-auto">
             Meet the dedicated team behind Uthutho Maps, working tirelessly to transform public transport in South Africa.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {teamMembers.map((member) => (
               <TeamMember
                 key={member.id}
@@ -226,8 +252,8 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="bg-black border-t border-white/10">
-        <div className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="container mx-auto px-4 py-8 md:py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {/* Company Info */}
             <div>
               <div className="flex items-center space-x-3 mb-6">
@@ -296,7 +322,7 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-white/10">
+          <div className="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-white/10">
             <p className="text-center text-gray-400">&copy; {new Date().getFullYear()} Uthutho Maps. All rights reserved.</p>
           </div>
         </div>
@@ -306,9 +332,9 @@ const Index = () => {
 };
 
 const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
-  <div className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-primary/50 transition-all animate-fade-up">
+  <div className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-primary/50 transition-all animate-fade-up h-full">
     <div className="mb-4">{icon}</div>
-    <h3 className="text-xl font-semibold mb-2 text-white">{title}</h3>
+    <h3 className="text-lg md:text-xl font-semibold mb-2 text-white">{title}</h3>
     <p className="text-gray-400">{description}</p>
   </div>
 );
