@@ -7,8 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 
 interface UserProfile {
-  first_name: string;
-  last_name: string;
+  first_name: string | null;
+  last_name: string | null;
 }
 
 interface UserData {
@@ -54,7 +54,10 @@ const UsersManagement = () => {
           user_id: ur.user_id,
           email: ur.auth_users?.email || 'Email not available',
           role: ur.role as "admin" | "user",
-          profiles: ur.profiles || null
+          profiles: ur.profiles ? {
+            first_name: ur.profiles.first_name || null,
+            last_name: ur.profiles.last_name || null
+          } : null
         }));
         
         setUsers(formattedUsers);
@@ -98,6 +101,15 @@ const UsersManagement = () => {
     }
   };
 
+  const formatUsersForTable = (users: UserData[]) => {
+    return users.map(user => ({
+      id: user.user_id,
+      email: user.email,
+      role: user.role,
+      fullName: user.profiles ? `${user.profiles.first_name || ''} ${user.profiles.last_name || ''}`.trim() : 'N/A'
+    }));
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -117,7 +129,7 @@ const UsersManagement = () => {
           <Card>
             <CardContent className="p-6">
               <UserTable 
-                users={users} 
+                users={formatUsersForTable(users)} 
                 loading={loading} 
                 onRoleChange={handleRoleChange} 
               />
@@ -129,7 +141,7 @@ const UsersManagement = () => {
           <Card>
             <CardContent className="p-6">
               <UserTable 
-                users={users.filter(user => user.role === 'admin')} 
+                users={formatUsersForTable(users.filter(user => user.role === 'admin'))} 
                 loading={loading} 
                 onRoleChange={handleRoleChange} 
               />

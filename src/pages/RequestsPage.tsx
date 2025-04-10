@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,8 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
 interface UserProfile {
-  first_name: string;
-  last_name: string;
+  first_name: string | null;
+  last_name: string | null;
   points?: number;
   avatar_url?: string;
   selected_title?: string;
@@ -20,12 +19,12 @@ interface UserProfile {
 interface HubRequest {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   latitude: number;
   longitude: number;
   address: string;
   transport_type: string;
-  status: string;
+  status: string | null;
   created_at: string;
   updated_at: string;
   user_id: string;
@@ -36,10 +35,10 @@ interface RouteRequest {
   id: string;
   start_point: string;
   end_point: string;
-  description: string;
+  description: string | null;
   transport_type: string;
-  cost: number;
-  status: string;
+  cost: number | null;
+  status: string | null;
   created_at: string;
   updated_at: string;
   user_id: string;
@@ -97,7 +96,13 @@ const RequestsPage = () => {
     if (data) {
       const formattedData: HubRequest[] = data.map(item => ({
         ...item,
-        profiles: item.profiles || null
+        profiles: item.profiles ? {
+          first_name: item.profiles.first_name || null,
+          last_name: item.profiles.last_name || null,
+          points: item.profiles.points,
+          avatar_url: item.profiles.avatar_url,
+          selected_title: item.profiles.selected_title
+        } : null
       }));
       setHubRequests(formattedData);
     }
@@ -123,7 +128,13 @@ const RequestsPage = () => {
     if (data) {
       const formattedData: RouteRequest[] = data.map(item => ({
         ...item,
-        profiles: item.profiles || null
+        profiles: item.profiles ? {
+          first_name: item.profiles.first_name || null,
+          last_name: item.profiles.last_name || null,
+          points: item.profiles.points,
+          avatar_url: item.profiles.avatar_url,
+          selected_title: item.profiles.selected_title
+        } : null
       }));
       setRouteRequests(formattedData);
     }
@@ -180,7 +191,7 @@ const RequestsPage = () => {
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
                       <CardTitle className="text-xl">{request.name}</CardTitle>
-                      {getStatusBadge(request.status)}
+                      {getStatusBadge(request.status || 'pending')}
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -190,7 +201,7 @@ const RequestsPage = () => {
                     <div className="space-y-2 text-sm">
                       <div><span className="font-medium">Address:</span> {request.address}</div>
                       <div><span className="font-medium">Transport Type:</span> {request.transport_type}</div>
-                      <div><span className="font-medium">Submitted by:</span> {request.profiles ? `${request.profiles.first_name} ${request.profiles.last_name}` : 'Unknown'}</div>
+                      <div><span className="font-medium">Submitted by:</span> {request.profiles ? `${request.profiles.first_name || ''} ${request.profiles.last_name || ''}`.trim() : 'Unknown'}</div>
                       <div><span className="font-medium">Submitted on:</span> {formatDate(request.created_at)}</div>
                     </div>
                     <Button 
@@ -216,7 +227,7 @@ const RequestsPage = () => {
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
                       <CardTitle className="text-lg">{request.start_point} → {request.end_point}</CardTitle>
-                      {getStatusBadge(request.status)}
+                      {getStatusBadge(request.status || 'pending')}
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -225,8 +236,8 @@ const RequestsPage = () => {
                     </p>
                     <div className="space-y-2 text-sm">
                       <div><span className="font-medium">Transport Type:</span> {request.transport_type}</div>
-                      <div><span className="font-medium">Cost:</span> R{request.cost.toFixed(2)}</div>
-                      <div><span className="font-medium">Submitted by:</span> {request.profiles ? `${request.profiles.first_name} ${request.profiles.last_name}` : 'Unknown'}</div>
+                      <div><span className="font-medium">Cost:</span> R{(request.cost || 0).toFixed(2)}</div>
+                      <div><span className="font-medium">Submitted by:</span> {request.profiles ? `${request.profiles.first_name || ''} ${request.profiles.last_name || ''}`.trim() : 'Unknown'}</div>
                       <div><span className="font-medium">Submitted on:</span> {formatDate(request.created_at)}</div>
                     </div>
                     <Button 
