@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { FileText, Download } from 'lucide-react';
+import { FileText, Download, ShieldAlert, BarChart, Clock, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
 
 interface Report {
   id: string;
@@ -17,13 +18,22 @@ interface Report {
 const ReportsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedReportType, setSelectedReportType] = useState('all');
+  const navigate = useNavigate();
 
   // Fetch reports from the database
   const { data: reports, isLoading } = useQuery({
     queryKey: ['reports'],
     queryFn: async () => {
-      // This would be replaced with actual Supabase query for reports
+      // Here we would fetch real reports from Supabase
+      // For now, we'll use these mock reports that include system logs
       const mockReports: Report[] = [
+        {
+          id: 'system-logs',
+          title: 'System Logs',
+          description: 'Complete log of all user activities and system events',
+          date: new Date().toISOString(),
+          type: 'system'
+        },
         {
           id: '1',
           title: 'Monthly Traffic Summary',
@@ -58,13 +68,30 @@ const ReportsPage = () => {
     return matchesSearch && matchesType;
   });
 
-  const handleDownloadReport = (reportId: string) => {
-    // This would be implementation for downloading the report
-    console.log(`Downloading report ${reportId}`);
+  const handleReportAction = (reportId: string) => {
+    // For system logs, navigate to the logs page
+    if (reportId === 'system-logs') {
+      navigate('/admin/dashboard/system-logs');
+      return;
+    }
+    
+    // For other reports, handle download or view logic
+    console.log(`Accessing report ${reportId}`);
+  };
+
+  const getReportIcon = (type: string) => {
+    switch (type) {
+      case 'system': return <ShieldAlert className="h-5 w-5 text-red-500" />;
+      case 'traffic': return <BarChart className="h-5 w-5 text-blue-500" />;
+      case 'user': return <Users className="h-5 w-5 text-green-500" />;
+      case 'route': return <Clock className="h-5 w-5 text-amber-500" />;
+      default: return <FileText className="h-5 w-5 text-primary" />;
+    }
   };
 
   const reportTypes = [
     { value: 'all', label: 'All Reports' },
+    { value: 'system', label: 'System Logs' },
     { value: 'traffic', label: 'Traffic Reports' },
     { value: 'user', label: 'User Reports' },
     { value: 'route', label: 'Route Reports' }
@@ -100,12 +127,12 @@ const ReportsPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {filteredReports?.map((report) => (
-          <Card key={report.id} className="shadow-sm">
+          <Card key={report.id} className="shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="pb-2">
               <div className="flex justify-between items-start">
                 <CardTitle className="text-lg">{report.title}</CardTitle>
                 <div className="p-2 bg-primary/10 rounded-full">
-                  <FileText className="h-5 w-5 text-primary" />
+                  {getReportIcon(report.type)}
                 </div>
               </div>
             </CardHeader>
@@ -117,12 +144,18 @@ const ReportsPage = () => {
                 </span>
                 <Button 
                   size="sm" 
-                  variant="outline" 
+                  variant={report.id === 'system-logs' ? 'default' : 'outline'}
                   className="flex items-center gap-1"
-                  onClick={() => handleDownloadReport(report.id)}
+                  onClick={() => handleReportAction(report.id)}
                 >
-                  <Download className="h-4 w-4" />
-                  Download
+                  {report.id === 'system-logs' ? (
+                    <>View Logs</>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4" />
+                      Download
+                    </>
+                  )}
                 </Button>
               </div>
             </CardContent>

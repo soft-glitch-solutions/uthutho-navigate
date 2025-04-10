@@ -5,6 +5,7 @@ import UserTable from '@/components/UserTable';
 import { useToast } from '@/components/ui/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
+import { Loader2 } from 'lucide-react';
 
 interface UserProfile {
   first_name: string | null;
@@ -30,38 +31,37 @@ const UsersManagement = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      // Get all users with their roles
-      const { data: userData, error: userError } = await supabase
+      // First get all user IDs and their roles
+      const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
-        .select(`
-          user_id,
-          role,
-          auth_users (
-            email
-          ),
-          profiles (
-            first_name,
-            last_name
-          )
-        `);
+        .select('user_id, role');
 
-      if (userError) {
-        throw userError;
-      }
+      if (roleError) throw roleError;
 
-      if (userData) {
-        const formattedUsers: UserData[] = userData.map((ur) => ({
-          user_id: ur.user_id,
-          email: ur.auth_users?.email || 'Email not available',
-          role: ur.role as "admin" | "user",
-          profiles: ur.profiles ? {
-            first_name: ur.profiles.first_name || null,
-            last_name: ur.profiles.last_name || null
-          } : null
-        }));
+      // Then get user emails from auth.users via a custom RPC function since we can't query auth directly
+      const userData = [];
+      for (const role of roleData || []) {
+        const { data: authUser } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name')
+          .eq('id', role.user_id)
+          .single();
+          
+        const { data: userEmail } = await supabase
+          .rpc('get_user_email', { user_id: role.user_id });
         
-        setUsers(formattedUsers);
+        userData.push({
+          user_id: role.user_id,
+          email: userEmail || 'Email not available',
+          role: role.role as "admin" | "user",
+          profiles: authUser ? {
+            first_name: authUser.first_name,
+            last_name: authUser.last_name
+          } : null
+        });
       }
+      
+      setUsers(userData);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast({
@@ -110,6 +110,14 @@ const UsersManagement = () => {
     }));
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -142,7 +150,7 @@ const UsersManagement = () => {
             <CardContent className="p-6">
               <UserTable 
                 users={formatUsersForTable(users.filter(user => user.role === 'admin'))} 
-                loading={loading} 
+                loading={loading}
                 onRoleChange={handleRoleChange} 
               />
             </CardContent>
