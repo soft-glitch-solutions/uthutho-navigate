@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -44,59 +43,69 @@ const mockProfileProps = {
   onAvatarChange: (avatar: string | null) => console.log('Avatar changed:', avatar)
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <ThemeProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-            <Route path="/delete-account" element={<DeleteAccountLogin />} />
-            <Route path="/confirm-delete" element={<ConfirmDeleteAccount />} />
-            <Route path="/admin" element={<AdminLogin />} />
-            
-            {/* Admin dashboard layout with nested routes */}
-            <Route path="/admin/dashboard" element={<AdminDashboard />}>
-              <Route index element={<Overview />} />
-              <Route path="hubs" element={<HubsPage />} />
-              <Route path="hubs/:hubId" element={<HubDetailsPage />} />
-              <Route path="routes" element={<RoutesPage />} />
-              <Route path="routes/:routeId" element={<RouteDetailsPage />} />
-              <Route path="stops" element={<StopsPage />} />
-              <Route path="stops/:stopId" element={<StopDetailsPage />} />
-              <Route path="requests" element={<RequestsPage />} />
-              <Route path="profile" element={<ProfilePage {...mockProfileProps} />} />
-              <Route path="users" element={<UsersPage />} />
-              <Route path="users/:userId" element={<UserProfilePage />} />
-              <Route path="reports" element={<ReportsPage />} />
-              <Route path="logs" element={<SystemLogsPage />} />
-              <Route path="help" element={<HelpDocumentation />} />
-              <Route path="settings" element={<SettingsPage />} />
-            </Route>
-            
-            {/* Redirect old URLs to the new structure */}
-            <Route path="/admin/hubs" element={<Navigate to="/admin/dashboard/hubs" replace />} />
-            <Route path="/admin/hubs/:hubId" element={<Navigate to="/admin/dashboard/hubs/:hubId" replace />} />
-            <Route path="/admin/routes" element={<Navigate to="/admin/dashboard/routes" replace />} />
-            <Route path="/admin/routes/:routeId" element={<Navigate to="/admin/dashboard/routes/:routeId" replace />} />
-            <Route path="/admin/stops" element={<Navigate to="/admin/dashboard/stops" replace />} />
-            <Route path="/admin/stops/:stopId" element={<Navigate to="/admin/dashboard/stops/:stopId" replace />} />
-            <Route path="/admin/requests" element={<Navigate to="/admin/dashboard/requests" replace />} />
-            <Route path="/admin/profile" element={<Navigate to="/admin/dashboard/profile" replace />} />
-            <Route path="/admin/users" element={<Navigate to="/admin/dashboard/users" replace />} />
-            <Route path="/admin/reports" element={<Navigate to="/admin/dashboard/reports" replace />} />
-            <Route path="/admin/settings" element={<Navigate to="/admin/dashboard/settings" replace />} />
-            
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </ThemeProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+import { useState } from "react";
+
+const App = () => {
+  const [theme, setTheme] = useState("light");
+  
+  const toggleTheme = () => {
+    setTheme(prev => prev === "light" ? "dark" : "light");
+  };
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <ThemeProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+              <Route path="/delete-account" element={<DeleteAccountLogin />} />
+              <Route path="/confirm-delete" element={<ConfirmDeleteAccount />} />
+              <Route path="/admin" element={<AdminLogin />} />
+              
+              {/* Admin dashboard layout with nested routes */}
+              <Route path="/admin/dashboard" element={<AdminDashboard />}>
+                <Route index element={<Overview />} />
+                <Route path="hubs" element={<HubsPage />} />
+                <Route path="hubs/:hubId" element={<HubDetailsPage />} />
+                <Route path="routes" element={<RoutesPage />} />
+                <Route path="routes/:routeId" element={<RouteDetailsPage />} />
+                <Route path="stops" element={<StopsPage />} />
+                <Route path="stops/:stopId" element={<StopDetailsPage />} />
+                <Route path="requests" element={<RequestsPage />} />
+                <Route path="profile" element={<ProfilePage {...mockProfileProps} />} />
+                <Route path="users" element={<UsersPage />} />
+                <Route path="users/:userId" element={<UserProfilePage />} />
+                <Route path="reports" element={<ReportsPage />} />
+                <Route path="logs" element={<SystemLogsPage />} />
+                <Route path="help" element={<HelpDocumentation />} />
+                <Route path="settings" element={<SettingsPage theme={theme} toggleTheme={toggleTheme} />} />
+              </Route>
+              
+              {/* Redirect old URLs to the new structure */}
+              <Route path="/admin/hubs" element={<Navigate to="/admin/dashboard/hubs" replace />} />
+              <Route path="/admin/hubs/:hubId" element={<Navigate to="/admin/dashboard/hubs/:hubId" replace />} />
+              <Route path="/admin/routes" element={<Navigate to="/admin/dashboard/routes" replace />} />
+              <Route path="/admin/routes/:routeId" element={<Navigate to="/admin/dashboard/routes/:routeId" replace />} />
+              <Route path="/admin/stops" element={<Navigate to="/admin/dashboard/stops" replace />} />
+              <Route path="/admin/stops/:stopId" element={<Navigate to="/admin/dashboard/stops/:stopId" replace />} />
+              <Route path="/admin/requests" element={<Navigate to="/admin/dashboard/requests" replace />} />
+              <Route path="/admin/profile" element={<Navigate to="/admin/dashboard/profile" replace />} />
+              <Route path="/admin/users" element={<Navigate to="/admin/dashboard/users" replace />} />
+              <Route path="/admin/reports" element={<Navigate to="/admin/dashboard/reports" replace />} />
+              <Route path="/admin/settings" element={<Navigate to="/admin/dashboard/settings" replace />} />
+              
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </ThemeProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
