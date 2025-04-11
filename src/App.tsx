@@ -26,6 +26,8 @@ import DeleteAccountLogin from "./pages/DeleteAccountLogin";
 import ConfirmDeleteAccount from "./pages/ConfirmDeleteAccount";
 import Overview from "./components/admin/Overview";
 import UserProfilePage from "./pages/UserProfilePage";
+import SystemLogsPage from "./pages/SystemLogsPage";
+import HelpDocumentation from "./components/admin/HelpDocumentation";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,16 +42,6 @@ const queryClient = new QueryClient({
 const mockProfileProps = {
   onProfileUpdate: (profile: any) => console.log('Profile updated:', profile),
   onAvatarChange: (avatar: string | null) => console.log('Avatar changed:', avatar)
-};
-
-const mockUsersProps = {
-  users: [],
-  onRoleChange: (userId: string, role: string) => console.log(`Changed role for ${userId} to ${role}`)
-};
-
-const mockSettingsProps = {
-  theme: 'light',
-  toggleTheme: () => console.log('Theme toggled')
 };
 
 const App = () => (
@@ -78,10 +70,12 @@ const App = () => (
               <Route path="stops/:stopId" element={<StopDetailsPage />} />
               <Route path="requests" element={<RequestsPage />} />
               <Route path="profile" element={<ProfilePage {...mockProfileProps} />} />
-              <Route path="users" element={<UsersPage {...mockUsersProps} />} />
+              <Route path="users" element={<UsersPage />} />
               <Route path="users/:userId" element={<UserProfilePage />} />
               <Route path="reports" element={<ReportsPage />} />
-              <Route path="settings" element={<SettingsPage {...mockSettingsProps} />} />
+              <Route path="logs" element={<SystemLogsPage />} />
+              <Route path="help" element={<HelpDocumentation />} />
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
             
             {/* Redirect old URLs to the new structure */}

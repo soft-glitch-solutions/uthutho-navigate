@@ -1,4 +1,5 @@
-import { LayoutDashboard, Users, Settings, LogOut, Sun, Moon, User } from 'lucide-react';
+
+import { LayoutDashboard, Users, Settings, LogOut, Sun, Moon, User, FileText, LifeBuoy, Route, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/components/theme-provider';
 
@@ -45,6 +46,27 @@ const Sidebar = ({ activeTab, setActiveTab, handleLogout }: SidebarProps) => {
         >
           <Users className="h-5 w-5 mr-3" />
           Users
+        </button>
+        <button
+          onClick={() => setActiveTab('routes')}
+          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'routes' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+        >
+          <Route className="h-5 w-5 mr-3" />
+          Routes
+        </button>
+        <button
+          onClick={() => setActiveTab('logs')}
+          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'logs' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+        >
+          <Clock className="h-5 w-5 mr-3" />
+          System Logs
+        </button>
+        <button
+          onClick={() => setActiveTab('help')}
+          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'help' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+        >
+          <LifeBuoy className="h-5 w-5 mr-3" />
+          Help Docs
         </button>
         <button
           onClick={() => setActiveTab('settings')}

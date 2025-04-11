@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      help_documentation: {
+        Row: {
+          content: string
+          created_at: string | null
+          created_by: string | null
+          id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       hub_posts: {
         Row: {
           content: string
@@ -1021,6 +1048,10 @@ export type Database = {
       cleanup_old_posts: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      get_user_email: {
+        Args: { user_id: string }
+        Returns: string
       }
       handle_login_streak: {
         Args: { input_user_id: string }

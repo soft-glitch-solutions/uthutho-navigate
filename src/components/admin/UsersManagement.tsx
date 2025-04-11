@@ -5,7 +5,10 @@ import UserTable from '@/components/UserTable';
 import { useToast } from '@/components/ui/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 interface UserProfile {
   first_name: string | null;
@@ -20,59 +23,50 @@ interface UserData {
 }
 
 const UsersManagement = () => {
-  const [users, setUsers] = useState<UserData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const { data: users, isLoading, error } = useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
+      try {
+        // First get all user IDs and their roles
+        const { data: roleData, error: roleError } = await supabase
+          .from('user_roles')
+          .select('user_id, role');
 
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      // First get all user IDs and their roles
-      const { data: roleData, error: roleError } = await supabase
-        .from('user_roles')
-        .select('user_id, role');
+        if (roleError) throw roleError;
 
-      if (roleError) throw roleError;
-
-      // Then get user emails from auth.users via a custom RPC function since we can't query auth directly
-      const userData = [];
-      for (const role of roleData || []) {
-        const { data: authUser } = await supabase
-          .from('profiles')
-          .select('id, first_name, last_name')
-          .eq('id', role.user_id)
-          .single();
+        // Then get profile details
+        const userData = [];
+        for (const role of roleData || []) {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('id, first_name, last_name')
+            .eq('id', role.user_id)
+            .single();
           
-        const { data: userEmail } = await supabase
-          .rpc('get_user_email', { user_id: role.user_id });
+          const { data: emailData } = await supabase.rpc('get_user_email', { user_id: role.user_id });
+          
+          userData.push({
+            user_id: role.user_id,
+            email: emailData || 'Email not available',
+            role: role.role as "admin" | "user",
+            profiles: profileData ? {
+              first_name: profileData.first_name,
+              last_name: profileData.last_name
+            } : null
+          });
+        }
         
-        userData.push({
-          user_id: role.user_id,
-          email: userEmail || 'Email not available',
-          role: role.role as "admin" | "user",
-          profiles: authUser ? {
-            first_name: authUser.first_name,
-            last_name: authUser.last_name
-          } : null
-        });
+        return userData;
+      } catch (error: any) {
+        console.error('Error fetching users:', error);
+        throw error;
       }
-      
-      setUsers(userData);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load users. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
     }
-  };
+  });
 
   const handleRoleChange = async (userId: string, newRole: "admin" | "user") => {
     try {
@@ -83,15 +77,11 @@ const UsersManagement = () => {
 
       if (error) throw error;
 
-      setUsers(users.map(user => 
-        user.user_id === userId ? { ...user, role: newRole } : user
-      ));
-
       toast({
         title: "Role Updated",
         description: `User role successfully changed to ${newRole}`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating user role:', error);
       toast({
         title: "Error",
@@ -100,6 +90,18 @@ const UsersManagement = () => {
       });
     }
   };
+
+  const handleViewProfile = (userId: string) => {
+    navigate(`/admin/dashboard/users/${userId}`);
+  };
+
+  const filteredUsers = users?.filter(user => {
+    const fullName = `${user.profiles?.first_name || ''} ${user.profiles?.last_name || ''}`.toLowerCase();
+    const email = user.email.toLowerCase();
+    const term = searchTerm.toLowerCase();
+    
+    return fullName.includes(term) || email.includes(term);
+  });
 
   const formatUsersForTable = (users: UserData[]) => {
     return users.map(user => ({
@@ -110,10 +112,13 @@ const UsersManagement = () => {
     }));
   };
 
-  if (loading) {
+  if (error) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="text-center p-4">
+          <p className="text-destructive font-semibold">Error loading users</p>
+          <p className="text-sm text-muted-foreground">{(error as Error).message}</p>
+        </div>
       </div>
     );
   }
@@ -127,6 +132,16 @@ const UsersManagement = () => {
         </p>
       </div>
 
+      <div className="flex items-center relative">
+        <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
+        <Input 
+          placeholder="Search by name or email..." 
+          className="pl-10" 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       <Tabs defaultValue="all-users" className="w-full">
         <TabsList>
           <TabsTrigger value="all-users">All Users</TabsTrigger>
@@ -137,9 +152,10 @@ const UsersManagement = () => {
           <Card>
             <CardContent className="p-6">
               <UserTable 
-                users={formatUsersForTable(users)} 
-                loading={loading} 
-                onRoleChange={handleRoleChange} 
+                users={filteredUsers ? formatUsersForTable(filteredUsers) : []} 
+                loading={isLoading} 
+                onRoleChange={handleRoleChange}
+                onViewProfile={handleViewProfile}
               />
             </CardContent>
           </Card>
@@ -149,9 +165,10 @@ const UsersManagement = () => {
           <Card>
             <CardContent className="p-6">
               <UserTable 
-                users={formatUsersForTable(users.filter(user => user.role === 'admin'))} 
-                loading={loading}
-                onRoleChange={handleRoleChange} 
+                users={filteredUsers ? formatUsersForTable(filteredUsers.filter(user => user.role === 'admin')) : []} 
+                loading={isLoading}
+                onRoleChange={handleRoleChange}
+                onViewProfile={handleViewProfile}
               />
             </CardContent>
           </Card>

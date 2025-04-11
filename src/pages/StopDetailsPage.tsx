@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
-import { Edit, Save, ArrowLeft, MapPin } from 'lucide-react';
+import { Edit, Save, ArrowLeft, MapPin, Map } from 'lucide-react';
+import { parseGoogleMapsUrl } from '@/utils/googleMaps';
 
 interface Stop {
   id: string;
@@ -28,6 +29,7 @@ interface Route {
 const StopDetailsPage = () => {
   const { stopId } = useParams<{ stopId: string }>();
   const [isEditing, setIsEditing] = useState(false);
+  const [googleMapsUrl, setGoogleMapsUrl] = useState('');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -106,6 +108,31 @@ const StopDetailsPage = () => {
     },
   });
 
+  const handleGoogleMapsUrlChange = () => {
+    if (!googleMapsUrl.trim()) return;
+    
+    const { latitude, longitude } = parseGoogleMapsUrl(googleMapsUrl);
+    
+    if (latitude !== null && longitude !== null) {
+      setStopForm({
+        ...stopForm,
+        latitude,
+        longitude
+      });
+      
+      toast({
+        title: "Coordinates Extracted",
+        description: `Latitude: ${latitude}, Longitude: ${longitude}`,
+      });
+    } else {
+      toast({
+        title: "Warning",
+        description: "Could not extract coordinates from the URL. Please check the format.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleSaveStop = () => {
     updateStopMutation.mutate(stopForm);
   };
@@ -139,6 +166,28 @@ const StopDetailsPage = () => {
                   value={stopForm.name} 
                   onChange={(e) => setStopForm({...stopForm, name: e.target.value})}
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="googleMapsUrl">Google Maps URL</Label>
+                <div className="flex space-x-2">
+                  <Input 
+                    id="googleMapsUrl"
+                    placeholder="Paste Google Maps URL here"
+                    value={googleMapsUrl}
+                    onChange={(e) => setGoogleMapsUrl(e.target.value)}
+                  />
+                  <Button 
+                    type="button" 
+                    variant="secondary" 
+                    onClick={handleGoogleMapsUrlChange}
+                  >
+                    <Map className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Paste a Google Maps URL to automatically extract coordinates
+                </p>
               </div>
               
               <div className="space-y-2">
