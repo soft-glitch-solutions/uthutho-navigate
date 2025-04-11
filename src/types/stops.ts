@@ -32,3 +32,17 @@ export interface HubStop {
   stop_id: string;
   distance_meters: number | null;
 }
+
+export interface NearbySpot {
+  id: string;
+  stop_id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  distance_meters: number | null;
+  created_at: string;
+  updated_at: string;
+  description: string | null;
+  category: string | null;
+  image_url: string | null;
+}

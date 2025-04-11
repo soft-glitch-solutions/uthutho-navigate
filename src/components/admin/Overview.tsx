@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Search, Users, MapPin, Route } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import OverviewPage from '@/pages/OverviewPage';
 
 interface ProfileSearchResult {
   id: string;
@@ -35,11 +35,21 @@ const Overview = () => {
       const { count: routeCount } = await supabase
         .from('routes')
         .select('*', { count: 'exact', head: true });
+      
+      const { count: stopCount } = await supabase
+        .from('stops')
+        .select('*', { count: 'exact', head: true });
+        
+      const { count: waitingCount } = await supabase
+        .from('stop_waiting')
+        .select('*', { count: 'exact', head: true });
 
       return {
         usersCount: userCount || 0,
         hubsCount: hubCount || 0,
         routesCount: routeCount || 0,
+        stopsCount: stopCount || 0,
+        waitingCount: waitingCount || 0,
       };
     },
   });
@@ -117,29 +127,13 @@ const Overview = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-6 bg-card backdrop-blur-sm rounded-xl border border-border">
-          <div className="flex justify-between">
-            <h3 className="text-lg font-semibold text-foreground mb-2">Total Users</h3>
-            <Users className="h-5 w-5 text-primary" />
-          </div>
-          <p className="text-3xl text-primary">{overviewData?.usersCount || 0}</p>
-        </Card>
-        <Card className="p-6 bg-card backdrop-blur-sm rounded-xl border border-border">
-          <div className="flex justify-between">
-            <h3 className="text-lg font-semibold text-foreground mb-2">Active Hubs</h3>
-            <MapPin className="h-5 w-5 text-secondary" />
-          </div>
-          <p className="text-3xl text-secondary">{overviewData?.hubsCount || 0}</p>
-        </Card>
-        <Card className="p-6 bg-card backdrop-blur-sm rounded-xl border border-border">
-          <div className="flex justify-between">
-            <h3 className="text-lg font-semibold text-foreground mb-2">Total Routes</h3>
-            <Route className="h-5 w-5 text-accent" />
-          </div>
-          <p className="text-3xl text-accent">{overviewData?.routesCount || 0}</p>
-        </Card>
-      </div>
+      <OverviewPage 
+        usersCount={overviewData?.usersCount || 0} 
+        hubsCount={overviewData?.hubsCount || 0} 
+        routesCount={overviewData?.routesCount || 0}
+        stopsCount={overviewData?.stopsCount || 0}
+        waitingCount={overviewData?.waitingCount || 0}
+      />
     </div>
   );
 };

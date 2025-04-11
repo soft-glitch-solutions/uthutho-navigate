@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon, FileText, MapPin, Route, StopCircle, Inbox } from 'lucide-react';
+import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon, FileText, StopCircle, Inbox, MapPin } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
 
 interface SidebarProps {
@@ -37,28 +37,20 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
           Overview
         </Link>
         <Link
-          to="/admin/dashboard/hubs"
-          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'hubs' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
-          onClick={() => setActiveTab('hubs')}
-        >
-          <MapPin className="h-5 w-5 mr-3" />
-          Hubs
-        </Link>
-        <Link
-          to="/admin/dashboard/routes"
-          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'routes' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
-          onClick={() => setActiveTab('routes')}
-        >
-          <Route className="h-5 w-5 mr-3" />
-          Routes
-        </Link>
-        <Link
           to="/admin/dashboard/stops"
           className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'stops' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
           onClick={() => setActiveTab('stops')}
         >
           <StopCircle className="h-5 w-5 mr-3" />
           Stops
+        </Link>
+        <Link
+          to="/admin/dashboard/nearby-spots"
+          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'nearby-spots' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('nearby-spots')}
+        >
+          <MapPin className="h-5 w-5 mr-3" />
+          Nearby Spots
         </Link>
         <Link
           to="/admin/dashboard/requests"

@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +15,7 @@ import RoutesPage from "./pages/RoutesPage";
 import RouteDetailsPage from "./pages/RouteDetailsPage";
 import StopsPage from "./pages/StopsPage";
 import StopDetailsPage from "./pages/StopDetailsPage";
+import NearbySpots from "./pages/NearbySpots";
 import RequestsPage from "./pages/RequestsPage";
 import ProfilePage from "./pages/ProfilePage";
 import UsersPage from "./pages/UsersPage";
@@ -76,6 +78,7 @@ const App = () => {
                 <Route path="routes/:routeId" element={<RouteDetailsPage />} />
                 <Route path="stops" element={<StopsPage />} />
                 <Route path="stops/:stopId" element={<StopDetailsPage />} />
+                <Route path="nearby-spots" element={<NearbySpots />} />
                 <Route path="requests" element={<RequestsPage />} />
                 <Route path="profile" element={<ProfilePage {...mockProfileProps} />} />
                 <Route path="users" element={<UsersPage />} />
