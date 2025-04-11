@@ -263,7 +263,7 @@ const RoutesPage = () => {
                       <span className="font-medium">To:</span> {route.end_point}
                     </p>
                     <p className="text-sm">
-                      <span className="font-medium">Cost:</span> R{route.cost.toFixed(2)}
+                      <span className="font-medium">Cost:</span> R{route.cost !== undefined && route.cost !== null ? route.cost.toFixed(2) : '0.00'}
                     </p>
                     <p className="text-sm">
                       <span className="font-medium">Transport:</span> {route.transport_type}

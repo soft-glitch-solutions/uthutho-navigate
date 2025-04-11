@@ -47,11 +47,13 @@ const UsersManagement = () => {
             .eq('id', role.user_id)
             .single();
           
-          const { data: emailData } = await supabase.rpc('get_user_email', { user_id: role.user_id });
+          // Instead of using RPC, directly query the user email
+          const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(role.user_id);
+          const email = authUser?.user?.email || 'Email not available';
           
           userData.push({
             user_id: role.user_id,
-            email: emailData || 'Email not available',
+            email: email,
             role: role.role as "admin" | "user",
             profiles: profileData ? {
               first_name: profileData.first_name,
@@ -133,7 +135,7 @@ const UsersManagement = () => {
       </div>
 
       <div className="flex items-center relative">
-        <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input 
           placeholder="Search by name or email..." 
           className="pl-10" 
