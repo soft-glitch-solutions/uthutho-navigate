@@ -14,7 +14,7 @@ interface SidebarProps {
 
 const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
   return (
-    <aside className="w-64 bg-card fixed h-full border-r border-border">
+    <aside className="w-64 bg-card h-full border-r border-border overflow-y-auto">
       <div className="p-6">
         <div className="flex items-center space-x-3">
           <img

@@ -57,16 +57,18 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="flex">
-        <Sidebar
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          onLogout={handleLogout}
-        />
-        <div className="flex-1">
-          <TopNav />
-          <main className="p-8">
+    <div className="min-h-screen bg-background flex flex-col">
+      <TopNav />
+      <div className="flex flex-1 overflow-hidden">
+        <div className="hidden md:block">
+          <Sidebar
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            onLogout={handleLogout}
+          />
+        </div>
+        <div className="flex-1 overflow-auto">
+          <main className="p-4 md:p-8">
             <div className="max-w-7xl mx-auto">
               <Outlet />
             </div>
