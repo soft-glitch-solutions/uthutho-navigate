@@ -9,6 +9,69 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: string | null
+          page_url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          page_url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          page_url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      deployment_logs: {
+        Row: {
+          changes: string[] | null
+          completed_at: string | null
+          created_at: string | null
+          deployed_by: string | null
+          id: string
+          status: string
+          version: string | null
+        }
+        Insert: {
+          changes?: string[] | null
+          completed_at?: string | null
+          created_at?: string | null
+          deployed_by?: string | null
+          id?: string
+          status: string
+          version?: string | null
+        }
+        Update: {
+          changes?: string[] | null
+          completed_at?: string | null
+          created_at?: string | null
+          deployed_by?: string | null
+          id?: string
+          status?: string
+          version?: string | null
+        }
+        Relationships: []
+      }
       help_documentation: {
         Row: {
           content: string

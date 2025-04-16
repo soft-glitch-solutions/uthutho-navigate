@@ -31,51 +31,26 @@ const SystemLogsPage = () => {
   const { data: logs, isLoading } = useQuery({
     queryKey: ['systemLogs'],
     queryFn: async () => {
-      // In a real implementation, you would fetch from a system_logs table
-      // For this demo, we'll just return a mock data array
-      const mockLogs: SystemLog[] = [
-        {
-          id: '1',
-          user_id: 'user1',
-          action: 'LOGIN',
-          timestamp: new Date().toISOString(),
-          details: 'User logged in',
-          user_email: 'user1@example.com',
-          user_name: 'John Doe'
-        },
-        {
-          id: '2',
-          user_id: 'user2',
-          action: 'CREATE',
-          timestamp: new Date(Date.now() - 3600000).toISOString(),
-          details: 'Created a new hub',
-          user_email: 'user2@example.com',
-          user_name: 'Jane Smith'
-        },
-        {
-          id: '3',
-          user_id: 'user1',
-          action: 'UPDATE',
-          timestamp: new Date(Date.now() - 7200000).toISOString(),
-          details: 'Updated route information',
-          user_email: 'user1@example.com',
-          user_name: 'John Doe'
-        },
-        {
-          id: '4',
-          user_id: 'user3',
-          action: 'DELETE',
-          timestamp: new Date(Date.now() - 86400000).toISOString(),
-          details: 'Deleted a stop',
-          user_email: 'user3@example.com',
-          user_name: 'Alex Johnson'
-        }
-      ];
-      
-      return mockLogs;
-    }
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const { data, error } = await supabase
+        .from('activity_logs')
+        .select(`
+          *,
+          reporter:profiles(
+            first_name,
+            last_name
+          )
+        `)
+        .gte('created_at', today.toISOString())
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data as unknown as SystemLog[];
+    },
   });
-  
+
   // Apply filters to logs
   const filteredLogs = logs?.filter(log => {
     // Apply date filter

@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
   LayoutDashboard, User, Users, FileText, 
-  Inbox, MapPin 
+  Inbox, MapPin, Clock, LifeBuoy, HelpCircle, MessageSquare
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -12,7 +11,7 @@ interface SidebarProps {
   onLogout: () => void;
 }
 
-const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
+const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
   return (
     <aside className="w-64 bg-card h-full border-r border-border overflow-y-auto">
       <div className="p-6">
@@ -76,6 +75,34 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
           Reports
         </Link>
       </nav>
+
+      <div className="mt-6 pt-6 border-t border-border">
+        <h3 className="px-6 text-sm font-medium text-muted-foreground mb-2">Support</h3>
+        <Link
+          to="/admin/dashboard/help"
+          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'help' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('help')}
+        >
+          <HelpCircle className="h-5 w-5 mr-3" />
+          Documentation
+        </Link>
+        <Link
+          to="/admin/dashboard/support"
+          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'support' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('support')}
+        >
+          <MessageSquare className="h-5 w-5 mr-3" />
+          Support Tickets
+        </Link>
+        <Link
+          to="/admin/dashboard/logs"
+          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'logs' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('logs')}
+        >
+          <Clock className="h-5 w-5 mr-3" />
+          System Logs
+        </Link>
+      </div>
     </aside>
   );
 };
