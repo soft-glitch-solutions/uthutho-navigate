@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
   LayoutDashboard, User, Users, FileText, 
-  Inbox, MapPin, Clock, LifeBuoy, HelpCircle, MessageSquare
+  Inbox, MapPin, Clock, LifeBuoy, HelpCircle, 
+  MessageSquare, BookOpen, Newspaper
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -75,6 +76,26 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
           Reports
         </Link>
       </nav>
+
+      <div className="mt-6 pt-6 border-t border-border">
+        <h3 className="px-6 text-sm font-medium text-muted-foreground mb-2">Content</h3>
+        <Link
+          to="/admin/dashboard/documentation"
+          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'documentation' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('documentation')}
+        >
+          <BookOpen className="h-5 w-5 mr-3" />
+          Documentation
+        </Link>
+        <Link
+          to="/admin/dashboard/blogs"
+          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'blogs' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
+          onClick={() => setActiveTab('blogs')}
+        >
+          <Newspaper className="h-5 w-5 mr-3" />
+          Blogs
+        </Link>
+      </div>
 
       <div className="mt-6 pt-6 border-t border-border">
         <h3 className="px-6 text-sm font-medium text-muted-foreground mb-2">Support</h3>
