@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,6 +28,8 @@ import Overview from "./components/admin/Overview";
 import UserProfilePage from "./pages/UserProfilePage";
 import SystemLogsPage from "./pages/SystemLogsPage";
 import HelpDocumentation from "./components/admin/HelpDocumentation";
+import DocumentationPage from "./pages/DocumentationPage";
+import BlogsPage from "./pages/BlogsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -86,6 +87,8 @@ const App = () => {
                 <Route path="reports" element={<ReportsPage />} />
                 <Route path="logs" element={<SystemLogsPage />} />
                 <Route path="help" element={<HelpDocumentation />} />
+                <Route path="documentation" element={<DocumentationPage />} />
+                <Route path="blogs" element={<BlogsPage />} />
                 <Route path="settings" element={<SettingsPage theme={theme} toggleTheme={toggleTheme} />} />
               </Route>
               
