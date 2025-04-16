@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import Sidebar from '@/components/admin/Sidebar';

@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import OverviewPage from '@/pages/OverviewPage';
+import { OverviewSkeleton } from './OverviewSkeleton';
 
 interface ProfileSearchResult {
   id: string;
@@ -21,7 +22,7 @@ const Overview = () => {
   const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate();
 
-  const { data: overviewData } = useQuery({
+  const { data: overviewData, isLoading } = useQuery({
     queryKey: ['overview'],
     queryFn: async () => {
       const { count: userCount } = await supabase
@@ -127,13 +128,16 @@ const Overview = () => {
         </div>
       </div>
 
-      <OverviewPage 
-        usersCount={overviewData?.usersCount || 0} 
-        hubsCount={overviewData?.hubsCount || 0} 
-        routesCount={overviewData?.routesCount || 0}
-        stopsCount={overviewData?.stopsCount || 0}
-        waitingCount={overviewData?.waitingCount || 0}
-      />
+      {isLoading ? (
+        <OverviewSkeleton />
+      ) : (
+        <OverviewPage 
+          usersCount={overviewData?.usersCount || 0} 
+          hubsCount={overviewData?.hubsCount || 0} 
+          stopsCount={overviewData?.stopsCount || 0}
+          waitingCount={overviewData?.waitingCount || 0}
+        />
+      )}
     </div>
   );
 };
