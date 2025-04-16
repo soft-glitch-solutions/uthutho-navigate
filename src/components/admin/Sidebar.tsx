@@ -1,8 +1,10 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, User, Users, Settings, LogOut, Sun, Moon, FileText, StopCircle, Inbox, MapPin } from 'lucide-react';
-import { useTheme } from '@/components/theme-provider';
+import { Link } from 'react-router-dom';
+import { 
+  LayoutDashboard, User, Users, FileText, 
+  Inbox, MapPin 
+} from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -10,10 +12,7 @@ interface SidebarProps {
   onLogout: () => void;
 }
 
-const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
-  const { theme, setTheme } = useTheme();
-  const location = useLocation();
-
+const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
   return (
     <aside className="w-64 bg-card fixed h-full border-r border-border">
       <div className="p-6">
@@ -35,14 +34,6 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
         >
           <LayoutDashboard className="h-5 w-5 mr-3" />
           Overview
-        </Link>
-        <Link
-          to="/admin/dashboard/stops"
-          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'stops' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
-          onClick={() => setActiveTab('stops')}
-        >
-          <StopCircle className="h-5 w-5 mr-3" />
-          Stops
         </Link>
         <Link
           to="/admin/dashboard/nearby-spots"
@@ -84,36 +75,7 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
           <FileText className="h-5 w-5 mr-3" />
           Reports
         </Link>
-        <Link
-          to="/admin/dashboard/settings"
-          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'settings' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
-          onClick={() => setActiveTab('settings')}
-        >
-          <Settings className="h-5 w-5 mr-3" />
-          Settings
-        </Link>
       </nav>
-
-      <div className="absolute bottom-0 w-64 p-6 space-y-4">
-        <button
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="flex items-center w-full px-4 py-2 text-foreground hover:bg-accent/10 rounded-lg"
-        >
-          {theme === 'dark' ? (
-            <Sun className="h-5 w-5 mr-3" />
-          ) : (
-            <Moon className="h-5 w-5 mr-3" />
-          )}
-          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-        </button>
-        <button
-          onClick={onLogout}
-          className="flex items-center w-full px-4 py-2 text-foreground hover:bg-accent/10 rounded-lg"
-        >
-          <LogOut className="h-5 w-5 mr-3" />
-          Logout
-        </button>
-      </div>
     </aside>
   );
 };

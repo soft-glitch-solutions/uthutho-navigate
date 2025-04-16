@@ -1,9 +1,10 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import Sidebar from '@/components/admin/Sidebar';
 import { useToast } from '@/components/ui/use-toast';
+import { TopNav } from '@/components/admin/TopNav';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -57,17 +58,21 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Sidebar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onLogout={handleLogout}
-      />
-
-      <main className="ml-64 p-8">
-        <div className="max-w-7xl mx-auto">
-          <Outlet />
+      <div className="flex">
+        <Sidebar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onLogout={handleLogout}
+        />
+        <div className="flex-1">
+          <TopNav />
+          <main className="p-8">
+            <div className="max-w-7xl mx-auto">
+              <Outlet />
+            </div>
+          </main>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

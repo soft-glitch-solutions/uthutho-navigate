@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Camera } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
+import { ProfileSkeleton } from '@/components/admin/ProfileSkeleton';
 
 interface ProfilePageProps {
   onProfileUpdate: (profile: { firstName: string; lastName: string; avatar: string | null }) => void;
@@ -23,7 +23,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Fetch the current user profile from Supabase
   useEffect(() => {
     const fetchProfile = async () => {
       const { data: userData, error } = await supabase.auth.getUser();
@@ -35,7 +34,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
       }
 
       if (userData && userData.user) {
-        // Fetch user profile data from profiles table
         const { data, error: profileError } = await supabase
           .from('profiles')
           .select('*')
@@ -46,7 +44,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
           console.error('Error fetching profile:', profileError.message);
           setIsLoading(false);
         } else if (data) {
-          // Get user role from user_roles table
           const { data: roleData } = await supabase
             .from('user_roles')
             .select('role')
@@ -75,7 +72,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
     fetchProfile();
   }, []);
 
-  // Handle avatar upload
   const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -84,13 +80,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
         const avatarUrl = reader.result as string;
         setUpdatedProfile({ ...updatedProfile, avatar_url: avatarUrl });
         setEditingAvatar(false);
-        onAvatarChange(avatarUrl); // Pass the avatar URL to the parent component
+        onAvatarChange(avatarUrl);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Handle profile update submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { data: userData } = await supabase.auth.getUser();
@@ -102,7 +97,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
         avatar_url: updatedProfile.avatar_url,
       };
 
-      // Update the user profile in Supabase
       const { error } = await supabase
         .from('profiles')
         .upsert([{ ...updatedData, id: userData.user.id }]);
@@ -129,14 +123,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
   };
 
   if (isLoading) {
-    return <div className="p-6">Loading...</div>;
+    return <ProfileSkeleton />;
   }
 
   return (
     <div className="bg-card backdrop-blur-sm rounded-xl border border-border p-6 max-w-3xl mx-auto">
       <h2 className="text-xl font-semibold text-foreground mb-6">Profile Settings</h2>
 
-      {/* Profile Header */}
       <div className="flex items-center space-x-4 mb-6">
         <div className="relative">
           <img
@@ -158,7 +151,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
         </div>
       </div>
 
-      {/* Profile Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-foreground mb-1">First Name</label>
@@ -193,11 +185,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onProfileUpdate, onAvatarChan
         </Button>
       </form>
 
-      {/* Modal for Avatar Upload */}
       {editingAvatar && (
         <div
           className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50"
-          onClick={() => setEditingAvatar(false)} // Close modal on outside click
+          onClick={() => setEditingAvatar(false)}
         >
           <div
             className="bg-white p-6 rounded-md w-1/3"
