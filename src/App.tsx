@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -30,6 +31,12 @@ import SystemLogsPage from "./pages/SystemLogsPage";
 import HelpDocumentation from "./components/admin/HelpDocumentation";
 import DocumentationPage from "./pages/DocumentationPage";
 import BlogsPage from "./pages/BlogsPage";
+import BlogDetailPage from "./pages/BlogDetailPage";
+import DocumentationDetailPage from "./pages/DocumentationDetailPage";
+import DocsPage from "./pages/DocsPage";
+import DocDetailPage from "./pages/DocDetailPage"; 
+import BlogsPublicPage from "./pages/BlogsPublicPage";
+import BlogDetailPublicPage from "./pages/BlogDetailPublicPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -68,6 +75,10 @@ const App = () => {
               <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
               <Route path="/delete-account" element={<DeleteAccountLogin />} />
               <Route path="/confirm-delete" element={<ConfirmDeleteAccount />} />
+              <Route path="/docs" element={<DocsPage />} />
+              <Route path="/docs/:docId" element={<DocDetailPage />} />
+              <Route path="/blog" element={<BlogsPublicPage />} />
+              <Route path="/blog/:blogId" element={<BlogDetailPublicPage />} />
               <Route path="/admin" element={<AdminLogin />} />
               
               {/* Admin dashboard layout with nested routes */}
@@ -88,7 +99,9 @@ const App = () => {
                 <Route path="logs" element={<SystemLogsPage />} />
                 <Route path="help" element={<HelpDocumentation />} />
                 <Route path="documentation" element={<DocumentationPage />} />
+                <Route path="documentation/:docId" element={<DocumentationDetailPage />} />
                 <Route path="blogs" element={<BlogsPage />} />
+                <Route path="blogs/:blogId" element={<BlogDetailPage />} />
                 <Route path="settings" element={<SettingsPage theme={theme} toggleTheme={toggleTheme} />} />
               </Route>
               
