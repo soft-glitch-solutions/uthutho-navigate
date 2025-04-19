@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Stop, Route, Hub } from '@/types/stops';
 import { StopForm } from './StopForm';
@@ -44,39 +43,70 @@ export const EditStopModal = ({
   setHubDistances,
   onSubmit
 }: EditStopModalProps) => {
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 bg-black/50"
-      onClick={onClose}
-    >
+    <>
+      {/* Overlay with fade animation */}
       <div
-        className="bg-background p-6 rounded-md w-full md:w-[700px] mx-auto mt-20 max-h-[80vh] overflow-y-auto"
+        className={`fixed inset-0 bg-black/50 transition-opacity duration-300 ${
+          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={onClose}
+      />
+      
+      {/* Modal with slide-in animation */}
+      <div
+        className={`fixed top-0 right-0 h-full w-full md:w-[700px] bg-background shadow-lg transition-transform duration-300 ease-in-out ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="text-lg font-semibold mb-4">Edit Stop</h3>
-        <StopForm
-          selectedStop={selectedStop}
-          setSelectedStop={setSelectedStop}
-          googleMapsUrl={googleMapsUrl}
-          setGoogleMapsUrl={setGoogleMapsUrl}
-          handleGoogleMapsUrlChange={handleGoogleMapsUrlChange}
-          routes={routes}
-          hubs={hubs}
-          selectedRoutes={selectedRoutes}
-          selectedHubs={selectedHubs}
-          toggleRouteSelection={toggleRouteSelection}
-          toggleHubSelection={toggleHubSelection}
-          routeOrderNumbers={routeOrderNumbers}
-          setRouteOrderNumbers={setRouteOrderNumbers}
-          hubDistances={hubDistances}
-          setHubDistances={setHubDistances}
-          onSubmit={onSubmit}
-          onCancel={onClose}
-          submitButtonText="Save Changes"
-        />
+        <div className="p-6 h-full overflow-y-auto">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">Edit Stop</h3>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 transition-colors"
+              aria-label="Close modal"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          
+          <StopForm
+            selectedStop={selectedStop}
+            setSelectedStop={setSelectedStop}
+            googleMapsUrl={googleMapsUrl}
+            setGoogleMapsUrl={setGoogleMapsUrl}
+            handleGoogleMapsUrlChange={handleGoogleMapsUrlChange}
+            routes={routes}
+            hubs={hubs}
+            selectedRoutes={selectedRoutes}
+            selectedHubs={selectedHubs}
+            toggleRouteSelection={toggleRouteSelection}
+            toggleHubSelection={toggleHubSelection}
+            routeOrderNumbers={routeOrderNumbers}
+            setRouteOrderNumbers={setRouteOrderNumbers}
+            hubDistances={hubDistances}
+            setHubDistances={setHubDistances}
+            onSubmit={onSubmit}
+            onCancel={onClose}
+            submitButtonText="Save Changes"
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };

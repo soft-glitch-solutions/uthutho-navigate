@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Edit, Trash2, Plus, Map, Search } from 'lucide-react';
+import { Edit, Trash2, Plus, Map, Search, X } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -325,140 +324,171 @@ const NearbySpots = () => {
 
       {/* Add/Edit Modal */}
       <div
-        className={`fixed inset-0 bg-black/50 ${isModalOpen ? 'block' : 'hidden'}`}
+        className={`fixed inset-0 bg-black/50 transition-opacity duration-300 ${
+          isModalOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
         onClick={() => setIsModalOpen(false)}
       >
         <div
-          className="bg-background p-6 rounded-md w-full md:w-[600px] mx-auto mt-20 max-h-[80vh] overflow-y-auto"
+          className={`fixed top-0 right-0 h-full w-full md:w-[600px] bg-background shadow-lg transition-transform duration-300 ease-in-out ${
+            isModalOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
           onClick={(e) => e.stopPropagation()}
         >
-          <h3 className="text-lg font-semibold mb-4">
-            {selectedSpot ? 'Edit Nearby Spot' : 'Add New Nearby Spot'}
-          </h3>
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Name *</label>
-                <Input
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Associated Stop *</label>
-                <Select value={selectedStop} onValueChange={setSelectedStop}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a stop" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {stops?.map((stop) => (
-                      <SelectItem key={stop.id} value={stop.id}>
-                        {stop.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Category</label>
-                <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="restaurant">Restaurant</SelectItem>
-                    <SelectItem value="cafe">Cafe</SelectItem>
-                    <SelectItem value="shop">Shop</SelectItem>
-                    <SelectItem value="entertainment">Entertainment</SelectItem>
-                    <SelectItem value="service">Service</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full p-2 border border-border rounded-md"
-                  rows={3}
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Latitude *</label>
-                  <Input
-                    type="number"
-                    step="any"
-                    value={formData.latitude}
-                    onChange={(e) => setFormData({ ...formData, latitude: parseFloat(e.target.value) })}
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Longitude *</label>
-                  <Input
-                    type="number"
-                    step="any"
-                    value={formData.longitude}
-                    onChange={(e) => setFormData({ ...formData, longitude: parseFloat(e.target.value) })}
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Distance (meters)</label>
-                <Input
-                  type="number"
-                  value={formData.distance_meters}
-                  onChange={(e) => setFormData({ ...formData, distance_meters: parseInt(e.target.value) })}
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-1">Image URL</label>
-                <Input
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
+          <div className="p-6 h-full overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">
+                {selectedSpot ? 'Edit Nearby Spot' : 'Add New Nearby Spot'}
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="h-6 w-6" />
+              </button>
             </div>
             
-            <div className="flex justify-end space-x-2 mt-6">
-              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit">
-                {selectedSpot ? 'Update' : 'Create'} Spot
-              </Button>
-            </div>
-          </form>
+            <form onSubmit={handleSubmit}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Name *</label>
+                  <Input
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Associated Stop *</label>
+                  <Select value={selectedStop} onValueChange={setSelectedStop}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a stop" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {stops?.map((stop) => (
+                        <SelectItem key={stop.id} value={stop.id}>
+                          {stop.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Category</label>
+                  <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="restaurant">Restaurant</SelectItem>
+                      <SelectItem value="cafe">Cafe</SelectItem>
+                      <SelectItem value="shop">Shop</SelectItem>
+                      <SelectItem value="entertainment">Entertainment</SelectItem>
+                      <SelectItem value="service">Service</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Description</label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full p-2 border border-border rounded-md"
+                    rows={3}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Latitude *</label>
+                    <Input
+                      type="number"
+                      step="any"
+                      value={formData.latitude}
+                      onChange={(e) => setFormData({ ...formData, latitude: parseFloat(e.target.value) })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Longitude *</label>
+                    <Input
+                      type="number"
+                      step="any"
+                      value={formData.longitude}
+                      onChange={(e) => setFormData({ ...formData, longitude: parseFloat(e.target.value) })}
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Distance (meters)</label>
+                  <Input
+                    type="number"
+                    value={formData.distance_meters}
+                    onChange={(e) => setFormData({ ...formData, distance_meters: parseInt(e.target.value) })}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-1">Image URL</label>
+                  <Input
+                    type="url"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-2 mt-6">
+                <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  {selectedSpot ? 'Update' : 'Create'} Spot
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 
       {/* Delete Confirmation Modal */}
-      {selectedSpot && (
+      <div
+        className={`fixed inset-0 bg-black/50 transition-opacity duration-300 ${
+          isDeleteModalOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setIsDeleteModalOpen(false)}
+      >
         <div
-          className={`fixed inset-0 bg-black/50 ${isDeleteModalOpen ? 'block' : 'hidden'}`}
-          onClick={() => setIsDeleteModalOpen(false)}
+          className={`fixed top-0 right-0 h-full w-full md:w-[500px] bg-background shadow-lg transition-transform duration-300 ease-in-out ${
+            isDeleteModalOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+          onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className="bg-background p-6 rounded-md w-full md:w-[500px] mx-auto mt-20"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
-            <p>Are you sure you want to delete the nearby spot "{selectedSpot.name}"?</p>
+          <div className="p-6 h-full">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Confirm Delete</h3>
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            
+            <p>Are you sure you want to delete the nearby spot "{selectedSpot?.name}"?</p>
             <p className="text-sm text-muted-foreground mt-2 mb-6">
               This action cannot be undone.
             </p>
+            
             <div className="flex justify-end space-x-2">
               <Button type="button" variant="outline" onClick={() => setIsDeleteModalOpen(false)}>
                 Cancel
@@ -466,14 +496,14 @@ const NearbySpots = () => {
               <Button 
                 type="button" 
                 variant="destructive"
-                onClick={() => deleteSpot.mutate(selectedSpot.id)}
+                onClick={() => selectedSpot && deleteSpot.mutate(selectedSpot.id)}
               >
                 Delete
               </Button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
