@@ -54,6 +54,7 @@ const mockProfileProps = {
 };
 
 import { useState } from "react";
+import SupportPage from "./pages/SupportPage";
 
 const App = () => {
   const [theme, setTheme] = useState("light");
@@ -103,6 +104,7 @@ const App = () => {
                 <Route path="blogs" element={<BlogsPage />} />
                 <Route path="blogs/:blogId" element={<BlogDetailPage />} />
                 <Route path="settings" element={<SettingsPage theme={theme} toggleTheme={toggleTheme} />} />
+                <Route path="support" element={<SupportPage />} />
               </Route>
               
               {/* Redirect old URLs to the new structure */}

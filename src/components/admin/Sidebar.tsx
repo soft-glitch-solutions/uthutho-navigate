@@ -52,14 +52,6 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }: SidebarProps) => {
           Requests
         </Link>
         <Link
-          to="/admin/dashboard/profile"
-          className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'profile' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
-          onClick={() => setActiveTab('profile')}
-        >
-          <User className="h-5 w-5 mr-3" />
-          Profile
-        </Link>
-        <Link
           to="/admin/dashboard/users"
           className={`flex items-center w-full px-6 py-3 text-foreground ${activeTab === 'users' ? 'bg-primary/20' : 'hover:bg-accent/10'}`}
           onClick={() => setActiveTab('users')}
