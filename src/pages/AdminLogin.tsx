@@ -1,20 +1,31 @@
-
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [captchaToken, setCaptchaToken] = useState('');
+  const captchaRef = useRef(null);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!captchaToken) {
+      toast.error('Please complete the CAPTCHA');
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
+        options: {
+          captchaToken // Send hCaptcha token
+        }
       });
 
       if (error) {
@@ -67,6 +78,13 @@ const AdminLogin = () => {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div>
+              <HCaptcha
+                sitekey="your-hcaptcha-site-key" // Replace with your actual site key
+                onVerify={setCaptchaToken}
+                ref={captchaRef}
               />
             </div>
           </div>
