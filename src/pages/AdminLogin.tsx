@@ -82,7 +82,7 @@ const AdminLogin = () => {
             </div>
             <div>
               <HCaptcha
-                sitekey="your-hcaptcha-site-key" // Replace with your actual site key
+                sitekey="4e184242-180a-4cb2-830c-69da06900bd8" // Replace with your actual site key
                 onVerify={setCaptchaToken}
                 ref={captchaRef}
               />
