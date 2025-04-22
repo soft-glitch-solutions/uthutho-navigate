@@ -1,6 +1,9 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
 import { Stop, Route, Hub } from '@/types/stops';
 import { StopForm } from './StopForm';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface AddStopModalProps {
   isOpen: boolean;
@@ -43,6 +46,64 @@ export const AddStopModal = ({
   setHubDistances,
   onSubmit
 }: AddStopModalProps) => {
+  const { toast } = useToast();
+
+  // Log activity when stop is added or edited
+  useEffect(() => {
+    if (isOpen) {
+      const action = selectedStop ? 'view_stop_edit' : 'view_stop_add';
+      logUserActivity(action, {
+        stop_id: selectedStop?.id || null,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }, [isOpen, selectedStop]);
+
+  // Function to log user activity
+  const logUserActivity = async (action: string, details: any) => {
+    try {
+      const { error } = await supabase
+        .from('activity_logs')
+        .insert([
+          { 
+            action, 
+            details,
+            page_url: window.location.href,
+            user_agent: navigator.userAgent
+          }
+        ]);
+      
+      if (error) {
+        console.error('Failed to log activity:', error);
+      }
+    } catch (err) {
+      console.error('Error logging activity:', err);
+    }
+  };
+
+  // Enhanced submit handler with activity logging
+  const handleSubmit = async (e: React.FormEvent) => {
+    onSubmit(e);
+    
+    // Log the submission activity
+    await logUserActivity(
+      selectedStop ? 'edit_stop_submit' : 'add_stop_submit', 
+      {
+        stop_data: {
+          id: selectedStop?.id || null,
+          selected_routes: selectedRoutes,
+          selected_hubs: selectedHubs,
+          timestamp: new Date().toISOString()
+        }
+      }
+    );
+
+    toast({
+      title: `Stop ${selectedStop ? 'Updated' : 'Added'}`,
+      description: `The stop has been successfully ${selectedStop ? 'updated' : 'added'}.`,
+    });
+  };
+
   return (
     <>
       {/* Overlay */}
@@ -102,7 +163,7 @@ export const AddStopModal = ({
             setRouteOrderNumbers={setRouteOrderNumbers}
             hubDistances={hubDistances}
             setHubDistances={setHubDistances}
-            onSubmit={onSubmit}
+            onSubmit={handleSubmit}
             onCancel={onClose}
             submitButtonText={selectedStop ? 'Update Stop' : 'Add Stop'}
           />

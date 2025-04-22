@@ -55,9 +55,9 @@ const BlogDetailPage = () => {
     mutationFn: async () => {
       if (!blogId) return null;
       
-      const updateData = {
+      const updateData: any = {
         title,
-        content: htmlContent, // Use the HTML content from either the WYSIWYG or direct HTML edit
+        content: htmlContent,
         tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag),
         status,
         updated_at: new Date(),

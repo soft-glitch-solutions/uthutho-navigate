@@ -28,7 +28,7 @@ const DocsPage = () => {
   });
 
   // Group documentation by tags
-  const groupedDocs = docs?.reduce((acc, doc) => {
+  const groupedDocs = docs?.reduce((acc: Record<string, any[]>, doc) => {
     if (doc.tags && doc.tags.length > 0) {
       doc.tags.forEach((tag: string) => {
         if (!acc[tag]) acc[tag] = [];
@@ -84,9 +84,9 @@ const DocsPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <header className="bg-primary py-16">
+      <header className="bg-blue-900 py-16">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold text-white mb-4">Documentation</h1>
           <p className="text-white/80 max-w-2xl mx-auto">
@@ -100,7 +100,7 @@ const DocsPage = () => {
               placeholder="Search documentation..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-3 bg-white text-gray-800 rounded-full border-0 shadow focus:ring-2 focus:ring-white/20"
+              className="pl-10 pr-4 py-3 bg-gray-900 text-white rounded-full border-0 shadow focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -109,9 +109,9 @@ const DocsPage = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12 max-w-6xl">
         <Tabs defaultValue="all">
-          <TabsList className="mb-6">
-            <TabsTrigger value="all">All Documentation</TabsTrigger>
-            <TabsTrigger value="faq">Frequently Asked Questions</TabsTrigger>
+          <TabsList className="mb-6 bg-gray-900">
+            <TabsTrigger value="all" className="data-[state=active]:bg-blue-700">All Documentation</TabsTrigger>
+            <TabsTrigger value="faq" className="data-[state=active]:bg-blue-700">Frequently Asked Questions</TabsTrigger>
           </TabsList>
           
           <TabsContent value="all">
@@ -121,24 +121,24 @@ const DocsPage = () => {
                 {filteredDocs && filteredDocs.length > 0 ? (
                   <div className="grid gap-6 md:grid-cols-2">
                     {filteredDocs.map((doc) => (
-                      <Card key={doc.id}>
+                      <Card key={doc.id} className="bg-gray-900 border-gray-700">
                         <CardHeader>
-                          <CardTitle>{doc.title}</CardTitle>
+                          <CardTitle className="text-white">{doc.title}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <div className="prose dark:prose-invert max-w-none prose-sm mb-4">
+                          <div className="prose prose-invert max-w-none prose-sm mb-4">
                             <div dangerouslySetInnerHTML={{ __html: doc.content.substring(0, 150) + '...' }} />
                           </div>
                           <div className="flex flex-wrap gap-2 mb-4">
                             {doc.tags && doc.tags.map((tag: string) => (
-                              <span key={tag} className="bg-primary/10 text-primary px-2 py-1 rounded-full text-sm">
+                              <span key={tag} className="bg-blue-900 text-blue-300 px-2 py-1 rounded-full text-sm">
                                 {tag}
                               </span>
                             ))}
                           </div>
                           <Link 
                             to={`/docs/${doc.id}`} 
-                            className="text-primary hover:underline"
+                            className="text-blue-400 hover:text-blue-300 hover:underline"
                           >
                             Read more
                           </Link>
@@ -153,27 +153,27 @@ const DocsPage = () => {
             ) : (
               Object.entries(groupedDocs).map(([category, categoryDocs]) => (
                 <div key={category} className="mb-12">
-                  <h2 className="text-2xl font-semibold mb-6 border-b pb-2">{category}</h2>
+                  <h2 className="text-2xl font-semibold mb-6 border-b border-gray-700 pb-2">{category}</h2>
                   <div className="grid gap-6 md:grid-cols-2">
                     {categoryDocs.map((doc) => (
-                      <Card key={doc.id}>
+                      <Card key={doc.id} className="bg-gray-900 border-gray-700">
                         <CardHeader>
-                          <CardTitle>{doc.title}</CardTitle>
+                          <CardTitle className="text-white">{doc.title}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <div className="prose dark:prose-invert max-w-none prose-sm mb-4">
+                          <div className="prose prose-invert max-w-none prose-sm mb-4">
                             <div dangerouslySetInnerHTML={{ __html: doc.content.substring(0, 150) + '...' }} />
                           </div>
                           <div className="flex flex-wrap gap-2 mb-4">
                             {doc.tags && doc.tags.map((tag: string) => (
-                              <span key={tag} className="bg-primary/10 text-primary px-2 py-1 rounded-full text-sm">
+                              <span key={tag} className="bg-blue-900 text-blue-300 px-2 py-1 rounded-full text-sm">
                                 {tag}
                               </span>
                             ))}
                           </div>
                           <Link 
                             to={`/docs/${doc.id}`} 
-                            className="text-primary hover:underline"
+                            className="text-blue-400 hover:text-blue-300 hover:underline"
                           >
                             Read more
                           </Link>
@@ -190,23 +190,23 @@ const DocsPage = () => {
             <h2 className="text-2xl font-semibold mb-6">Frequently Asked Questions</h2>
             <div className="space-y-4">
               {faqs.map((faq) => (
-                <Card key={faq.id}>
+                <Card key={faq.id} className="bg-gray-900 border-gray-700">
                   <CardContent className="p-0">
                     <Button 
                       variant="ghost" 
-                      className="w-full justify-between p-6 rounded-none h-auto" 
+                      className="w-full justify-between p-6 rounded-none h-auto text-left text-white hover:bg-gray-800" 
                       onClick={() => toggleFaq(faq.id)}
                     >
                       <span className="text-lg font-medium">{faq.question}</span>
                       {expandedFaqs.includes(faq.id) ? (
-                        <ChevronUp className="h-5 w-5" />
+                        <ChevronUp className="h-5 w-5 text-blue-400" />
                       ) : (
-                        <ChevronDown className="h-5 w-5" />
+                        <ChevronDown className="h-5 w-5 text-blue-400" />
                       )}
                     </Button>
                     {expandedFaqs.includes(faq.id) && (
-                      <div className="px-6 pb-6 pt-0">
-                        <p className="text-gray-600 dark:text-gray-300">{faq.answer}</p>
+                      <div className="px-6 pb-6 pt-0 text-gray-300">
+                        <p>{faq.answer}</p>
                       </div>
                     )}
                   </CardContent>
@@ -218,11 +218,11 @@ const DocsPage = () => {
       </main>
       
       {/* Call to Action */}
-      <section className="bg-secondary py-12 text-white text-center">
+      <section className="bg-blue-900 py-12 text-white text-center">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-4">Can't find what you're looking for?</h2>
           <p className="mb-6">Contact our support team or submit a request for help</p>
-          <Button asChild>
+          <Button asChild className="bg-white text-blue-900 hover:bg-gray-200">
             <Link to="/contact">Contact Support</Link>
           </Button>
         </div>

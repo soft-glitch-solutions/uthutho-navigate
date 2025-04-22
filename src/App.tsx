@@ -37,6 +37,8 @@ import DocsPage from "./pages/DocsPage";
 import DocDetailPage from "./pages/DocDetailPage"; 
 import BlogsPublicPage from "./pages/BlogsPublicPage";
 import BlogDetailPublicPage from "./pages/BlogDetailPublicPage";
+import TravelMapsPage from "./pages/TravelMapsPage";
+import SupportPage from "./pages/SupportPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,7 +56,6 @@ const mockProfileProps = {
 };
 
 import { useState } from "react";
-import SupportPage from "./pages/SupportPage";
 
 const App = () => {
   const [theme, setTheme] = useState("light");
@@ -92,6 +93,7 @@ const App = () => {
                 <Route path="stops" element={<StopsPage />} />
                 <Route path="stops/:stopId" element={<StopDetailsPage />} />
                 <Route path="nearby-spots" element={<NearbySpots />} />
+                <Route path="travel-maps" element={<TravelMapsPage />} />
                 <Route path="requests" element={<RequestsPage />} />
                 <Route path="profile" element={<ProfilePage {...mockProfileProps} />} />
                 <Route path="users" element={<UsersPage />} />
