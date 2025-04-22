@@ -1,232 +1,237 @@
 
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronUp, Search } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Calendar, ChevronRight, Search, Tag, BookOpen } from 'lucide-react';
+
+interface Documentation {
+  id: string;
+  title: string;
+  content: string;
+  excerpt?: string;
+  author_id?: string;
+  created_at?: string;
+  updated_at?: string;
+  tags?: string[];
+  is_published?: boolean;
+}
+
+interface FAQ {
+  question: string;
+  answer: string;
+}
 
 const DocsPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [expandedFaqs, setExpandedFaqs] = useState<string[]>([]);
-
-  const { data: docs } = useQuery({
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+  
+  const { data: docs, isLoading } = useQuery({
     queryKey: ['public-documentation'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('help_documentation')
+        .from('documentation')
         .select('*')
-        .eq('status', 'published')
+        .eq('is_published', true)
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data;
+      return data as Documentation[];
     },
   });
 
-  // Group documentation by tags
-  const groupedDocs = docs?.reduce((acc: Record<string, any[]>, doc) => {
-    if (doc.tags && doc.tags.length > 0) {
-      doc.tags.forEach((tag: string) => {
-        if (!acc[tag]) acc[tag] = [];
-        acc[tag].push(doc);
-      });
-    } else {
-      if (!acc['Uncategorized']) acc['Uncategorized'] = [];
-      acc['Uncategorized'].push(doc);
+  const faqs: FAQ[] = [
+    {
+      question: 'How do I find the nearest transport hub?',
+      answer: 'You can use our mobile app to find the nearest transport hub based on your current location. The app will show you all nearby hubs and the routes that pass through them.'
+    },
+    {
+      question: 'What payment methods are accepted?',
+      answer: 'We accept cash, credit/debit cards, and mobile payments through our app. You can also purchase prepaid travel cards at any of our hub offices.'
+    },
+    {
+      question: 'What are the operating hours?',
+      answer: 'Most routes operate from 5:00 AM to 10:00 PM on weekdays, and 6:00 AM to 9:00 PM on weekends. However, specific routes may have different schedules. Check the route details in our app for accurate information.'
+    },
+    {
+      question: 'How do I report a lost item?',
+      answer: 'If you\'ve lost an item on one of our vehicles, please report it through our mobile app or contact our customer service. Provide details about the route, time, and a description of the item.'
+    },
+    {
+      question: 'Are there discounts for students and seniors?',
+      answer: 'Yes, we offer discounted rates for students, seniors, and disabled passengers. You need to apply for a special travel card with valid identification to access these discounts.'
     }
-    return acc;
-  }, {} as Record<string, any[]>) || {};
-
-  // Filter documentation based on search query
-  const filteredDocs = docs?.filter(doc => 
-    doc.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    doc.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (doc.tags && doc.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase())))
-  );
-
-  const toggleFaq = (id: string) => {
-    setExpandedFaqs(prev => 
-      prev.includes(id) ? prev.filter(faqId => faqId !== id) : [...prev, id]
-    );
-  };
-
-  // Frequently asked questions - hardcoded for now, but you could store these in the database
-  const faqs = [
-    { 
-      id: '1', 
-      question: 'What is Uthutho?', 
-      answer: 'Uthutho is a smart public transport companion for South Africa, providing real-time updates on routes, schedules, and fares for various transport options.' 
-    },
-    { 
-      id: '2', 
-      question: 'How do I use the app?', 
-      answer: 'Download the app from the App Store or Google Play, or use our data-free web portal. Create an account to access all features.' 
-    },
-    { 
-      id: '3', 
-      question: 'Is Uthutho available in my city?', 
-      answer: 'Uthutho is expanding across South Africa. Check the app to see if your city is covered, or submit a request for your area.' 
-    },
-    { 
-      id: '4', 
-      question: 'How do I report an issue?', 
-      answer: 'You can report issues through the app by submitting a support ticket, or by contacting our support team at support@uthutho.com.' 
-    },
-    { 
-      id: '5', 
-      question: 'How accurate is the information?', 
-      answer: 'We strive for maximum accuracy through a combination of official data, real-time updates from transport providers, and crowd-sourced information from users.' 
-    },
   ];
 
+  // Extract all unique tags from docs
+  const allTags = React.useMemo(() => {
+    if (!docs) return [];
+    
+    const tagsSet = new Set<string>();
+    docs.forEach(doc => {
+      if (doc.tags && Array.isArray(doc.tags)) {
+        doc.tags.forEach(tag => tagsSet.add(tag));
+      }
+    });
+    
+    return Array.from(tagsSet);
+  }, [docs]);
+
+  // Filter docs based on search term and active tag
+  const filteredDocs = React.useMemo(() => {
+    if (!docs) return [];
+    
+    return docs.filter(doc => {
+      const matchesSearch = 
+        !searchTerm || 
+        doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (doc.excerpt && doc.excerpt.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      const matchesTag = 
+        !activeTag || 
+        (doc.tags && Array.isArray(doc.tags) && doc.tags.includes(activeTag));
+      
+      return matchesSearch && matchesTag;
+    });
+  }, [docs, searchTerm, activeTag]);
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="bg-blue-900 py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold text-white mb-4">Documentation</h1>
-          <p className="text-white/80 max-w-2xl mx-auto">
-            Find answers to your questions and learn how to get the most out of Uthutho's features
+    <div className="container mx-auto py-10 px-4">
+      <div className="flex flex-col gap-8">
+        <div>
+          <h1 className="text-4xl font-bold mb-4 text-black dark:text-white">Documentation</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl">
+            Explore our comprehensive guides and documentation to help you navigate our public transport system efficiently.
           </p>
-          
-          {/* Search bar */}
-          <div className="mt-8 max-w-lg mx-auto relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <Input
-              placeholder="Search documentation..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-3 bg-gray-900 text-white rounded-full border-0 shadow focus:ring-2 focus:ring-blue-500"
+        </div>
+
+        {/* Search and Filter */}
+        <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+          <div className="relative w-full md:w-96">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Search documentation..." 
+              className="pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-12 max-w-6xl">
-        <Tabs defaultValue="all">
-          <TabsList className="mb-6 bg-gray-900">
-            <TabsTrigger value="all" className="data-[state=active]:bg-blue-700">All Documentation</TabsTrigger>
-            <TabsTrigger value="faq" className="data-[state=active]:bg-blue-700">Frequently Asked Questions</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="all">
-            {searchQuery ? (
-              <>
-                <h2 className="text-2xl font-semibold mb-4">Search Results</h2>
-                {filteredDocs && filteredDocs.length > 0 ? (
-                  <div className="grid gap-6 md:grid-cols-2">
-                    {filteredDocs.map((doc) => (
-                      <Card key={doc.id} className="bg-gray-900 border-gray-700">
-                        <CardHeader>
-                          <CardTitle className="text-white">{doc.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="prose prose-invert max-w-none prose-sm mb-4">
-                            <div dangerouslySetInnerHTML={{ __html: doc.content.substring(0, 150) + '...' }} />
-                          </div>
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {doc.tags && doc.tags.map((tag: string) => (
-                              <span key={tag} className="bg-blue-900 text-blue-300 px-2 py-1 rounded-full text-sm">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                          <Link 
-                            to={`/docs/${doc.id}`} 
-                            className="text-blue-400 hover:text-blue-300 hover:underline"
-                          >
-                            Read more
-                          </Link>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-center py-8 text-gray-500">No results found for "{searchQuery}"</p>
-                )}
-              </>
-            ) : (
-              Object.entries(groupedDocs).map(([category, categoryDocs]) => (
-                <div key={category} className="mb-12">
-                  <h2 className="text-2xl font-semibold mb-6 border-b border-gray-700 pb-2">{category}</h2>
-                  <div className="grid gap-6 md:grid-cols-2">
-                    {categoryDocs.map((doc) => (
-                      <Card key={doc.id} className="bg-gray-900 border-gray-700">
-                        <CardHeader>
-                          <CardTitle className="text-white">{doc.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="prose prose-invert max-w-none prose-sm mb-4">
-                            <div dangerouslySetInnerHTML={{ __html: doc.content.substring(0, 150) + '...' }} />
-                          </div>
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {doc.tags && doc.tags.map((tag: string) => (
-                              <span key={tag} className="bg-blue-900 text-blue-300 px-2 py-1 rounded-full text-sm">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                          <Link 
-                            to={`/docs/${doc.id}`} 
-                            className="text-blue-400 hover:text-blue-300 hover:underline"
-                          >
-                            Read more
-                          </Link>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              ))
+          <div className="flex flex-wrap gap-2">
+            {allTags.map(tag => (
+              <Badge 
+                key={tag}
+                variant={activeTag === tag ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+              >
+                {tag}
+              </Badge>
+            ))}
+            {activeTag && (
+              <Badge 
+                variant="outline"
+                className="cursor-pointer"
+                onClick={() => setActiveTag(null)}
+              >
+                Clear filters
+              </Badge>
             )}
-          </TabsContent>
-          
-          <TabsContent value="faq">
-            <h2 className="text-2xl font-semibold mb-6">Frequently Asked Questions</h2>
-            <div className="space-y-4">
-              {faqs.map((faq) => (
-                <Card key={faq.id} className="bg-gray-900 border-gray-700">
-                  <CardContent className="p-0">
-                    <Button 
-                      variant="ghost" 
-                      className="w-full justify-between p-6 rounded-none h-auto text-left text-white hover:bg-gray-800" 
-                      onClick={() => toggleFaq(faq.id)}
-                    >
-                      <span className="text-lg font-medium">{faq.question}</span>
-                      {expandedFaqs.includes(faq.id) ? (
-                        <ChevronUp className="h-5 w-5 text-blue-400" />
-                      ) : (
-                        <ChevronDown className="h-5 w-5 text-blue-400" />
-                      )}
-                    </Button>
-                    {expandedFaqs.includes(faq.id) && (
-                      <div className="px-6 pb-6 pt-0 text-gray-300">
-                        <p>{faq.answer}</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
-      </main>
-      
-      {/* Call to Action */}
-      <section className="bg-blue-900 py-12 text-white text-center">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-4">Can't find what you're looking for?</h2>
-          <p className="mb-6">Contact our support team or submit a request for help</p>
-          <Button asChild className="bg-white text-blue-900 hover:bg-gray-200">
-            <Link to="/contact">Contact Support</Link>
-          </Button>
+          </div>
         </div>
-      </section>
+
+        {/* Documentation Listing */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i} className="relative h-64 border border-blue-100 dark:border-gray-700">
+                <CardHeader>
+                  <div className="h-6 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6 animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 animate-pulse"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : filteredDocs && filteredDocs.length > 0 ? (
+            filteredDocs.map(doc => (
+              <Link key={doc.id} to={`/docs/${doc.id}`}>
+                <Card className="relative h-64 border border-blue-100 hover:border-blue-500 dark:border-gray-700 dark:hover:border-blue-500 transition-all cursor-pointer hover:shadow-md">
+                  <CardHeader>
+                    <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 space-x-2 mb-1">
+                      <Calendar size={12} />
+                      <span>{formatDate(doc.created_at)}</span>
+                    </div>
+                    <CardTitle className="text-blue-600 dark:text-blue-400">{doc.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3">
+                      {doc.excerpt || doc.content.substring(0, 120).replace(/<[^>]*>/g, '') + '...'}
+                    </p>
+                    
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {doc.tags && Array.isArray(doc.tags) && doc.tags.map(tag => (
+                          <Badge key={tag} variant="outline" className="text-xs bg-blue-50 dark:bg-blue-900/30">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                  <ChevronRight className="absolute bottom-4 right-4 h-5 w-5 text-blue-500" />
+                </Card>
+              </Link>
+            ))
+          ) : (
+            <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-8">
+              <BookOpen className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-1">No documentation found</h3>
+              <p className="text-gray-500 dark:text-gray-400">
+                {activeTag ? 
+                  `No documents found with the tag "${activeTag}"` : 
+                  searchTerm ? 
+                    `No results for "${searchTerm}"` : 
+                    "Documentation will be added soon"}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* FAQ Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6 text-black dark:text-white">Frequently Asked Questions</h2>
+          <Accordion type="single" collapsible className="w-full">
+            {faqs.map((faq, index) => (
+              <AccordionItem key={index} value={`item-${index}`}>
+                <AccordionTrigger className="text-left font-medium">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-gray-600 dark:text-gray-300">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </div>
     </div>
   );
 };

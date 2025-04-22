@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
@@ -21,6 +21,9 @@ const OverviewPage: React.FC<OverviewPageProps> = ({
   stopsCount, 
   waitingCount 
 }) => {
+  // Create a ref for the map container
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+
   const { data: stats, isLoading } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
@@ -63,80 +66,102 @@ const OverviewPage: React.FC<OverviewPageProps> = ({
   });
 
   useEffect(() => {
-    if (!mapData || !mapData.hubs || !mapData.stops) return;
-    
-    // Initialize HERE Map
-    const platform = new window.H.service.Platform({
-      apikey: HERE_API_KEY
-    });
-    
-    const defaultLayers = platform.createDefaultLayers();
-    
-    // Initialize the map
-    const map = new window.H.Map(
-      document.getElementById('map'),
-      defaultLayers.vector.normal.map,
-      {
-        zoom: 5,
-        center: { lat: -30.5595, lng: 22.9375 } // Center of South Africa
-      }
-    );
+    if (!mapData || !mapData.hubs || !mapData.stops || !mapContainerRef.current) return;
 
-    // Add UI controls
-    window.H.ui.UI.createDefault(map, defaultLayers);
-    
-    // Enable map interaction (pan, zoom)
-    new window.H.mapevents.Behavior(new window.H.mapevents.MapEvents(map));
-
-    // Create marker groups
-    const hubsGroup = new window.H.map.Group();
-    const stopsGroup = new window.H.map.Group();
-    map.addObject(hubsGroup);
-    map.addObject(stopsGroup);
-
-    // Add hubs to the map
-    mapData.hubs.forEach(hub => {
-      const marker = new window.H.map.Marker(
-        { lat: hub.latitude, lng: hub.longitude },
-        {
-          data: hub,
-          icon: new window.H.map.Icon('<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#1E40AF" stroke="white" stroke-width="2"/></svg>', {size: {w: 24, h: 24}})
-        }
-      );
-      hubsGroup.addObject(marker);
-    });
-
-    // Add stops to the map
-    mapData.stops.forEach(stop => {
-      const marker = new window.H.map.Marker(
-        { lat: stop.latitude, lng: stop.longitude },
-        {
-          data: stop,
-          icon: new window.H.map.Icon('<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="8" fill="#38BDF8" stroke="white" stroke-width="2"/></svg>', {size: {w: 20, h: 20}})
-        }
-      );
-      stopsGroup.addObject(marker);
-    });
-
-    // If we have points, calculate the viewport that contains all of them
-    if (mapData.hubs.length > 0 || mapData.stops.length > 0) {
-      const allPoints = [...mapData.hubs, ...mapData.stops];
-      const bounds = new window.H.geo.Rect(
-        allPoints.reduce((min, p) => Math.min(min, p.latitude), 90),
-        allPoints.reduce((min, p) => Math.min(min, p.longitude), 180),
-        allPoints.reduce((max, p) => Math.max(max, p.latitude), -90),
-        allPoints.reduce((max, p) => Math.max(max, p.longitude), -180)
-      );
+    try {
+      // Initialize HERE Map
+      const platform = new window.H.service.Platform({
+        apikey: HERE_API_KEY
+      });
       
-      map.getViewModel().setLookAtData({
-        bounds: bounds
-      }, true);
-    }
+      const defaultLayers = platform.createDefaultLayers();
+      
+      // Initialize the map only if map container exists
+      const mapElement = mapContainerRef.current;
+      if (!mapElement) {
+        console.error('Map container element not found');
+        return;
+      }
 
-    // Clean up
-    return () => {
-      map.dispose();
-    };
+      // Initialize the map
+      const map = new window.H.Map(
+        mapElement,
+        defaultLayers.vector.normal.map,
+        {
+          zoom: 5,
+          center: { lat: -30.5595, lng: 22.9375 } // Center of South Africa
+        }
+      );
+
+      // Add UI controls
+      const ui = window.H.ui.UI.createDefault(map, defaultLayers);
+      
+      // Enable map interaction (pan, zoom)
+      new window.H.mapevents.Behavior(new window.H.mapevents.MapEvents(map));
+
+      // Create marker groups
+      const hubsGroup = new window.H.map.Group();
+      const stopsGroup = new window.H.map.Group();
+      map.addObject(hubsGroup);
+      map.addObject(stopsGroup);
+
+      // Add hubs to the map
+      mapData.hubs.forEach(hub => {
+        if (hub && typeof hub.latitude === 'number' && typeof hub.longitude === 'number') {
+          const marker = new window.H.map.Marker(
+            { lat: hub.latitude, lng: hub.longitude },
+            {
+              data: hub,
+              icon: new window.H.map.Icon('<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#1E40AF" stroke="white" stroke-width="2"/></svg>', {size: {w: 24, h: 24}})
+            }
+          );
+          hubsGroup.addObject(marker);
+        }
+      });
+
+      // Add stops to the map
+      mapData.stops.forEach(stop => {
+        if (stop && typeof stop.latitude === 'number' && typeof stop.longitude === 'number') {
+          const marker = new window.H.map.Marker(
+            { lat: stop.latitude, lng: stop.longitude },
+            {
+              data: stop,
+              icon: new window.H.map.Icon('<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="8" fill="#38BDF8" stroke="white" stroke-width="2"/></svg>', {size: {w: 20, h: 20}})
+            }
+          );
+          stopsGroup.addObject(marker);
+        }
+      });
+
+      // If we have points, calculate the viewport that contains all of them
+      if ((mapData.hubs && mapData.hubs.length > 0) || (mapData.stops && mapData.stops.length > 0)) {
+        const allPoints = [...(mapData.hubs || []), ...(mapData.stops || [])].filter(
+          p => p && typeof p.latitude === 'number' && typeof p.longitude === 'number'
+        );
+        
+        if (allPoints.length > 0) {
+          const bounds = new window.H.geo.Rect(
+            allPoints.reduce((min, p) => Math.min(min, p.latitude), 90),
+            allPoints.reduce((min, p) => Math.min(min, p.longitude), 180),
+            allPoints.reduce((max, p) => Math.max(max, p.latitude), -90),
+            allPoints.reduce((max, p) => Math.max(max, p.longitude), -180)
+          );
+          
+          map.getViewModel().setLookAtData({
+            bounds: bounds
+          }, true);
+        }
+      }
+
+      // Clean up
+      return () => {
+        if (map) {
+          map.dispose();
+        }
+      };
+    } catch (error) {
+      console.error('Error initializing HERE map:', error);
+    }
   }, [mapData]);
 
   if (isLoading) {
@@ -209,7 +234,7 @@ const OverviewPage: React.FC<OverviewPageProps> = ({
               </div>
             </div>
           </div>
-          <div id="map" style={{ height: '400px' }} className="w-full"></div>
+          <div ref={mapContainerRef} style={{ height: '400px' }} className="w-full"></div>
         </div>
       </div>
     </div>
