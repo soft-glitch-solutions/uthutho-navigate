@@ -39,6 +39,8 @@ import BlogsPublicPage from "./pages/BlogsPublicPage";
 import BlogDetailPublicPage from "./pages/BlogDetailPublicPage";
 import TravelMapsPage from "./pages/TravelMapsPage";
 import SupportPage from "./pages/SupportPage";
+import DocumentsPage from "./components/admin/DocumentsPage";
+import AdminBlogsPage from "./components/admin/BlogsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -101,9 +103,9 @@ const App = () => {
                 <Route path="reports" element={<ReportsPage />} />
                 <Route path="logs" element={<SystemLogsPage />} />
                 <Route path="help" element={<HelpDocumentation />} />
-                <Route path="documentation" element={<DocumentationPage />} />
+                <Route path="documentation" element={<DocumentsPage />} />
                 <Route path="documentation/:docId" element={<DocumentationDetailPage />} />
-                <Route path="blogs" element={<BlogsPage />} />
+                <Route path="blogs" element={<AdminBlogsPage />} />
                 <Route path="blogs/:blogId" element={<BlogDetailPage />} />
                 <Route path="settings" element={<SettingsPage theme={theme} toggleTheme={toggleTheme} />} />
                 <Route path="support" element={<SupportPage />} />

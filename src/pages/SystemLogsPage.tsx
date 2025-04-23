@@ -32,10 +32,8 @@ interface SystemLog {
   entity_type?: string;
   entity_id?: string;
   status?: string;
-  user?: {
-    email?: string;
-    name?: string;
-  };
+  user_email?: string;
+  user_name?: string;
 }
 
 const SystemLogsPage = () => {
@@ -47,16 +45,7 @@ const SystemLogsPage = () => {
   const { data: logs, isLoading } = useQuery({
     queryKey: ['system-logs', filterType, filterStatus, searchTerm],
     queryFn: async () => {
-      let query = supabase
-        .from('system_logs')
-        .select(`
-          *,
-          user:users!user_id (
-            email,
-            raw_user_meta_data->>'name' as name
-          )
-        `)
-        .order('created_at', { ascending: false });
+      let query = supabase.from('system_logs').select('*').order('created_at', { ascending: false });
 
       if (filterType !== 'all') {
         query = query.eq('entity_type', filterType);
@@ -70,30 +59,48 @@ const SystemLogsPage = () => {
         query = query.or(`details.ilike.%${searchTerm}%,action.ilike.%${searchTerm}%,entity_id.ilike.%${searchTerm}%`);
       }
 
-      const { data, error } = await query;
+      const { data: logsData, error } = await query;
       
       if (error) {
         console.error('Error fetching system logs:', error);
         return [];
       }
 
-      // Convert log data to the correct type
-      const typedLogs: SystemLog[] = data.map(log => ({
-        id: log.id,
-        created_at: log.created_at,
-        user_id: log.user_id,
-        action: log.action,
-        details: log.details,
-        entity_type: log.entity_type,
-        entity_id: log.entity_id,
-        status: log.status,
-        user: log.user ? {
-          email: log.user.email,
-          name: log.user.name
-        } : undefined
-      }));
+      // Fetch user details for each log with a user_id
+      const enhancedLogs: SystemLog[] = await Promise.all(
+        (logsData || []).map(async (log) => {
+          let userEmail = '';
+          let userName = '';
 
-      return typedLogs;
+          if (log.user_id) {
+            // Fetch user's email
+            const { data: userData } = await supabase
+              .from('profiles')
+              .select('first_name, last_name')
+              .eq('id', log.user_id)
+              .single();
+
+            // Fetch user's email separately
+            const { data: emailData } = await supabase.rpc(
+              'get_user_email',
+              { user_id: log.user_id }
+            );
+
+            userName = userData 
+              ? `${userData.first_name || ''} ${userData.last_name || ''}`.trim()
+              : '';
+            userEmail = emailData || '';
+          }
+
+          return {
+            ...log,
+            user_email: userEmail,
+            user_name: userName
+          };
+        })
+      );
+
+      return enhancedLogs;
     },
   });
 
@@ -117,6 +124,20 @@ const SystemLogsPage = () => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleString();
+  };
+
+  const formatDetails = (details: any): React.ReactNode => {
+    if (!details) return '-';
+    
+    if (typeof details === 'string') {
+      return details;
+    }
+    
+    try {
+      return <span className="text-xs font-mono break-all">{JSON.stringify(details)}</span>;
+    } catch (e) {
+      return 'Error displaying details';
+    }
   };
 
   return (
@@ -205,7 +226,7 @@ const SystemLogsPage = () => {
                       </TableCell>
                       <TableCell className="font-medium">{log.action}</TableCell>
                       <TableCell>
-                        {log.user?.name || log.user?.email || 'System'}
+                        {log.user_name || log.user_email || 'System'}
                       </TableCell>
                       <TableCell>
                         {log.entity_type && (
@@ -220,9 +241,7 @@ const SystemLogsPage = () => {
                         )}
                       </TableCell>
                       <TableCell className="max-w-[300px] truncate">
-                        {log.details && typeof log.details === 'object'
-                          ? JSON.stringify(log.details)
-                          : log.details || '-'}
+                        {formatDetails(log.details)}
                       </TableCell>
                       <TableCell>
                         {log.status && (

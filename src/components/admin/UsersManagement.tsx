@@ -5,10 +5,11 @@ import UserTable from '@/components/UserTable';
 import { useToast } from '@/components/ui/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, Search } from 'lucide-react';
+import { Loader2, Search, UserPlus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 interface UserProfile {
   first_name: string | null;
@@ -18,7 +19,7 @@ interface UserProfile {
 interface UserData {
   user_id: string;
   email: string;
-  role: "admin" | "user";
+  role: "admin" | "user" | null;
   profiles: UserProfile | null;
 }
 
@@ -26,39 +27,48 @@ const UsersManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: users, isLoading, error } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
       try {
-        // First get all user IDs and their roles
+        // Get all profiles first
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name');
+
+        if (profilesError) throw profilesError;
+
+        // Get role data
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
           .select('user_id, role');
 
         if (roleError) throw roleError;
 
-        // Then get profile details
-        const userData = [];
-        for (const role of roleData || []) {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('id, first_name, last_name')
-            .eq('id', role.user_id)
-            .single();
+        // Map role data to profiles
+        const userData: UserData[] = [];
+        
+        for (const profile of profilesData || []) {
+          // Find the role for this user if it exists
+          const roleInfo = roleData?.find(r => r.user_id === profile.id);
           
-          // Instead of using RPC, directly query the user email
-          const { data: authUser, error: authError } = await supabase.auth.admin.getUserById(role.user_id);
-          const email = authUser?.user?.email || 'Email not available';
+          // Get user email
+          const { data: emailData } = await supabase.rpc(
+            'get_user_email',
+            { user_id: profile.id }
+          );
+          const email = emailData || 'Email not available';
           
           userData.push({
-            user_id: role.user_id,
+            user_id: profile.id,
             email: email,
-            role: role.role as "admin" | "user",
-            profiles: profileData ? {
-              first_name: profileData.first_name,
-              last_name: profileData.last_name
-            } : null
+            role: roleInfo ? roleInfo.role as "admin" | "user" : null,
+            profiles: {
+              first_name: profile.first_name,
+              last_name: profile.last_name
+            }
           });
         }
         
@@ -70,20 +80,52 @@ const UsersManagement = () => {
     }
   });
 
-  const handleRoleChange = async (userId: string, newRole: "admin" | "user") => {
-    try {
-      const { error } = await supabase
+  // Mutation to assign a role to a user
+  const assignRole = useMutation({
+    mutationFn: async ({ userId, role }: { userId: string, role: "admin" | "user" }) => {
+      // Check if user already has a role
+      const { data: existingRole } = await supabase
         .from('user_roles')
-        .update({ role: newRole })
-        .eq('user_id', userId);
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+      
+      if (existingRole) {
+        // Update existing role
+        const { error } = await supabase
+          .from('user_roles')
+          .update({ role: role })
+          .eq('user_id', userId);
+        
+        if (error) throw error;
+      } else {
+        // Insert new role
+        const { error } = await supabase
+          .from('user_roles')
+          .insert({ user_id: userId, role: role });
+        
+        if (error) throw error;
+      }
 
-      if (error) throw error;
+      // Log the action
+      await supabase.from('activity_logs').insert([{
+        action: 'assign_role',
+        details: { user_id: userId, role },
+        entity_type: 'user',
+        entity_id: userId,
+        status: 'success'
+      }]);
 
+      return { userId, role };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
       toast({
         title: "Role Updated",
-        description: `User role successfully changed to ${newRole}`,
+        description: `User role successfully changed to ${data.role}`,
       });
-    } catch (error: any) {
+    },
+    onError: (error: any) => {
       console.error('Error updating user role:', error);
       toast({
         title: "Error",
@@ -91,6 +133,10 @@ const UsersManagement = () => {
         variant: "destructive",
       });
     }
+  });
+
+  const handleRoleChange = async (userId: string, newRole: "admin" | "user") => {
+    assignRole.mutate({ userId, newRole });
   };
 
   const handleViewProfile = (userId: string) => {
@@ -109,7 +155,7 @@ const UsersManagement = () => {
     return users.map(user => ({
       id: user.user_id,
       email: user.email,
-      role: user.role,
+      role: user.role || 'unassigned',
       fullName: user.profiles ? `${user.profiles.first_name || ''} ${user.profiles.last_name || ''}`.trim() : 'N/A'
     }));
   };
@@ -148,6 +194,7 @@ const UsersManagement = () => {
         <TabsList>
           <TabsTrigger value="all-users">All Users</TabsTrigger>
           <TabsTrigger value="admins">Admins</TabsTrigger>
+          <TabsTrigger value="unassigned">Unassigned</TabsTrigger>
         </TabsList>
         
         <TabsContent value="all-users">
@@ -168,6 +215,19 @@ const UsersManagement = () => {
             <CardContent className="p-6">
               <UserTable 
                 users={filteredUsers ? formatUsersForTable(filteredUsers.filter(user => user.role === 'admin')) : []} 
+                loading={isLoading}
+                onRoleChange={handleRoleChange}
+                onViewProfile={handleViewProfile}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="unassigned">
+          <Card>
+            <CardContent className="p-6">
+              <UserTable 
+                users={filteredUsers ? formatUsersForTable(filteredUsers.filter(user => user.role === null)) : []} 
                 loading={isLoading}
                 onRoleChange={handleRoleChange}
                 onViewProfile={handleViewProfile}

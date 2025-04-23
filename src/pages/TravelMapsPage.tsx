@@ -1,23 +1,23 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { HERE_API_KEY } from '@/integrations/here-config';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { PlusCircle, MinusCircle, MapPin, Route } from 'lucide-react';
+import { PlusCircle, MinusCircle, MapPin, Route, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
+import LocationMap from '@/components/maps/LocationMap';
 
 const TravelMapsPage = () => {
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-  const [map, setMap] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'view' | 'create'>('view');
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
   const [routeCompletion, setRouteCompletion] = useState(0);
-  const [mapGroup, setMapGroup] = useState<any>(null);
-  const [routesGroup, setRoutesGroup] = useState<any>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   // Fetch hubs data
   const { data: hubs } = useQuery({
@@ -74,232 +74,40 @@ const TravelMapsPage = () => {
     },
   });
 
-  // Initialize map when components loads
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
+  // Create map objects for the LocationMap component
+  const mapObjects = React.useMemo(() => {
+    let objects: any[] = [];
     
-    try {
-      // Initialize HERE Map
-      const platform = new window.H.service.Platform({
-        apikey: HERE_API_KEY
-      });
-      
-      const defaultLayers = platform.createDefaultLayers();
-      
-      // Get map container element
-      const mapElement = mapContainerRef.current;
-      if (!mapElement) {
-        console.error('Map container element not found');
-        return;
-      }
-
-      // Initialize the map with South Africa as the center
-      const mapInstance = new window.H.Map(
-        mapElement,
-        defaultLayers.vector.normal.map,
-        {
-          zoom: 5,
-          center: { lat: -30.5595, lng: 22.9375 } // Center of South Africa
-        }
-      );
-
-      setMap(mapInstance);
-
-      // Add UI controls
-      const ui = window.H.ui.UI.createDefault(mapInstance, defaultLayers);
-      
-      // Enable map interaction (pan, zoom)
-      new window.H.mapevents.Behavior(new window.H.mapevents.MapEvents(mapInstance));
-
-      // Add window resize listener
-      const onWindowResize = () => mapInstance.getViewPort().resize();
-      window.addEventListener('resize', onWindowResize);
-
-      // Create marker groups
-      const hubsGroup = new window.H.map.Group();
-      const stopsGroup = new window.H.map.Group();
-      const routesGroup = new window.H.map.Group();
-      
-      mapInstance.addObject(hubsGroup);
-      mapInstance.addObject(stopsGroup);
-      mapInstance.addObject(routesGroup);
-
-      setMapGroup({ hubsGroup, stopsGroup });
-      setRoutesGroup(routesGroup);
-
-      // Clean up
-      return () => {
-        window.removeEventListener('resize', onWindowResize);
-        if (mapInstance) {
-          mapInstance.dispose();
-        }
-      };
-    } catch (error) {
-      console.error('Error initializing HERE map:', error);
-      toast({
-        title: "Map Error",
-        description: "Failed to initialize the map. Please try refreshing the page.",
-        variant: "destructive"
-      });
+    // Add hubs
+    if (hubs) {
+      objects = [
+        ...objects, 
+        ...hubs.map(hub => ({
+          ...hub,
+          type: 'hub'
+        }))
+      ];
     }
-  }, [toast]);
 
-  // Add hubs and stops to map when data is available
-  useEffect(() => {
-    if (!map || !mapGroup || !hubs || !stops) return;
-
-    try {
-      const { hubsGroup, stopsGroup } = mapGroup;
-      
-      // Clear previous markers
-      hubsGroup.removeAll();
-      stopsGroup.removeAll();
-
-      // Add hubs to the map
-      hubs.forEach(hub => {
-        if (hub && typeof hub.latitude === 'number' && typeof hub.longitude === 'number') {
-          const marker = new window.H.map.Marker(
-            { lat: hub.latitude, lng: hub.longitude },
-            {
-              data: {
-                type: 'hub',
-                id: hub.id,
-                name: hub.name
-              },
-              icon: new window.H.map.Icon('<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="14" fill="#1E40AF" stroke="white" stroke-width="2"/></svg>', {size: {w: 32, h: 32}})
-            }
-          );
-          
-          hubsGroup.addObject(marker);
-
-          // Add info bubble for hub
-          marker.addEventListener('tap', (evt) => {
-            const bubble = new window.H.ui.InfoBubble(evt.target.getGeometry(), {
-              content: `<div style="padding:10px;"><b>Hub:</b> ${hub.name}<br><b>Address:</b> ${hub.address || 'N/A'}</div>`
-            });
-            map.ui.addBubble(bubble);
-          });
-        }
-      });
-
-      // Add stops to the map
-      stops.forEach(stop => {
-        if (stop && typeof stop.latitude === 'number' && typeof stop.longitude === 'number') {
-          const marker = new window.H.map.Marker(
-            { lat: stop.latitude, lng: stop.longitude },
-            {
-              data: {
-                type: 'stop',
-                id: stop.id,
-                name: stop.name
-              },
-              icon: new window.H.map.Icon('<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="14" r="12" fill="#38BDF8" stroke="white" stroke-width="2"/></svg>', {size: {w: 28, h: 28}})
-            }
-          );
-          
-          stopsGroup.addObject(marker);
-
-          // Add info bubble for stop
-          marker.addEventListener('tap', (evt) => {
-            const bubble = new window.H.ui.InfoBubble(evt.target.getGeometry(), {
-              content: `<div style="padding:10px;"><b>Stop:</b> ${stop.name}<br><b>Order:</b> ${stop.order_number || 'N/A'}</div>`
-            });
-            map.ui.addBubble(bubble);
-          });
-        }
-      });
-
-      // If we have points, calculate the viewport that contains all of them
-      if (hubs.length > 0 || stops.length > 0) {
-        const allPoints = [...hubs, ...stops].filter(
-          p => p && typeof p.latitude === 'number' && typeof p.longitude === 'number'
-        );
-        
-        if (allPoints.length > 0) {
-          const bounds = new window.H.geo.Rect(
-            allPoints.reduce((min, p) => Math.min(min, p.latitude), 90),
-            allPoints.reduce((min, p) => Math.min(min, p.longitude), 180),
-            allPoints.reduce((max, p) => Math.max(max, p.latitude), -90),
-            allPoints.reduce((max, p) => Math.max(max, p.longitude), -180)
-          );
-          
-          map.getViewModel().setLookAtData({
-            bounds: bounds
-          }, true);
-        }
-      }
-    } catch (error) {
-      console.error('Error adding markers to map:', error);
+    // Add stops
+    if (stops) {
+      objects = [
+        ...objects,
+        ...stops.map(stop => ({
+          ...stop,
+          type: 'stop'
+        }))
+      ];
     }
-  }, [hubs, stops, map, mapGroup]);
 
-  // Draw selected route path when route changes
-  useEffect(() => {
-    if (!map || !routesGroup || !routeStops || !routeStops.length) return;
-
-    try {
-      // Clear previous route drawings
-      routesGroup.removeAll();
-
-      // Get all stops in the correct order
-      const coordinates = routeStops.map(rs => {
-        const stop = rs.stops;
-        return { lat: stop.latitude, lng: stop.longitude };
-      });
-
-      if (coordinates.length < 2) return;
-
-      // Create a polyline for the route
-      const routeLine = new window.H.map.Polyline(
-        new window.H.geo.LineString(coordinates),
-        {
-          style: {
-            lineWidth: 5,
-            strokeColor: 'rgba(30, 64, 175, 0.8)',
-            lineDash: [2, 2]
-          }
-        }
-      );
-
-      // Add markers for each stop in order
-      routeStops.forEach((rs, index) => {
-        const stop = rs.stops;
-        const marker = new window.H.map.Marker(
-          { lat: stop.latitude, lng: stop.longitude },
-          {
-            data: {
-              type: 'route-stop',
-              index: index + 1,
-              name: stop.name
-            },
-            icon: new window.H.map.Icon(
-              `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="11" fill="#1E40AF" stroke="white" stroke-width="2"/>
-                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="10px" font-weight="bold" font-family="Arial">${index + 1}</text>
-              </svg>`,
-              { size: { w: 24, h: 24 } }
-            )
-          }
-        );
-        
-        routesGroup.addObject(marker);
-      });
-
-      // Add route polyline to the map
-      routesGroup.addObject(routeLine);
-
-      // Calculate completion percentage
-      setRouteCompletion(Math.min(routeStops.length * 10, 100));
-
-      // Zoom to the route
-      map.getViewModel().setLookAtData({
-        bounds: routeLine.getBoundingBox()
-      });
-    } catch (error) {
-      console.error('Error drawing route:', error);
+    // If route is selected, add route stops
+    if (selectedRoute && routeStops) {
+      // This will be handled in a separate effect to draw the route
     }
-  }, [routeStops, map, routesGroup]);
 
+    return objects;
+  }, [hubs, stops, selectedRoute, routeStops]);
+  
   const handleRouteSelect = (routeId: string) => {
     setSelectedRoute(routeId);
     setActiveTab('view');
@@ -347,6 +155,21 @@ const TravelMapsPage = () => {
     }
   };
 
+  const handleHubClick = (hubId: string) => {
+    navigate(`/admin/dashboard/hubs/${hubId}`);
+  };
+
+  const handleStopClick = (stopId: string) => {
+    navigate(`/admin/dashboard/stops/${stopId}`);
+  };
+
+  const filteredRoutes = routes?.filter(route => 
+    route.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    route.start_point.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    route.end_point.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    route.transport_type.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="container mx-auto p-6">
       <Card className="mb-6">
@@ -383,10 +206,20 @@ const TravelMapsPage = () => {
               
               {activeTab === 'view' && (
                 <div className="space-y-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search routes..."
+                      className="pl-10"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                  
                   <h3 className="font-medium">Select a route to view:</h3>
-                  {routes && routes.length > 0 ? (
+                  {filteredRoutes && filteredRoutes.length > 0 ? (
                     <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
-                      {routes.map((route) => (
+                      {filteredRoutes.map((route) => (
                         <div 
                           key={route.id}
                           onClick={() => {
@@ -437,7 +270,7 @@ const TravelMapsPage = () => {
                     </div>
                   ) : (
                     <div className="text-center py-8 text-muted-foreground">
-                      No routes available
+                      {searchTerm ? 'No matching routes found' : 'No routes available'}
                     </div>
                   )}
                 </div>
@@ -451,8 +284,7 @@ const TravelMapsPage = () => {
                       variant="link" 
                       className="p-0 h-auto mt-2 text-primary" 
                       onClick={() => {
-                        // Navigate to routes page
-                        window.location.href = '/admin/dashboard/routes';
+                        navigate('/admin/dashboard/routes');
                       }}
                     >
                       Go to Routes Management
@@ -483,7 +315,12 @@ const TravelMapsPage = () => {
                 </div>
               </CardTitle>
             </CardHeader>
-            <div ref={mapContainerRef} className="flex-1 rounded-b-lg overflow-hidden"></div>
+            <LocationMap 
+              className="flex-1 rounded-b-lg overflow-hidden"
+              mapObjects={mapObjects}
+              onHubClick={handleHubClick}
+              onStopClick={handleStopClick}
+            />
           </Card>
         </div>
       </div>
