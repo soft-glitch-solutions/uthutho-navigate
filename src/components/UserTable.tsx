@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -50,7 +51,7 @@ const UserTable = ({
         <tbody>
           {users.map((user) => (
             <tr key={user.user_id} className="border-b border-border hover:bg-muted/50">
-              <td className="py-3 px-4">{user.email}</td>
+              <td className="py-3 px-4">{user.email || 'N/A'}</td>
               <td className="py-3 px-4">
                 {user.first_name || user.last_name 
                   ? `${user.first_name || ''} ${user.last_name || ''}`.trim()
@@ -76,7 +77,7 @@ const UserTable = ({
                   size="sm" 
                   onClick={() => onToggleBan(
                     user.user_id, 
-                    user.email, 
+                    user.email || 'Unknown', 
                     !!user.banned
                   )}
                   className={user.banned 

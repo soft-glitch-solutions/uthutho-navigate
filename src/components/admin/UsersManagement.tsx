@@ -55,17 +55,40 @@ const UsersManagement = () => {
 
         if (profilesError) throw profilesError;
 
+        if (!profilesData) return [];
+
         // Transform data to include email and other details
         const userData: UserData[] = await Promise.all(
           profilesData.map(async (profile) => {
-            const { data: emailData } = await supabase.rpc(
-              'get_user_email', 
-              { user_id: profile.id }
-            );
+            // Add null check for profile
+            if (!profile || !profile.id) {
+              console.error("Invalid profile data:", profile);
+              return {
+                user_id: "unknown",
+                email: "Error: Invalid user data",
+                role: null,
+                first_name: null,
+                last_name: null,
+                banned: false
+              };
+            }
+
+            // Safely get email with error handling
+            let email = "Email not available";
+            try {
+              const { data: emailData } = await supabase.rpc(
+                'get_user_email', 
+                { user_id: profile.id }
+              );
+              
+              if (emailData) email = emailData;
+            } catch (emailError) {
+              console.error(`Error fetching email for user ${profile.id}:`, emailError);
+            }
 
             return {
               user_id: profile.id,
-              email: emailData || 'Email not available',
+              email,
               role: profile.user_roles?.[0]?.role || null,
               first_name: profile.first_name,
               last_name: profile.last_name,
@@ -147,12 +170,14 @@ const UsersManagement = () => {
   });
 
   const filteredUsers = users?.filter(user => {
+    if (!user) return false;
+    
     const fullName = `${user.first_name || ''} ${user.last_name || ''}`.toLowerCase();
-    const email = user.email.toLowerCase();
+    const email = (user.email || '').toLowerCase();
     const term = searchTerm.toLowerCase();
     
     return fullName.includes(term) || email.includes(term);
-  });
+  }) || [];
 
   // Handle user actions
   const handleDeleteUser = (userId: string) => setUserToDelete(userId);
@@ -185,7 +210,7 @@ const UsersManagement = () => {
       </div>
 
       <UserTable 
-        users={filteredUsers || []} 
+        users={filteredUsers} 
         loading={isLoading}
         onDeleteUser={handleDeleteUser}
         onToggleBan={handleToggleBan}
