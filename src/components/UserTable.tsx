@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, LockKeyhole, Trash2, Ban, UnbanIcon } from 'lucide-react';
+import { Users, LockKeyhole, Trash2, Ban } from 'lucide-react';
 
 interface UserTableProps {
   users: Array<{ 
@@ -87,7 +86,7 @@ const UserTable = ({
                 >
                   {user.banned ? (
                     <>
-                      <UnbanIcon className="h-4 w-4 mr-1" />
+                      <Ban className="h-4 w-4 mr-1" />
                       Unban
                     </>
                   ) : (
