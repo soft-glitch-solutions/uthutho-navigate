@@ -7,8 +7,9 @@ import { Search, Users, MapPin, Route } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import OverviewPage from '@/pages/OverviewPage';
 import { OverviewSkeleton } from './OverviewSkeleton';
+import StatsGrid from './dashboard/StatsGrid';
+import MapSection from './dashboard/MapSection';
 
 interface ProfileSearchResult {
   id: string;
@@ -44,6 +45,20 @@ const Overview = () => {
       const { count: waitingCount } = await supabase
         .from('stop_waiting')
         .select('*', { count: 'exact', head: true });
+        
+      // Get the total number of profiles
+      const { count: profileCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+        
+      // Get the number of active users by checking login_streaks within the last day
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      const { count: activeCount } = await supabase
+        .from('login_streaks')
+        .select('*', { count: 'exact', head: true })
+        .gte('last_login', yesterday.toISOString().split('T')[0]);
 
       return {
         usersCount: userCount || 0,
@@ -51,8 +66,34 @@ const Overview = () => {
         routesCount: routeCount || 0,
         stopsCount: stopCount || 0,
         waitingCount: waitingCount || 0,
+        totalProfiles: profileCount || 0,
+        activeUsers: activeCount || 0,
       };
     },
+  });
+
+  // Fetch map data
+  const { data: mapData } = useQuery({
+    queryKey: ['map-data'],
+    queryFn: async () => {
+      const [{ data: hubs }, { data: stops }] = await Promise.all([
+        supabase.from('hubs').select('id, name, latitude, longitude, address'),
+        supabase.from('stops').select('id, name, latitude, longitude, order_number')
+      ]);
+      
+      const mapObjects = [
+        ...(hubs || []).map(hub => ({
+          ...hub,
+          type: 'hub'
+        })),
+        ...(stops || []).map(stop => ({
+          ...stop,
+          type: 'stop'
+        }))
+      ];
+
+      return mapObjects;
+    }
   });
 
   const searchProfiles = async () => {
@@ -80,6 +121,14 @@ const Overview = () => {
     navigate(`/admin/dashboard/users/${userId}`);
     setSearchResults([]);
     setSearchQuery('');
+  };
+  
+  const handleHubClick = (hubId: string) => {
+    navigate(`/admin/dashboard/hubs/${hubId}`);
+  };
+
+  const handleStopClick = (stopId: string) => {
+    navigate(`/admin/dashboard/stops/${stopId}`);
   };
 
   return (
@@ -131,12 +180,25 @@ const Overview = () => {
       {isLoading ? (
         <OverviewSkeleton />
       ) : (
-        <OverviewPage 
-          usersCount={overviewData?.usersCount || 0} 
-          hubsCount={overviewData?.hubsCount || 0} 
-          stopsCount={overviewData?.stopsCount || 0}
-          waitingCount={overviewData?.waitingCount || 0}
-        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          {overviewData && (
+            <StatsGrid 
+              usersCount={overviewData.usersCount} 
+              hubsCount={overviewData.hubsCount} 
+              stopsCount={overviewData.stopsCount}
+              routesCount={overviewData.routesCount}
+              waitingCount={overviewData.waitingCount}
+              totalProfiles={overviewData.totalProfiles}
+              activeUsers={overviewData.activeUsers}
+            />
+          )}
+          
+          <MapSection 
+            mapObjects={mapData || []}
+            onHubClick={handleHubClick}
+            onStopClick={handleStopClick}
+          />
+        </div>
       )}
     </div>
   );

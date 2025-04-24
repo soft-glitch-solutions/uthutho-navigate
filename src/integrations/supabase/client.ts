@@ -29,3 +29,19 @@ export const getUserEmailFunction = getFunctions({
     return data;
   }
 });
+
+// Delete user function
+export const deleteUserFunction = getFunctions({
+  delete_user: async (userId: string): Promise<boolean> => {
+    const { data, error } = await supabase.functions.invoke('delete-user', {
+      body: JSON.stringify({ user_id: userId })
+    });
+    
+    if (error) {
+      console.error('Error deleting user:', error);
+      throw new Error(error.message);
+    }
+    
+    return data.success;
+  }
+});

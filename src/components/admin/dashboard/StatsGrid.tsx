@@ -1,5 +1,5 @@
 
-import { Users, Home, MapPin, Route, Clock } from 'lucide-react';
+import { Users, Home, MapPin, Route, Clock, UserCheck } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import StatsCard from './StatsCard';
 
@@ -9,16 +9,33 @@ interface StatsGridProps {
   routesCount: number;
   stopsCount: number;
   waitingCount: number;
+  totalProfiles?: number;
+  activeUsers?: number;
 }
 
-const StatsGrid = ({ usersCount, hubsCount, routesCount, stopsCount, waitingCount }: StatsGridProps) => {
+const StatsGrid = ({ 
+  usersCount, 
+  hubsCount, 
+  routesCount, 
+  stopsCount, 
+  waitingCount,
+  totalProfiles = 0,
+  activeUsers = 0
+}: StatsGridProps) => {
   const statsData = [
     {
       title: 'Total Users',
-      value: usersCount,
+      value: totalProfiles,
       icon: Users,
       href: '/admin/dashboard/users',
       color: 'text-primary',
+    },
+    {
+      title: 'Active Users',
+      value: activeUsers,
+      icon: UserCheck,
+      href: '/admin/dashboard/users',
+      color: 'text-green-500',
     },
     {
       title: 'Hubs',
@@ -44,7 +61,7 @@ const StatsGrid = ({ usersCount, hubsCount, routesCount, stopsCount, waitingCoun
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+    <>
       {statsData.map((stat) => (
         <StatsCard key={stat.title} {...stat} />
       ))}
@@ -56,7 +73,7 @@ const StatsGrid = ({ usersCount, hubsCount, routesCount, stopsCount, waitingCoun
         </div>
         <p className="text-3xl text-blue-500">{waitingCount}</p>
       </Card>
-    </div>
+    </>
   );
 };
 
