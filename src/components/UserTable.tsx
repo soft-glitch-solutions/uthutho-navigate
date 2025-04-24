@@ -2,19 +2,18 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { LockKeyhole, ShieldAlert, User, MailCheck, Trash2, Ban, CheckCircle } from 'lucide-react';
+import { Users, LockKeyhole, Trash2, Ban, UnbanIcon } from 'lucide-react';
 
 interface UserTableProps {
   users: Array<{ 
-    id: string; 
+    user_id: string; 
     email: string; 
-    role: string; 
-    fullName?: string;
+    role?: "admin" | "user" | null;
+    first_name?: string;
+    last_name?: string;
     banned?: boolean;
   }>;
   loading?: boolean;
-  onRoleChange: (userId: string, role: string) => void;
-  onViewProfile?: (userId: string) => void;
   onDeleteUser?: (userId: string) => void;
   onToggleBan?: (userId: string, email: string, isBanned: boolean) => void;
 }
@@ -22,8 +21,6 @@ interface UserTableProps {
 const UserTable = ({ 
   users, 
   loading = false, 
-  onRoleChange, 
-  onViewProfile = () => {},
   onDeleteUser = () => {},
   onToggleBan = () => {}
 }: UserTableProps) => {
@@ -53,17 +50,18 @@ const UserTable = ({
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id} className="border-b border-border hover:bg-muted/50">
+            <tr key={user.user_id} className="border-b border-border hover:bg-muted/50">
               <td className="py-3 px-4">{user.email}</td>
-              <td className="py-3 px-4">{user.fullName || 'N/A'}</td>
               <td className="py-3 px-4">
-                <Badge variant={user.role === 'admin' ? 'destructive' : 'secondary'}>
-                  {user.role === 'admin' ? (
-                    <ShieldAlert className="h-3 w-3 mr-1" />
-                  ) : (
-                    <></>
-                  )}
-                  {user.role}
+                {user.first_name || user.last_name 
+                  ? `${user.first_name || ''} ${user.last_name || ''}`.trim()
+                  : 'N/A'}
+              </td>
+              <td className="py-3 px-4">
+                <Badge 
+                  variant={user.role === 'admin' ? 'destructive' : 'secondary'}
+                >
+                  {user.role || 'Unassigned'}
                 </Badge>
               </td>
               <td className="py-3 px-4">
@@ -73,53 +71,40 @@ const UserTable = ({
                   <Badge variant="outline" className="text-green-500">Active</Badge>
                 )}
               </td>
-              <td className="py-3 px-4">
-                <div className="flex flex-wrap gap-2">
-                  <select
-                    value={user.role}
-                    onChange={(e) => onRoleChange(user.id, e.target.value)}
-                    className="bg-background text-foreground p-2 rounded border border-border"
-                  >
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                    <option value="unassigned">Unassigned</option>
-                  </select>
-                  <Button variant="outline" size="sm" className="flex items-center" onClick={() => onViewProfile(user.id)}>
-                    <User className="h-4 w-4 mr-1" />
-                    View
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex items-center">
-                    <MailCheck className="h-4 w-4 mr-1" />
-                    Email
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className={`flex items-center ${user.banned ? 'text-green-500 hover:text-green-600' : 'text-yellow-500 hover:text-yellow-600'}`} 
-                    onClick={() => onToggleBan(user.id, user.email, !!user.banned)}
-                  >
-                    {user.banned ? (
-                      <>
-                        <CheckCircle className="h-4 w-4 mr-1" />
-                        Unban
-                      </>
-                    ) : (
-                      <>
-                        <Ban className="h-4 w-4 mr-1" />
-                        Ban
-                      </>
-                    )}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex items-center text-destructive hover:text-destructive/80" 
-                    onClick={() => onDeleteUser(user.id)}
-                  >
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    Delete
-                  </Button>
-                </div>
+              <td className="py-3 px-4 space-x-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => onToggleBan(
+                    user.user_id, 
+                    user.email, 
+                    !!user.banned
+                  )}
+                  className={user.banned 
+                    ? "text-green-500 hover:text-green-600" 
+                    : "text-yellow-500 hover:text-yellow-600"
+                  }
+                >
+                  {user.banned ? (
+                    <>
+                      <UnbanIcon className="h-4 w-4 mr-1" />
+                      Unban
+                    </>
+                  ) : (
+                    <>
+                      <Ban className="h-4 w-4 mr-1" />
+                      Ban
+                    </>
+                  )}
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  size="sm" 
+                  onClick={() => onDeleteUser(user.user_id)}
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  Delete
+                </Button>
               </td>
             </tr>
           ))}
