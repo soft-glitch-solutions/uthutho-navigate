@@ -151,12 +151,22 @@ const UsersManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
-      toast({
-        title: userToBan?.isBanned ? "User Unbanned" : "User Banned",
-        description: userToBan?.isBanned 
-          ? "User has been successfully unbanned." 
-          : "User has been banned from the system."
-      });
+      
+      // Add null check for userToBan
+      if (userToBan) {
+        toast({
+          title: userToBan.isBanned ? "User Unbanned" : "User Banned",
+          description: userToBan.isBanned 
+            ? "User has been successfully unbanned." 
+            : "User has been banned from the system."
+        });
+      } else {
+        toast({
+          title: "User Status Updated",
+          description: "User status has been successfully updated."
+        });
+      }
+      
       setUserToBan(null);
     },
     onError: (error: any) => {
@@ -251,9 +261,11 @@ const UsersManagement = () => {
               {userToBan?.isBanned ? 'Unban User' : 'Ban User'}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {userToBan?.isBanned 
-                ? `Are you sure you want to unban ${userToBan.email}?`
-                : `Are you sure you want to ban ${userToBan.email}?`}
+              {userToBan ? 
+                (userToBan.isBanned 
+                  ? `Are you sure you want to unban ${userToBan.email || 'this user'}?`
+                  : `Are you sure you want to ban ${userToBan.email || 'this user'}?`) 
+                : 'Are you sure you want to update this user?'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

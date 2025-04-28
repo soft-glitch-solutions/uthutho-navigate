@@ -9,8 +9,8 @@ interface UserTableProps {
     user_id: string; 
     email: string; 
     role?: "admin" | "user" | null;
-    first_name?: string;
-    last_name?: string;
+    first_name?: string | null;
+    last_name?: string | null;
     banned?: boolean;
   }>;
   loading?: boolean;
@@ -32,7 +32,7 @@ const UserTable = ({
     );
   }
   
-  if (users.length === 0) {
+  if (!users || users.length === 0) {
     return <div className="text-center py-6">No users found</div>;
   }
 
@@ -49,65 +49,71 @@ const UserTable = ({
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
-            <tr key={user.user_id} className="border-b border-border hover:bg-muted/50">
-              <td className="py-3 px-4">{user.email || 'N/A'}</td>
-              <td className="py-3 px-4">
-                {user.first_name || user.last_name 
-                  ? `${user.first_name || ''} ${user.last_name || ''}`.trim()
-                  : 'N/A'}
-              </td>
-              <td className="py-3 px-4">
-                <Badge 
-                  variant={user.role === 'admin' ? 'destructive' : 'secondary'}
-                >
-                  {user.role || 'Unassigned'}
-                </Badge>
-              </td>
-              <td className="py-3 px-4">
-                {user.banned ? (
-                  <Badge variant="destructive">Banned</Badge>
-                ) : (
-                  <Badge variant="outline" className="text-green-500">Active</Badge>
-                )}
-              </td>
-              <td className="py-3 px-4 space-x-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => onToggleBan(
-                    user.user_id, 
-                    user.email || 'Unknown', 
-                    !!user.banned
-                  )}
-                  className={user.banned 
-                    ? "text-green-500 hover:text-green-600" 
-                    : "text-yellow-500 hover:text-yellow-600"
-                  }
-                >
+          {users.map((user) => {
+            if (!user || !user.user_id) {
+              return null; // Skip rendering invalid users
+            }
+            
+            return (
+              <tr key={user.user_id} className="border-b border-border hover:bg-muted/50">
+                <td className="py-3 px-4">{user.email || 'N/A'}</td>
+                <td className="py-3 px-4">
+                  {user.first_name || user.last_name 
+                    ? `${user.first_name || ''} ${user.last_name || ''}`.trim()
+                    : 'N/A'}
+                </td>
+                <td className="py-3 px-4">
+                  <Badge 
+                    variant={user.role === 'admin' ? 'destructive' : 'secondary'}
+                  >
+                    {user.role || 'Unassigned'}
+                  </Badge>
+                </td>
+                <td className="py-3 px-4">
                   {user.banned ? (
-                    <>
-                      <Ban className="h-4 w-4 mr-1" />
-                      Unban
-                    </>
+                    <Badge variant="destructive">Banned</Badge>
                   ) : (
-                    <>
-                      <Ban className="h-4 w-4 mr-1" />
-                      Ban
-                    </>
+                    <Badge variant="outline" className="text-green-500">Active</Badge>
                   )}
-                </Button>
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
-                  onClick={() => onDeleteUser(user.user_id)}
-                >
-                  <Trash2 className="h-4 w-4 mr-1" />
-                  Delete
-                </Button>
-              </td>
-            </tr>
-          ))}
+                </td>
+                <td className="py-3 px-4 space-x-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => onToggleBan(
+                      user.user_id, 
+                      user.email || 'Unknown', 
+                      !!user.banned
+                    )}
+                    className={user.banned 
+                      ? "text-green-500 hover:text-green-600" 
+                      : "text-yellow-500 hover:text-yellow-600"
+                    }
+                  >
+                    {user.banned ? (
+                      <>
+                        <Ban className="h-4 w-4 mr-1" />
+                        Unban
+                      </>
+                    ) : (
+                      <>
+                        <Ban className="h-4 w-4 mr-1" />
+                        Ban
+                      </>
+                    )}
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    size="sm" 
+                    onClick={() => onDeleteUser(user.user_id)}
+                  >
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
