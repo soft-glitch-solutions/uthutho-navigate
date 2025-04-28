@@ -590,6 +590,7 @@ export type Database = {
           avatar_url: string | null
           favorites: Json | null
           first_name: string | null
+          home: string | null
           id: string
           last_name: string | null
           points: number | null
@@ -602,6 +603,7 @@ export type Database = {
           avatar_url?: string | null
           favorites?: Json | null
           first_name?: string | null
+          home?: string | null
           id: string
           last_name?: string | null
           points?: number | null
@@ -614,6 +616,7 @@ export type Database = {
           avatar_url?: string | null
           favorites?: Json | null
           first_name?: string | null
+          home?: string | null
           id?: string
           last_name?: string | null
           points?: number | null
