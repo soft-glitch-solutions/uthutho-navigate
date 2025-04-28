@@ -67,7 +67,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-black font-quiapo">
-      {/* Navigation */}
       <nav className="fixed w-full z-50">
         <div className="container mx-auto px-4 pt-4 pb-2">
           <div className="bg-white/95 backdrop-blur-sm rounded-full mx-auto max-w-3xl">
@@ -81,17 +80,23 @@ const Index = () => {
                 <span className="text-xl md:text-2xl font-bold text-primary">Uthutho</span>
               </div>
               
-              {/* Desktop Menu */}
               <div className="hidden md:flex items-center space-x-8">
                 <a href="#features" className="text-gray-700 hover:text-primary transition-colors">Features</a>
                 <a href="#about" className="text-gray-700 hover:text-primary transition-colors">About Us</a>
+                <a 
+                  href="https://ai.uthutho.co.za/"
+                  target="_blank"
+                  rel="noopener noreferrer" 
+                  className="text-gray-700 hover:text-primary transition-colors"
+                >
+                  Try AI
+                </a>
                 <button className="bg-highlight text-white px-6 py-2 rounded-full flex items-center space-x-2 hover:bg-highlight/90 transition-colors">
                   <Phone size={18} />
                   <span>Download App</span>
                 </button>
               </div>
               
-              {/* Mobile Menu */}
               {isMobile && (
                 <Sheet>
                   <SheetTrigger asChild>
@@ -116,7 +121,6 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-16">
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[linear-gradient(45deg,#1ea2b133,#ed67b133,#f8c32533,#fd602d33)] opacity-20"></div>
@@ -141,22 +145,28 @@ const Index = () => {
               No Data No problem, Join our data free web app version. 
             </p>
             <div className={`flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <button className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2">
-              <div className="flex items-center">
-                <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M3 4.5h18v15a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-15zm9 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                </svg>
-                <span>Download Now</span>
+              <div className="flex flex-col items-center sm:items-start">
+                <button 
+                  className="bg-primary text-white px-8 py-3 rounded-full font-semibold opacity-50 cursor-not-allowed flex items-center gap-2"
+                  disabled
+                >
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3 4.5h18v15a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5v-15zm9 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                    </svg>
+                    <span>Download Now</span>
+                  </div>
+                  <div className="flex items-center space-x-1 pl-2 border-l border-white/20">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.8 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.04zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+                    </svg>
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5zm9 2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3.5a3.5 3.5 0 1 0 0-7H12zm0 2h2.5a1.5 1.5 0 0 1 0 3H12V9z" />
+                    </svg>
+                  </div>
+                </button>
+                <span className="text-sm text-gray-400 mt-2">Coming Soon</span>
               </div>
-              <div className="flex items-center space-x-1 pl-2 border-l border-white/20">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.8 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.04zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
-                </svg>
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5zm9 2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h3.5a3.5 3.5 0 1 0 0-7H12zm0 2h2.5a1.5 1.5 0 0 1 0 3H12V9z" />
-                </svg>
-              </div>
-            </button>
               <button 
                 onClick={() => window.open("https://www.mobile.uthutho.co.za/", "_blank")}
                 className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-primary hover:bg-primary/10 transition-colors"
@@ -182,7 +192,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Motto Section */}
       <section className="py-12 md:py-20 bg-gradient-to-r from-primary via-secondary to-highlight">
         <div className="container px-4 mx-auto text-center">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-white">
@@ -194,7 +203,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section id="features" className="py-12 md:py-20 bg-black">
         <div className="container px-4 mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-white">Our Features</h2>
@@ -218,7 +226,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Goals Section */}
       <section className="py-12 md:py-20 bg-black">
         <div className="container px-4 mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-white">Our Goals</h2>
@@ -236,7 +243,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* AI Assistant Section */}
       <section className="py-16 md:py-24 bg-gradient-to-br from-black via-black/95 to-primary/10">
         <div className="container px-4 mx-auto">
           <div className="max-w-4xl mx-auto text-center">
@@ -282,7 +288,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Second Motto Section */}
       <section className="py-12 md:py-20 bg-gradient-to-r from-primary via-secondary to-highlight">
         <div className="container px-4 mx-auto text-center">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-white">
@@ -294,7 +299,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Team Section */}
       <section id="about" className="py-12 md:py-20 bg-black">
         <div className="container px-4 mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-white">Our Team</h2>
@@ -312,11 +316,9 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-black border-t border-white/10">
         <div className="container mx-auto px-4 py-8 md:py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            {/* Company Info */}
             <div>
               <div className="flex items-center space-x-3 mb-6">
                 <img 
@@ -329,7 +331,6 @@ const Index = () => {
               <p className="text-gray-400">Transforming local travel in South Africa through smart public transport solutions.</p>
             </div>
 
-            {/* Quick Links */}
             <div>
               <h3 className="text-white font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2">
@@ -345,7 +346,6 @@ const Index = () => {
               </ul>
             </div>
 
-            {/* Contact */}
             <div>
               <h3 className="text-white font-semibold mb-4">Contact</h3>
               <ul className="space-y-2">
@@ -354,7 +354,6 @@ const Index = () => {
               </ul>
             </div>
 
-            {/* Social Media */}
             <div>
               <h3 className="text-white font-semibold mb-4">Follow Us</h3>
               <div className="flex space-x-4 mb-6">
@@ -372,7 +371,6 @@ const Index = () => {
                 </a>
               </div>
               
-              {/* Legal Links */}
               <div className="space-y-2">
                 <Link to="/privacy-policy" className="text-gray-400 hover:text-primary transition-colors block">
                   Privacy Policy

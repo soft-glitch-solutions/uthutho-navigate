@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -41,6 +40,7 @@ import TravelMapsPage from "./pages/TravelMapsPage";
 import SupportPage from "./pages/SupportPage";
 import DocumentsPage from "./components/admin/DocumentsPage";
 import AdminBlogsPage from "./components/admin/BlogsPage";
+import LearnMore from "./pages/LearnMore";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -75,6 +75,7 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/learn-more" element={<LearnMore />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
               <Route path="/delete-account" element={<DeleteAccountLogin />} />
