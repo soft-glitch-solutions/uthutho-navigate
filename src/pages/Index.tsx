@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { MapPin, Users, Clock, Phone, Facebook, Twitter, Instagram, Linkedin, Menu, X, Bot, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -167,12 +168,21 @@ const Index = () => {
                 </button>
                 <span className="text-sm text-gray-400 mt-2">Coming Soon</span>
               </div>
-              <button 
-                onClick={() => window.open("https://www.mobile.uthutho.co.za/", "_blank")}
-                className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-primary hover:bg-primary/10 transition-colors"
-              >
-                Data Free Portal
-              </button>
+              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                <button 
+                  onClick={() => window.open("https://www.mobile.uthutho.co.za/", "_blank")}
+                  className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-primary hover:bg-primary/10 transition-colors"
+                >
+                  Data Free Portal
+                </button>
+                <button 
+                  onClick={() => window.open("https://ai.uthutho.co.za/", "_blank")}
+                  className="bg-secondary text-white px-8 py-3 rounded-full font-semibold hover:bg-secondary/90 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Bot size={18} />
+                  <span>Try AI</span>
+                </button>
+              </div>
             </div>
           </div>
           <div className={`md:w-1/2 transform transition-all duration-1000 delay-500 ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-20 opacity-0'}`}>
