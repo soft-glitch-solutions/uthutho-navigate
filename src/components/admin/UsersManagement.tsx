@@ -3,23 +3,9 @@ import React, { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import UserTable from '@/components/UserTable';
 import { useToast } from '@/components/ui/use-toast';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent } from '@/components/ui/card';
-import { Loader2, Search, UserPlus } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import UserSearchBar from './UserSearchBar';
+import UserConfirmationDialogs from './UserConfirmationDialogs';
 
 interface UserData {
   user_id: string;
@@ -35,9 +21,9 @@ const UsersManagement = () => {
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const [userToBan, setUserToBan] = useState<{id: string, email: string, isBanned: boolean} | null>(null);
   const { toast } = useToast();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  // Fetch users data
   const { data: users, isLoading, error } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
@@ -179,6 +165,7 @@ const UsersManagement = () => {
     }
   });
 
+  // Filter users based on search term
   const filteredUsers = users?.filter(user => {
     if (!user) return false;
     
@@ -209,15 +196,10 @@ const UsersManagement = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center relative mb-4">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-        <Input 
-          placeholder="Search users..." 
-          className="pl-10" 
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+      <UserSearchBar 
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+      />
 
       <UserTable 
         users={filteredUsers} 
@@ -226,59 +208,14 @@ const UsersManagement = () => {
         onToggleBan={handleToggleBan}
       />
 
-      {/* Delete User Confirmation Dialog */}
-      <AlertDialog 
-        open={!!userToDelete} 
-        onOpenChange={() => setUserToDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete User</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to permanently delete this user?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleConfirmDeleteUser} 
-              className="bg-destructive"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Ban User Confirmation Dialog */}
-      <AlertDialog 
-        open={!!userToBan} 
-        onOpenChange={() => setUserToBan(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {userToBan?.isBanned ? 'Unban User' : 'Ban User'}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {userToBan ? 
-                (userToBan.isBanned 
-                  ? `Are you sure you want to unban ${userToBan.email || 'this user'}?`
-                  : `Are you sure you want to ban ${userToBan.email || 'this user'}?`) 
-                : 'Are you sure you want to update this user?'}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleConfirmToggleBan}
-              className={userToBan?.isBanned ? '' : 'bg-destructive'}
-            >
-              {userToBan?.isBanned ? 'Unban' : 'Ban'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <UserConfirmationDialogs
+        userToDelete={userToDelete}
+        userToBan={userToBan}
+        onCloseDeleteDialog={() => setUserToDelete(null)}
+        onCloseBanDialog={() => setUserToBan(null)}
+        onConfirmDelete={handleConfirmDeleteUser}
+        onConfirmBan={handleConfirmToggleBan}
+      />
     </div>
   );
 };
