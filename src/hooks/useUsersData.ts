@@ -2,6 +2,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
+import { useState } from 'react';
 
 export interface UserData {
   user_id: string;
@@ -12,16 +13,37 @@ export interface UserData {
   banned?: boolean;
 }
 
-export function useUsersData() {
+export interface UsersDataOptions {
+  page?: number;
+  pageSize?: number;
+}
+
+export function useUsersData(options: UsersDataOptions = {}) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { page = 1, pageSize = 10 } = options;
+  
+  // Calculate range for pagination
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
 
-  // Fetch users data
-  const { data: users, isLoading, error } = useQuery({
-    queryKey: ['users'],
+  // Fetch users data with pagination
+  const { 
+    data: usersData, 
+    isLoading, 
+    error,
+    refetch,
+    isFetching
+  } = useQuery({
+    queryKey: ['users', page, pageSize],
     queryFn: async () => {
       try {
-        // Fetch user profiles with role and ban status
+        // Fetch total count first for pagination info
+        const { count: totalCount } = await supabase
+          .from('profiles')
+          .select('id', { count: 'exact', head: true });
+
+        // Fetch user profiles with role and ban status, with pagination
         const { data: profilesData, error: profilesError } = await supabase
           .from('profiles')
           .select(`
@@ -30,13 +52,15 @@ export function useUsersData() {
             last_name,
             user_roles(role),
             banned_users(user_id)
-          `);
+          `)
+          .range(from, to);
 
         if (profilesError) throw profilesError;
 
-        if (!profilesData) return [];
+        if (!profilesData) return { users: [], totalCount: totalCount || 0 };
 
         // Transform data to include email and other details
+        // Use Promise.all for parallel processing
         const userData: UserData[] = await Promise.all(
           profilesData.map(async (profile) => {
             // Add null check for profile
@@ -76,12 +100,18 @@ export function useUsersData() {
           })
         );
 
-        return userData;
+        return { 
+          users: userData, 
+          totalCount: totalCount || 0,
+          totalPages: Math.ceil((totalCount || 0) / pageSize),
+          currentPage: page
+        };
       } catch (error: any) {
         console.error('Error fetching users:', error);
         throw error;
       }
-    }
+    },
+    staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
   });
 
   // Delete user mutation
@@ -145,10 +175,15 @@ export function useUsersData() {
   });
 
   return {
-    users,
+    users: usersData?.users || [],
+    totalCount: usersData?.totalCount || 0,
+    totalPages: usersData?.totalPages || 0,
+    currentPage: usersData?.currentPage || page,
     isLoading,
+    isFetching,
     error,
     deleteUser,
-    toggleBanUser
+    toggleBanUser,
+    refetch
   };
 }

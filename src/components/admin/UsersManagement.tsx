@@ -3,14 +3,27 @@ import React, { useState } from 'react';
 import UserTable from '@/components/UserTable';
 import UserSearchBar from './UserSearchBar';
 import UserConfirmationDialogs from './UserConfirmationDialogs';
+import UserPagination from './UserPagination';
 import { useUsersData } from '@/hooks/useUsersData';
 
 const UsersManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [userToDelete, setUserToDelete] = useState<string | null>(null);
   const [userToBan, setUserToBan] = useState<{id: string, email: string, isBanned: boolean} | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10; // Items per page
   
-  const { users, isLoading, deleteUser, toggleBanUser } = useUsersData();
+  const { 
+    users, 
+    isLoading, 
+    deleteUser, 
+    toggleBanUser,
+    totalPages,
+    isFetching
+  } = useUsersData({
+    page: currentPage,
+    pageSize
+  });
 
   // Filter users based on search term
   const filteredUsers = users?.filter(user => {
@@ -44,6 +57,11 @@ const UsersManagement = () => {
     }
   };
 
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="space-y-6">
       <UserSearchBar 
@@ -53,9 +71,16 @@ const UsersManagement = () => {
 
       <UserTable 
         users={filteredUsers} 
-        loading={isLoading}
+        loading={isLoading || isFetching}
         onDeleteUser={handleDeleteUser}
         onToggleBan={handleToggleBan}
+      />
+
+      <UserPagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        isLoading={isLoading || isFetching}
       />
 
       <UserConfirmationDialogs
