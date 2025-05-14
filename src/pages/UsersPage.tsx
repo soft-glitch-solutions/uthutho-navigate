@@ -1,13 +1,15 @@
 
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import UserTable from '@/components/UserTable';
-import { useToast } from '@/components/ui/use-toast';
 import UsersManagement from '@/components/admin/UsersManagement';
 
 const UsersPage = () => {
-  return <UsersManagement />;
+  return (
+    <div className="space-y-4">
+      <h1 className="text-2xl font-bold">User Management</h1>
+      <p className="text-muted-foreground">Manage system users, roles and permissions.</p>
+      <UsersManagement />
+    </div>
+  );
 };
 
 export default UsersPage;

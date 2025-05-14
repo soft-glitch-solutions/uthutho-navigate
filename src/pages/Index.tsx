@@ -8,6 +8,7 @@ import GoalsSection from '../components/home/GoalsSection';
 import AISection from '../components/home/AISection';
 import TeamSection from '../components/home/TeamSection';
 import Footer from '../components/home/Footer';
+import Timeline from '../components/home/Timeline';
 
 const Index = () => {
   return (
@@ -21,8 +22,14 @@ const Index = () => {
       />
       
       <FeaturesSection />
-      <GoalsSection />
+      
+      {/* Moved AISection to appear before GoalsSection */}
       <AISection />
+      
+      <GoalsSection />
+      
+      {/* Added new Timeline section */}
+      <Timeline />
       
       <QuoteSection 
         quote="Izindlela zakho ziqinisekisa impumelelo!"
