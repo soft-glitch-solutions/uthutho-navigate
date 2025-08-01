@@ -10,7 +10,7 @@ interface TimelineItem {
 
 const timelineItems: TimelineItem[] = [
   {
-    date: "July 2025",
+    date: "September 2025",
     title: "AI Assistant Release",
     description: "Launching our AI assistant to help users navigate South African public transport."
   },
