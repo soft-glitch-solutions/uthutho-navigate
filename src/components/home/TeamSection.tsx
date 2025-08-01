@@ -29,18 +29,6 @@ const teamMembers: TeamMemberProps[] = [
   },
   {
     id: 3,
-    name: 'Malakai Johnson',
-    title: 'Head of Sales & Community Partnerships',
-    description: 'Malakai leads Uthutho\'s outreach and partnerships, helping us connect with commuters, operators, and local businesses.',
-    image: '/lovable-uploads/images (2).jpg',
-    socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/malakailink',
-      x: 'https://twitter.com/malakai',
-      github: 'https://github.com/malakai',
-    },
-  },
-  {
-    id: 4,
     name: 'Ishmael Sikhikhi',
     title: 'Quality Assurance & Software Development',
     description: 'Ishmael ensures our applications meet the highest standards through rigorous testing and quality control, while also contributing to our software development.',
