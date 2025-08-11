@@ -10,9 +10,7 @@ const teamMembers: TeamMemberProps[] = [
     description: 'Shaqeel is the visionary behind Uthutho, building a smarter way for communities to navigate and access public transport information.',
     image: '/lovable-uploads/97f89484-6b1f-4dcd-ad4b-1136e91da5ab.jpg',
     socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/shaqeellink',
-      x: 'https://twitter.com/shaqeel',
-      github: 'https://github.com/shaqeel',
+      linkedin: 'https://www.linkedin.com/in/shaqeel-less-11979a186?originalSubdomain=za',
     },
   },
   {
@@ -22,9 +20,7 @@ const teamMembers: TeamMemberProps[] = [
     description: 'Delisha ensures the Uthutho experience is smooth, functional, and beautifully designed — for every commuter and community.',
     image: '/lovable-uploads/delisha (1).png',
     socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/delishasmith',
-      x: 'https://twitter.com/delisha',
-      github: 'https://github.com/delisha',
+      linkedin: 'https://www.linkedin.com/in/delisha-ann-n-710879115/',
     },
   },
   {
@@ -34,9 +30,7 @@ const teamMembers: TeamMemberProps[] = [
     description: 'Ishmael ensures our applications meet the highest standards through rigorous testing and quality control, while also contributing to our software development.',
     image: '/lovable-uploads/70352247.jpg',
     socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/ishmael',
-      x: 'https://twitter.com/ishmael',
-      github: 'https://github.com/ishmael',
+      linkedin: 'https://www.linkedin.com/in/ishmael-sikhikhi-2b8086126/?originalSubdomain=za',
     },
   },
 ];
