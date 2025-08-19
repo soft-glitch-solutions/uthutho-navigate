@@ -63,13 +63,6 @@ const HeroSection = () => {
               >
                 Data Free Portal
               </button>
-              <button 
-                onClick={() => window.open("https://ai.uthutho.co.za/", "_blank")}
-                className="bg-secondary text-white px-8 py-3 rounded-full font-semibold hover:bg-secondary/90 transition-colors flex items-center justify-center gap-2"
-              >
-                <Bot size={18} />
-                <span>Try AI</span>
-              </button>
             </div>
           </div>
         </div>

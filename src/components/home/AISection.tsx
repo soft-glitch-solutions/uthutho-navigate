@@ -18,7 +18,7 @@ const AISection = () => {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link 
-              to="https://ai.uthutho.co.za/"
+              to="https://mobile.uthutho.co.za/"
               className="group inline-flex items-center px-8 py-3 text-lg font-semibold rounded-full bg-primary text-white hover:bg-primary/90 transition-colors"
             >
               Try Uthutho AI

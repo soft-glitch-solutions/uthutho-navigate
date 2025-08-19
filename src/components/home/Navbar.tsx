@@ -24,14 +24,6 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-700 hover:text-primary transition-colors">Features</a>
               <a href="#about" className="text-gray-700 hover:text-primary transition-colors">About Us</a>
-              <a 
-                href="https://ai.uthutho.co.za/"
-                target="_blank"
-                rel="noopener noreferrer" 
-                className="text-gray-700 hover:text-primary transition-colors"
-              >
-                Try AI
-              </a>
               <button className="bg-highlight text-white px-6 py-2 rounded-full flex items-center space-x-2 hover:bg-highlight/90 transition-colors">
                 <Phone size={18} />
                 <span>Download App</span>

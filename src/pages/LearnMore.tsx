@@ -74,7 +74,7 @@ const LearnMore = () => {
                 Experience the future of public transport navigation. Try Uthutho AI now and make your daily commute smarter and more efficient.
               </p>
               <a 
-                href="https://ai.uthutho.co.za/"
+                href="https://mobile.uthutho.co.za/"
                 className="inline-flex items-center px-8 py-3 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
