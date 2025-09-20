@@ -1,5 +1,4 @@
-
-import { MapPin, Users, Clock } from 'lucide-react';
+import { MapPin, Users, Clock, Award, MessageSquare } from 'lucide-react';
 import FeatureCard from './FeatureCard';
 
 const FeaturesSection = () => {
@@ -10,18 +9,33 @@ const FeaturesSection = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
           <FeatureCard
             icon={<MapPin className="h-8 w-8 text-primary" />}
-            title="Real-time Updates"
-            description="Get live updates on routes, schedules, and fares for all public transport options."
+            title="Find People on Your Route"
+            description="Mark yourself as waiting or traveling and see who else is on the same journey with you."
+          />
+          <FeatureCard
+            icon={<MessageSquare className="h-8 w-8 text-secondary" />}
+            title="Journey Chats"
+            description="Join temporary chats with fellow commuters. Conversations disappear once the journey ends."
+          />
+          <FeatureCard
+            icon={<Award className="h-8 w-8 text-accent" />}
+            title="Gamified Travel"
+            description="Earn points, badges, and rewards as you travel. Compete on leaderboards and keep your streaks alive."
+          />
+          <FeatureCard
+            icon={<Clock className="h-8 w-8 text-primary" />}
+            title="Dynamic Journeys"
+            description="Journeys exist only while people are traveling. When the trip ends, the journey closes automatically."
           />
           <FeatureCard
             icon={<Users className="h-8 w-8 text-secondary" />}
-            title="Stop Waiting"
-            description="Mark yourself as waiting at a stop to help others know about crowding and queue status."
+            title="Community & Safety"
+            description="Travel feels less lonely and more secure by connecting with others going the same way."
           />
           <FeatureCard
-            icon={<Clock className="h-8 w-8 text-accent" />}
-            title="Time Saving"
-            description="Plan your journey efficiently with accurate timing information."
+            icon={<MapPin className="h-8 w-8 text-accent" />}
+            title="Public Transport Integration"
+            description="Works seamlessly with taxis, buses, and trains to give you real-time updates and routes."
           />
         </div>
       </div>
