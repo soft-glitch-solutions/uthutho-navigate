@@ -1,13 +1,13 @@
-
 import React from 'react';
+import { MapPin, Users, Award, Shield, Leaf, Zap } from 'lucide-react';
 
 const goals = [
-  "Provide real-time route and schedule updates",
-  "Make public transport easier to understand",
-  "Encourage eco-friendly travel options",
-  "Reduce traffic congestion",
-  "Improve urban mobility",
-  "Bridge the information gap"
+  { icon: <MapPin className="h-6 w-6 text-primary" />, text: "Make commuting in South Africa simple, social, and fun" },
+  { icon: <Users className="h-6 w-6 text-secondary" />, text: "Build safer and stronger communities through shared journeys" },
+  { icon: <Award className="h-6 w-6 text-accent" />, text: "Use gamification to keep travel engaging and rewarding" },
+  { icon: <Shield className="h-6 w-6 text-primary" />, text: "Protect commuter privacy with journey titles only" },
+  { icon: <Leaf className="h-6 w-6 text-green-500" />, text: "Promote eco-friendly travel and reduce congestion" },
+  { icon: <Zap className="h-6 w-6 text-yellow-400" />, text: "Bridge the information gap with real-time updates" },
 ];
 
 const GoalsSection = () => {
@@ -19,10 +19,11 @@ const GoalsSection = () => {
           {goals.map((goal, index) => (
             <div
               key={index}
-              className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-primary/50 transition-all animate-fade-up"
+              className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-primary/50 transition-all animate-fade-up flex items-center space-x-4"
               style={{ animationDelay: `${index * 150}ms` }}
             >
-              <p className="text-base md:text-lg text-gray-300">{goal}</p>
+              <div className="flex-shrink-0 animate-pulse-slow">{goal.icon}</div>
+              <p className="text-base md:text-lg text-gray-300">{goal.text}</p>
             </div>
           ))}
         </div>

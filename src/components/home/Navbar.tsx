@@ -24,10 +24,6 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-700 hover:text-primary transition-colors">Features</a>
               <a href="#about" className="text-gray-700 hover:text-primary transition-colors">About Us</a>
-              <button className="bg-highlight text-white px-6 py-2 rounded-full flex items-center space-x-2 hover:bg-highlight/90 transition-colors">
-                <Phone size={18} />
-                <span>Download App</span>
-              </button>
             </div>
             
             {isMobile && (
@@ -41,10 +37,6 @@ const Navbar = () => {
                   <div className="flex flex-col h-full pt-10 space-y-6">
                     <a href="#features" className="text-white text-lg hover:text-primary transition-colors py-2">Features</a>
                     <a href="#about" className="text-white text-lg hover:text-primary transition-colors py-2">About Us</a>
-                    <button className="bg-highlight text-white px-6 py-3 rounded-full flex items-center justify-center space-x-2 hover:bg-highlight/90 transition-colors">
-                      <Phone size={18} />
-                      <span>Download App</span>
-                    </button>
                   </div>
                 </SheetContent>
               </Sheet>
