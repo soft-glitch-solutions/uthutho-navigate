@@ -1,4 +1,3 @@
-
 import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -29,7 +28,7 @@ const Footer = () => {
                 <Link to="/docs" className="text-gray-400 hover:text-primary transition-colors">Documentation</Link>
               </li>
               <li>
-                <Link to="/admin" className="text-gray-400 hover:text-primary transition-colors">Admin Portal</Link>
+                <a href="https://portal.uthutho.co.za" className="text-gray-400 hover:text-primary transition-colors">Admin Portal</a>
               </li>
             </ul>
           </div>
