@@ -43,7 +43,7 @@ const HeroSection = () => {
                 </div>
                 <div className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity">
                   <img 
-                    src="https://firstimpact.co.za/wp-content/uploads/2024/02/huawei-Badge-Black-huawei-app-gallery-1-1024x307.png" 
+                    src="https://appgallery.huawei.com/app/C115317901" 
                     alt="Available on Huawei AppGallery" 
                     className="h-12"
                   />
