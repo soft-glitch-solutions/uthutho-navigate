@@ -31,9 +31,10 @@ const HeroSection = () => {
           <p className={`text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             No Data No problem, Join our data free web app version. 
           </p>
-          <div className={`flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="flex flex-col items-center sm:items-start">
-              <div className="flex space-x-4 mb-2">
+          <div className={`transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            {/* App Store Badges */}
+            <div className="flex flex-col items-center md:items-start mb-8">
+              <div className="flex flex-wrap justify-center md:justify-start gap-4 mb-3">
                 <div className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity">
                   <img 
                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/320px-Google_Play_Store_badge_EN.svg.png" 
@@ -56,12 +57,20 @@ const HeroSection = () => {
               </div>
               <span className="text-sm text-gray-400">Download Now</span>
             </div>
-            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-4">
+            
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <button 
                 onClick={() => window.open("https://www.mobile.uthutho.co.za/", "_blank")}
-                className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-[#fd602d] hover:bg-[#fd602d]/10 transition-colors"
+                className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-[#fd602d] hover:bg-[#fd602d]/10 transition-colors whitespace-nowrap"
               >
                 Data Free Portal
+              </button>
+              <button 
+                onClick={() => window.open("/path-to-your-apk-file.apk", "_blank")}
+                className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-[#1ea2b1] hover:bg-[#1ea2b1]/10 transition-colors whitespace-nowrap"
+              >
+                Download APK
               </button>
             </div>
           </div>
