@@ -41,13 +41,18 @@ const HeroSection = () => {
                     className="h-12"
                   />
                 </div>
-                <div className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity">
+                <a 
+                  href="https://appgallery.huawei.com/app/C115317901" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                >
                   <img 
-                    src="https://appgallery.huawei.com/app/C115317901" 
+                    src="https://firstimpact.co.za/wp-content/uploads/2024/02/huawei-Badge-Black-huawei-app-gallery-1-1024x307.png" 
                     alt="Available on Huawei AppGallery" 
                     className="h-12"
                   />
-                </div>
+                </a>
               </div>
               <span className="text-sm text-gray-400">Download Now</span>
             </div>
