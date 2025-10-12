@@ -11,7 +11,7 @@ const HeroSection = () => {
     <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-16">
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[linear-gradient(45deg,#1ea2b133,#ed67b133,#f8c32533,#fd602d33)] opacity-20"></div>
-        <div className="absolute inset-0 bg-[url('/lovable-uploads/57f51ba8-7a3d-442f-b314-6732a5bd80fe.png')] bg-cover bg-center opacity-10"></div>
+        <div className="absolute inset-0 bg-[url('/lovable-uploads/Mobile_uthutho.png')] bg-cover bg-center opacity-10"></div>
         <div className="absolute inset-0 flex items-center justify-center opacity-5">
           <img 
             src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png" 
@@ -81,7 +81,7 @@ const HeroSection = () => {
             <div className="relative z-10 bg-black rounded-[40px] p-3 shadow-2xl">
               <div className="relative overflow-hidden rounded-[32px] h-[470px] sm:h-[570px]">
                 <img 
-                  src="/lovable-uploads/Uthuthophone.png"
+                  src="/lovable-uploads/Mobile_uthutho.jpeg"
                   alt="Uthutho App"
                   className="w-full h-full object-cover"
                 />
