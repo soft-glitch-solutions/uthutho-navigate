@@ -20,6 +20,7 @@ const HeroSection = () => {
           />
         </div>
       </div>
+
       <div className="container px-4 mx-auto flex flex-col md:flex-row items-center justify-between relative z-10 py-8 md:py-16">
         <div className="text-center md:text-left md:w-1/2 mb-12 md:mb-0">
           <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white transform transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
@@ -31,6 +32,7 @@ const HeroSection = () => {
           <p className={`text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             No Data No problem, Join our data free web app version. 
           </p>
+
           <div className={`transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             {/* App Store Badges */}
             <div className="flex flex-col items-center md:items-start mb-8">
@@ -57,24 +59,28 @@ const HeroSection = () => {
               </div>
               <span className="text-sm text-gray-400">Download Now</span>
             </div>
-            
+
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start items-center">
               <button 
                 onClick={() => window.open("https://www.mobile.uthutho.co.za/", "_blank")}
                 className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-[#fd602d] hover:bg-[#fd602d]/10 transition-colors whitespace-nowrap"
               >
                 Data Free Portal
               </button>
-              <button 
-                onClick={() => window.open("/path-to-your-apk-file.apk", "_blank")}
-                className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-[#1ea2b1] hover:bg-[#1ea2b1]/10 transition-colors whitespace-nowrap"
-              >
-                Download APK
-              </button>
+              <div className="flex flex-col items-center">
+                <button 
+                  onClick={() => window.open("/release/Uthutho.apk", "_blank")}
+                  className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-[#1ea2b1] hover:bg-[#1ea2b1]/10 transition-colors whitespace-nowrap"
+                >
+                  Download APK
+                </button>
+                <span className="text-xs text-gray-400 mt-1">v1.0.1 (Latest)</span>
+              </div>
             </div>
           </div>
         </div>
+
         <div className={`md:w-1/2 transform transition-all duration-1000 delay-500 ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-20 opacity-0'}`}>
           <div className="relative w-[250px] sm:w-[300px] h-[500px] sm:h-[600px] mx-auto">
             <div className="absolute inset-0 bg-gradient-to-r from-[#1ea2b1] via-[#ed67b1] to-[#f8c325] opacity-20 blur-xl rounded-full"></div>
