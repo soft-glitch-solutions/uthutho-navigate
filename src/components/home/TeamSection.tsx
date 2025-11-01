@@ -33,6 +33,26 @@ const teamMembers: TeamMemberProps[] = [
       linkedin: 'https://www.linkedin.com/in/ishmael-sikhikhi-2b8086126/?originalSubdomain=za',
     },
   },
+  {
+    id: 4,
+    name: 'Eben Jacons',
+    title: 'Software Tester',
+    description: 'Eben meticulously tests our software to identify issues, improve performance, and ensure every product release is reliable and user-friendly.',
+    image: '/lovable-uploads/eben-jacons.jpg',
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/eben-jacons/', // optional, if available
+    },
+  },
+  {
+    id: 5,
+    name: 'Naeema Less',
+    title: 'Data Integrity & Systems Analyst',
+    description: 'Naeema oversees data accuracy and system integrity, ensuring seamless information management and reliability across all platforms.',
+    image: '/lovable-uploads/naeema-less.jpg',
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/naeema-less/', // optional, if available
+    },
+  },
 ];
 
 const TeamSection = () => {
