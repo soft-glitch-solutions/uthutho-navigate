@@ -38,7 +38,7 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Eben Jacons',
     title: 'Software Tester',
     description: 'Eben meticulously tests our software to identify issues, improve performance, and ensure every product release is reliable and user-friendly.',
-    image: '/lovable-uploads/eben-jacons.jpg',
+    image: '/lovable-uploads/eben-jacons.jpeg',
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/eben-jacons/', // optional, if available
     },
