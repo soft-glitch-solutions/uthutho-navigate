@@ -40,7 +40,7 @@ const teamMembers: TeamMemberProps[] = [
     description: 'Eben meticulously tests our software to identify issues, improve performance, and ensure every product release is reliable and user-friendly.',
     image: '/lovable-uploads/eben-jacons.jpeg',
     socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/eben-jacons/', // optional, if available
+      linkedin: 'https://www.linkedin.com/in/eben-jacobs-92090037a/', // optional, if available
     },
   },
   {
@@ -50,7 +50,7 @@ const teamMembers: TeamMemberProps[] = [
     description: 'Naeema oversees data accuracy and system integrity, ensuring seamless information management and reliability across all platforms.',
     image: '/lovable-uploads/naeema-less.jpg',
     socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/naeema-less/', // optional, if available
+      linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/', // optional, if available
     },
   },
 ];
