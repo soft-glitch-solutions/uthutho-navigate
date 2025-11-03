@@ -53,6 +53,16 @@ const teamMembers: TeamMemberProps[] = [
       linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/', // optional, if available
     },
   },
+  {
+    id: 5,
+    name: 'Zacharia Solomons',
+    title: 'Business Development Associate',
+    description: 'Zacharia contributes to Uthutho growth by identifying new opportunities, supporting partnerships, and helping align business initiatives with community needs.',
+    image: '/lovable-uploads/ZachariaSolomons.jpeg',
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/', // optional, if available
+    },
+  },
 ];
 
 const TeamSection = () => {
