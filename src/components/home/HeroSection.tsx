@@ -68,6 +68,7 @@ const HeroSection = () => {
               >
                 Data Free Portal
               </button>
+
               <div className="flex flex-col items-center">
                 <button 
                   onClick={() => window.open("/release/Uthutho.apk", "_blank")}
@@ -77,6 +78,21 @@ const HeroSection = () => {
                 </button>
                 <span className="text-xs text-gray-400 mt-1">v1.0.1 (Latest)</span>
               </div>
+            </div>
+
+            {/* WhatsApp Channel Button */}
+            <div className="mt-6 flex justify-center md:justify-start">
+              <button 
+                onClick={() => window.open("https://whatsapp.com/channel/0029VbBvCFSFMqrRi2c83q0Z", "_blank")}
+                className="flex items-center gap-2 bg-[#25D366]/10 border-2 border-[#25D366] text-[#25D366] px-6 py-3 rounded-full font-semibold hover:bg-[#25D366]/20 transition-colors"
+              >
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                  alt="WhatsApp" 
+                  className="w-5 h-5"
+                />
+                Join WhatsApp Channel
+              </button>
             </div>
           </div>
         </div>
