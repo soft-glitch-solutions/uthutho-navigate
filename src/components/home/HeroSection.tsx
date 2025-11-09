@@ -32,7 +32,7 @@ const HeroSection = () => {
           <p className={`text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             No Data No problem, Join our data free web app version. 
           </p>
-
+              <span className="text-sm text-gray-400">Coming soon too....</span>
           <div className={`transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             {/* App Store Badges */}
             <div className="flex flex-col items-center md:items-start mb-8">
@@ -57,7 +57,7 @@ const HeroSection = () => {
                   />
                 </a>
               </div>
-              <span className="text-sm text-gray-400">Download Now</span>
+
             </div>
 
             {/* Action Buttons */}
