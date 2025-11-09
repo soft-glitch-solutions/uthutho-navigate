@@ -48,19 +48,29 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Naeema Less',
     title: 'Data Integrity & Systems Analyst',
     description: 'Naeema oversees data accuracy and system integrity, ensuring seamless information management and reliability across all platforms.',
-    image: '/lovable-uploads/naeema-less.jpg',
+    image: '/lovable-uploads/naeema.jpg',
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/', // optional, if available
     },
   },
   {
-    id: 5,
+    id: 6,
     name: 'Zacharia Solomons',
     title: 'Business Development Associate',
     description: 'Zacharia contributes to Uthutho growth by identifying new opportunities, supporting partnerships, and helping align business initiatives with community needs.',
     image: '/lovable-uploads/ZachariaSolomons.jpeg',
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/', // optional, if available
+    },
+  },
+    {
+    id: 7,
+    name: 'Aakifah Moosa',
+    title: 'Marketing Coordinator',
+    description: 'Aakifah drives Uthutho’s marketing efforts, connecting communities through impactful campaigns and spreading awareness of our mission to make transport smarter and more accessible.',
+    image: '/lovable-uploads/aakifah.jpeg', // update this path if the image name differs
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/aakifah-moosa/', // optional, if available
     },
   },
 ];
