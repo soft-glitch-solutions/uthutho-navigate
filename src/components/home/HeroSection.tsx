@@ -76,7 +76,7 @@ const HeroSection = () => {
                 >
                   Download APK
                 </button>
-                <span className="text-xs text-gray-400 mt-1">v1.0.1 (Latest)</span>
+                <span className="text-xs text-gray-400 mt-1">v1.5.1 (Latest)</span>
               </div>
             </div>
 
