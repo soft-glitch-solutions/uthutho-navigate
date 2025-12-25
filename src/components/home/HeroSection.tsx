@@ -32,17 +32,23 @@ const HeroSection = () => {
           <p className={`text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             No Data No problem, Join our data free web app version. 
           </p>
-              <span className="text-sm text-gray-400">Coming soon too....</span>
           <div className={`transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             {/* App Store Badges */}
             <div className="flex flex-col items-center md:items-start mb-8">
               <div className="flex flex-wrap justify-center md:justify-start gap-4 mb-3">
                 <div className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity">
+                <a 
+                  href="https://play.google.com/store/apps/details?id=com.softglitch.uthutho&hl=en_ZA" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
+                >
                   <img 
                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/320px-Google_Play_Store_badge_EN.svg.png" 
                     alt="Get it on Google Play" 
                     className="h-12"
                   />
+                  </a>
                 </div>
                 <a 
                   href="https://appgallery.huawei.com/app/C115317901" 
@@ -76,7 +82,7 @@ const HeroSection = () => {
                 >
                   Download APK
                 </button>
-                <span className="text-xs text-gray-400 mt-1">v1.5.1 (Latest)</span>
+                <span className="text-xs text-gray-400 mt-1">v1.8.2 (Latest)</span>
               </div>
             </div>
 
