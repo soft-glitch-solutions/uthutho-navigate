@@ -1,4 +1,3 @@
-
 import React from 'react';
 import TeamMember, { TeamMemberProps } from '../TeamMember';
 
@@ -40,7 +39,7 @@ const teamMembers: TeamMemberProps[] = [
     description: 'Eben meticulously tests our software to identify issues, improve performance, and ensure every product release is reliable and user-friendly.',
     image: '/lovable-uploads/eben-jacons.jpeg',
     socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/eben-jacobs-92090037a/', // optional, if available
+      linkedin: 'https://www.linkedin.com/in/eben-jacobs-92090037a/',
     },
   },
   {
@@ -50,7 +49,7 @@ const teamMembers: TeamMemberProps[] = [
     description: 'Naeema oversees data accuracy and system integrity, ensuring seamless information management and reliability across all platforms.',
     image: '/lovable-uploads/naeema.jpg',
     socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/', // optional, if available
+      linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/',
     },
   },
   {
@@ -60,17 +59,27 @@ const teamMembers: TeamMemberProps[] = [
     description: 'Zacharia contributes to Uthutho growth by identifying new opportunities, supporting partnerships, and helping align business initiatives with community needs.',
     image: '/lovable-uploads/ZachariaSolomons.jpeg',
     socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/', // optional, if available
+      linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/',
     },
   },
-    {
+  {
     id: 7,
     name: 'Aakifah Moosa',
     title: 'Marketing Coordinator',
     description: 'Aakifah drives Uthutho’s marketing efforts, connecting communities through impactful campaigns and spreading awareness of our mission to make transport smarter and more accessible.',
-    image: '/lovable-uploads/aakifah.jpeg', // update this path if the image name differs
+    image: '/lovable-uploads/aakifah.jpeg',
     socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/aakifah-moosa/', // optional, if available
+      linkedin: 'https://www.linkedin.com/in/aakifah-moosa/',
+    },
+  },
+  {
+    id: 8,
+    name: 'Aaliyah',
+    title: 'Head of Marketing',
+    description: 'Aaliyah leads Uthutho’s marketing strategy, shaping brand direction, driving growth initiatives, and ensuring our message reaches and resonates with communities across every journey.',
+    image: '/lovable-uploads/aaliyah.jpeg',
+    socialLinks: {
+      // add LinkedIn later if available
     },
   },
 ];
@@ -79,16 +88,15 @@ const TeamSection = () => {
   return (
     <section id="about" className="py-12 md:py-20 bg-black">
       <div className="container px-4 mx-auto">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-white">Our Team</h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-white">
+          Our Team
+        </h2>
         <p className="text-gray-300 text-center mb-8 md:mb-16 max-w-3xl mx-auto">
           Meet the dedicated team behind Uthutho, working tirelessly to transform public transport in South Africa.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {teamMembers.map((member) => (
-            <TeamMember
-              key={member.id}
-              {...member}
-            />
+            <TeamMember key={member.id} {...member} />
           ))}
         </div>
       </div>
