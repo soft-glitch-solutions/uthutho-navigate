@@ -64,22 +64,22 @@ const teamMembers: TeamMemberProps[] = [
   },
   {
     id: 7,
-    name: 'Aakifah Moosa',
-    title: 'Marketing Coordinator',
-    description: 'Aakifah drives Uthutho’s marketing efforts, connecting communities through impactful campaigns and spreading awareness of our mission to make transport smarter and more accessible.',
-    image: '/lovable-uploads/aakifah.jpeg',
-    socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/aakifah-moosa/',
-    },
-  },
-  {
-    id: 8,
     name: 'Aaliyah Bam',
     title: 'Head of Marketing',
     description: 'Aaliyah leads Uthutho’s marketing strategy, shaping brand direction, driving growth initiatives, and ensuring our message reaches and resonates with communities across every journey.',
     image: '/lovable-uploads/aaliyah.jpeg',
     socialLinks: {
       // add LinkedIn later if available
+    },
+  },
+  {
+    id: 8,
+    name: 'Aakifah Moosa',
+    title: 'Marketing Coordinator',
+    description: 'Aakifah drives Uthutho’s marketing efforts, connecting communities through impactful campaigns and spreading awareness of our mission to make transport smarter and more accessible.',
+    image: '/lovable-uploads/aakifah.jpeg',
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/aakifah-moosa/',
     },
   },
 ];
