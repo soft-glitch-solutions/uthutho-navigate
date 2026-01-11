@@ -74,7 +74,7 @@ const teamMembers: TeamMemberProps[] = [
   },
   {
     id: 8,
-    name: 'Aaliyah',
+    name: 'Aaliyah Bam',
     title: 'Head of Marketing',
     description: 'Aaliyah leads Uthutho’s marketing strategy, shaping brand direction, driving growth initiatives, and ensuring our message reaches and resonates with communities across every journey.',
     image: '/lovable-uploads/aaliyah.jpeg',
