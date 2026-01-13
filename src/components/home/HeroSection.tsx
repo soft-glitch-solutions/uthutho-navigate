@@ -51,7 +51,7 @@ const HeroSection = () => {
                   </a>
                 </div>
                 <a 
-                  href="https://appgallery.huawei.com/app/C115317901" 
+                  href="https://appgallery.huawei.com/app/C116453879" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
