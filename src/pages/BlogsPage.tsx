@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -79,6 +78,13 @@ const BlogsPage = () => {
       queryClient.invalidateQueries({ queryKey: ['blogs'] });
       toast({ title: "Success", description: "Blog status updated successfully" });
     },
+    onError: (error) => {
+      toast({ 
+        title: "Error", 
+        description: "Failed to update blog status", 
+        variant: "destructive" 
+      });
+    },
   });
 
   return (
@@ -87,7 +93,7 @@ const BlogsPage = () => {
         <CardHeader>
           <CardTitle>Create New Blog Post</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="title">Title</Label>
             <Input
@@ -95,67 +101,122 @@ const BlogsPage = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter blog title"
+              className="max-w-2xl"
             />
           </div>
           
           <div className="space-y-2">
             <Label>Content</Label>
-            <WYSIWYGEditor content={content} onChange={setContent} />
+            <div className="border rounded-md">
+              <WYSIWYGEditor content={content} onChange={setContent} />
+            </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 max-w-2xl">
             <Label htmlFor="tags">Tags (comma-separated)</Label>
             <Input
               id="tags"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
-              placeholder="tech, news, updates"
+              placeholder="tech, news, updates, tutorial"
             />
           </div>
 
-          <div className="flex justify-end">
-            <Button onClick={() => createBlog.mutate()}>
-              Save as Draft
+          <div className="flex justify-end space-x-2 pt-4">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setTitle('');
+                setContent('');
+                setTags('');
+              }}
+            >
+              Clear
+            </Button>
+            <Button 
+              onClick={() => createBlog.mutate()}
+              disabled={createBlog.isPending}
+            >
+              {createBlog.isPending ? "Saving..." : "Save as Draft"}
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {blogs?.map((blog) => (
-          <Card key={blog.id}>
-            <CardHeader>
-              <CardTitle>{blog.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="prose prose-sm max-w-none mb-4" dangerouslySetInnerHTML={{ __html: blog.content }} />
-              {blog.tags && (
-                <div className="flex gap-2 mb-4">
-                  {blog.tags.map((tag: string) => (
-                    <span key={tag} className="bg-primary/10 text-primary px-2 py-1 rounded-full text-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">
-                  Status: {blog.status}
-                </span>
-                {blog.status === 'draft' && (
-                  <Button 
-                    onClick={() => updateBlogStatus.mutate({ 
-                      id: blog.id, 
-                      newStatus: 'published' 
-                    })}
-                  >
-                    Publish
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      <div>
+        <h2 className="text-2xl font-bold mb-4">Blog Posts</h2>
+        {isLoading ? (
+          <div className="text-center py-8">Loading blog posts...</div>
+        ) : blogs?.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">No blog posts yet. Create your first one above!</div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {blogs?.map((blog) => (
+              <Card key={blog.id} className="flex flex-col">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg line-clamp-2">{blog.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 flex flex-col">
+                  <div className="prose prose-sm max-w-none mb-4 flex-1 line-clamp-3" 
+                       dangerouslySetInnerHTML={{ __html: blog.content }} />
+                  
+                  {blog.tags && blog.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {blog.tags.map((tag: string) => (
+                        <span 
+                          key={tag} 
+                          className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-between items-center pt-4 border-t">
+                    <div className="flex flex-col">
+                      <span className="text-sm text-muted-foreground">
+                        Status: <span className={`font-medium ${blog.status === 'published' ? 'text-green-600' : 'text-amber-600'}`}>
+                          {blog.status}
+                        </span>
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(blog.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      {blog.status === 'draft' ? (
+                        <Button 
+                          size="sm"
+                          onClick={() => updateBlogStatus.mutate({ 
+                            id: blog.id, 
+                            newStatus: 'published' 
+                          })}
+                          disabled={updateBlogStatus.isPending}
+                        >
+                          {updateBlogStatus.isPending ? "Publishing..." : "Publish"}
+                        </Button>
+                      ) : (
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          onClick={() => updateBlogStatus.mutate({ 
+                            id: blog.id, 
+                            newStatus: 'draft' 
+                          })}
+                          disabled={updateBlogStatus.isPending}
+                        >
+                          {updateBlogStatus.isPending ? "Unpublishing..." : "Unpublish"}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
