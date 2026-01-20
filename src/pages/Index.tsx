@@ -5,7 +5,7 @@ import HeroSection from '../components/home/HeroSection';
 import QuoteSection from '../components/home/QuoteSection';
 import FeaturesSection from '../components/home/FeaturesSection';
 import GoalsSection from '../components/home/GoalsSection';
-import AISection from '../components/home/AISection';
+import SchoolTransportSection from '../components/home/SchoolTransportSection';
 import TeamSection from '../components/home/TeamSection';
 import Footer from '../components/home/Footer';
 import Timeline from '../components/home/Timeline';
@@ -21,10 +21,12 @@ const Index = () => {
         translation="Travel with ease, know your route!"
       />
       
-      <FeaturesSection />
+
       
       {/* Moved AISection to appear before GoalsSection */}
-      <AISection />
+      <SchoolTransportSection />
+      
+      <FeaturesSection />
       
       <GoalsSection />
       
