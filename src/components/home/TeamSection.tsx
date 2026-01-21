@@ -72,16 +72,7 @@ const teamMembers: TeamMemberProps[] = [
       // add LinkedIn later if available
     },
   },
-  {
-    id: 8,
-    name: 'Aakifah Moosa',
-    title: 'Marketing Coordinator',
-    description: 'Aakifah drives Uthutho’s marketing efforts, connecting communities through impactful campaigns and spreading awareness of our mission to make transport smarter and more accessible.',
-    image: '/lovable-uploads/aakifah.jpeg',
-    socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/aakifah-moosa/',
-    },
-  },
+
 ];
 
 const TeamSection = () => {
