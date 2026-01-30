@@ -72,6 +72,7 @@ const teamMembers: TeamMemberProps[] = [
       // add LinkedIn later if available
     },
   },
+  
   {
     id: 7,
     name: 'Makhi Mangxola',
