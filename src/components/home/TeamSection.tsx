@@ -24,6 +24,26 @@ const teamMembers: TeamMemberProps[] = [
   },
   {
     id: 3,
+    name: 'Zeyn Kisten',
+    title: 'Finance Analyst',
+    description: 'Zeyn brings financial expertise to Uthutho, ensuring sound financial planning, analysis, and sustainability as we scale our transport solutions across communities.',
+    image: '/lovable-uploads/zeyn.png', // Update this path when image is available
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/zeyn-kisten/', // Update with actual LinkedIn URL
+    },
+  },
+  {
+    id: 4,
+    name: 'Makhi Mangxola',
+    title: 'Product Strategy & Business Analysis Lead',
+    description: 'Makhi drives Uthutho’s product strategy by bridging technical development with business needs. He leads business analysis, defines system requirements, supports data-driven decision-making, and works closely with developers to ensure scalable, market-ready transport solutions aligned with Uthutho’s growth goals.',
+    image: '/lovable-uploads/Makhi.png',
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/makhi-mangxola-4b740718b/',
+    },
+  },
+  {
+    id: 5,
     name: 'Ishmael Sikhikhi',
     title: 'Quality Assurance & Software Development',
     description: 'Ishmael ensures our applications meet the highest standards through rigorous testing and quality control, while also contributing to our software development.',
@@ -33,7 +53,7 @@ const teamMembers: TeamMemberProps[] = [
     },
   },
   {
-    id: 4,
+    id: 6,
     name: 'Eben Jacobs',
     title: 'Software Tester',
     description: 'Eben meticulously tests our software to identify issues, improve performance, and ensure every product release is reliable and user-friendly.',
@@ -43,7 +63,7 @@ const teamMembers: TeamMemberProps[] = [
     },
   },
   {
-    id: 5,
+    id: 7,
     name: 'Naeema Less',
     title: 'Data Integrity & Systems Analyst',
     description: 'Naeema oversees data accuracy and system integrity, ensuring seamless information management and reliability across all platforms.',
@@ -53,7 +73,7 @@ const teamMembers: TeamMemberProps[] = [
     },
   },
   {
-    id: 6,
+    id: 8,
     name: 'Zacharia Solomons',
     title: 'Business Development Associate',
     description: 'Zacharia contributes to Uthutho growth by identifying new opportunities, supporting partnerships, and helping align business initiatives with community needs.',
@@ -63,7 +83,7 @@ const teamMembers: TeamMemberProps[] = [
     },
   },
   {
-    id: 7,
+    id: 9,
     name: 'Aaliyah Bam',
     title: 'Head of Marketing',
     description: 'Aaliyah leads Uthutho’s marketing strategy, shaping brand direction, driving growth initiatives, and ensuring our message reaches and resonates with communities across every journey.',
@@ -71,19 +91,7 @@ const teamMembers: TeamMemberProps[] = [
     socialLinks: {
       // add LinkedIn later if available
     },
-  },
-  
-  {
-    id: 7,
-    name: 'Makhi Mangxola',
-    title: 'Product Strategy & Business Analysis Lead',
-    description: 'Makhi drives Uthutho’s product strategy by bridging technical development with business needs. He leads business analysis, defines system requirements, supports data-driven decision-making, and works closely with developers to ensure scalable, market-ready transport solutions aligned with Uthutho’s growth goals.',
-    image: '/lovable-uploads/Makhi.png',
-    socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/makhi-mangxola-4b740718b/',
-    },
   }
-  
 ];
 
 const TeamSection = () => {

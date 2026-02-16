@@ -12,20 +12,40 @@ const goals = [
 
 const GoalsSection = () => {
   return (
-    <section className="py-12 md:py-20 bg-black">
-      <div className="container px-4 mx-auto">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-white">Our Goals</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
-          {goals.map((goal, index) => (
-            <div
-              key={index}
-              className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-primary/50 transition-all animate-fade-up flex items-center space-x-4"
-              style={{ animationDelay: `${index * 150}ms` }}
-            >
-              <div className="flex-shrink-0 animate-pulse-slow">{goal.icon}</div>
-              <p className="text-base md:text-lg text-gray-300">{goal.text}</p>
-            </div>
-          ))}
+    <section className="py-16 md:py-24 bg-black relative overflow-hidden">
+      {/* subtle background glow */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 pointer-events-none" />
+
+      <div className="container mx-auto px-4 relative z-10">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-12 text-white">
+          Our Goals
+        </h2>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center max-w-6xl mx-auto">
+          {/* Image side */}
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+            <img
+              src="/lovable-uploads/uthutho-commute.jpg" // replace with your image path
+              alt="Uthutho commuters"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/30" />
+          </div>
+
+          {/* Goals list */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {goals.map((goal, index) => (
+              <div
+                key={index}
+                className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 hover:border-primary/50 hover:bg-white/10 transition-all duration-300 flex items-start space-x-4"
+              >
+                <div className="flex-shrink-0 mt-1">{goal.icon}</div>
+                <p className="text-base md:text-lg text-gray-300 leading-relaxed">
+                  {goal.text}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
