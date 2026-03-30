@@ -42,6 +42,7 @@ import DocumentsPage from "./components/admin/DocumentsPage";
 import AdminBlogsPage from "./components/admin/BlogsPage";
 import LearnMore from "./pages/LearnMore";
 import MediaPage from "./pages/media";
+import RedbullArticle from "./pages/RedbullArticle";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -84,6 +85,7 @@ const App = () => {
               <Route path="/docs" element={<DocsPage />} />
               <Route path="/docs/:docId" element={<DocDetailPage />} />
               <Route path="/blog" element={<BlogsPublicPage />} />
+              <Route path="/blog/redbull-basement-2026" element={<RedbullArticle />} />
               <Route path="/blog/:blogId" element={<BlogDetailPublicPage />} />
               <Route path="/media" element={<MediaPage />} />
               <Route path="/admin" element={<AdminLogin />} />

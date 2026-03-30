@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '../components/home/Navbar';
 import HeroSection from '../components/home/HeroSection';
@@ -9,6 +8,8 @@ import SchoolTransportSection from '../components/home/SchoolTransportSection';
 import TeamSection from '../components/home/TeamSection';
 import Footer from '../components/home/Footer';
 import Timeline from '../components/home/Timeline';
+import MediaSection from '../components/home/MediaSection';
+import AwardsSection from '../components/home/AwardsSection';
 
 const Index = () => {
   return (
@@ -29,7 +30,7 @@ const Index = () => {
       <FeaturesSection />
       
       <GoalsSection />
-      
+      <AwardsSection />
       {/* Added new Timeline section */}
       <Timeline />
       
@@ -39,6 +40,7 @@ const Index = () => {
       />
       
       <TeamSection />
+
       <Footer />
     </div>
   );
