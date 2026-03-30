@@ -36,22 +36,22 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Quick Links</h3>
+            <h3 className="text-primary font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/blog" className="text-gray-400 hover:text-primary transition-colors">
+                <Link to="/blog" className="text-gray-400 hover:text-secondary transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link to="/docs" className="text-gray-400 hover:text-primary transition-colors">
+                <Link to="/docs" className="text-gray-400 hover:text-secondary transition-colors">
                   Documentation
                 </Link>
               </li>
               <li>
                 <a
                   href="https://portal.uthutho.co.za"
-                  className="text-gray-400 hover:text-primary transition-colors"
+                  className="text-gray-400 hover:text-secondary transition-colors"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -63,7 +63,7 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Contact</h3>
+            <h3 className="text-primary font-semibold mb-4">Contact</h3>
             <ul className="space-y-2">
               <li className="text-gray-400">Cape Town, South Africa</li>
               <li className="text-gray-400">info@uthutho.com</li>
@@ -72,11 +72,11 @@ const Footer = () => {
 
           {/* Social */}
           <div>
-            <h3 className="text-white font-semibold mb-4">Follow Us</h3>
+            <h3 className="text-primary font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4 mb-6">
               <a
                 href="https://www.facebook.com/uthuthorsa/"
-                className="text-gray-400 hover:text-primary transition-colors"
+                className="text-gray-400 hover:text-secondary transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -85,7 +85,7 @@ const Footer = () => {
 
               <a
                 href="https://www.instagram.com/uthuthorsa/"
-                className="text-gray-400 hover:text-primary transition-colors"
+                className="text-gray-400 hover:text-secondary transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -94,7 +94,7 @@ const Footer = () => {
 
               <a
                 href="https://www.linkedin.com/company/uthutho/"
-                className="text-gray-400 hover:text-primary transition-colors"
+                className="text-gray-400 hover:text-secondary transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -103,7 +103,7 @@ const Footer = () => {
 
               <a
                 href="https://www.youtube.com/@Uthutho"
-                className="text-gray-400 hover:text-primary transition-colors"
+                className="text-gray-400 hover:text-secondary transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -112,7 +112,7 @@ const Footer = () => {
 
               <a
                 href="https://www.tiktok.com/@uthuthorsa"
-                className="text-gray-400 hover:text-primary transition-colors"
+                className="text-gray-400 hover:text-secondary transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -123,13 +123,13 @@ const Footer = () => {
             <div className="space-y-2">
               <Link
                 to="/privacy-policy"
-                className="text-gray-400 hover:text-primary transition-colors block"
+                className="text-gray-400 hover:text-secondary transition-colors block"
               >
                 Privacy Policy
               </Link>
               <Link
                 to="/terms-and-conditions"
-                className="text-gray-400 hover:text-primary transition-colors block"
+                className="text-gray-400 hover:text-secondary transition-colors block"
               >
                 Terms & Conditions
               </Link>

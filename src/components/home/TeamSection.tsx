@@ -98,7 +98,7 @@ const TeamSection = () => {
   return (
     <section id="about" className="py-12 md:py-20 bg-black">
       <div className="container px-4 mx-auto">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-white">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-primary">
           Our Team
         </h2>
         <p className="text-gray-300 text-center mb-8 md:mb-16 max-w-3xl mx-auto">

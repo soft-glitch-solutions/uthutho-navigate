@@ -10,7 +10,7 @@ const Navbar = () => {
   return (
     <nav className="fixed w-full z-50">
       <div className="container mx-auto px-4 pt-4 pb-2">
-        <div className="bg-white/95 backdrop-blur-sm rounded-full mx-auto max-w-3xl">
+        <div className="bg-black/95 backdrop-blur-sm rounded-full mx-auto max-w-3xl">
           <div className="flex items-center justify-between h-16 px-4 md:px-8">
             <div className="flex items-center space-x-3">
               <img 
@@ -22,14 +22,14 @@ const Navbar = () => {
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-700 hover:text-primary transition-colors">Features</a>
-              <a href="#about" className="text-gray-700 hover:text-primary transition-colors">About Us</a>
+              <a href="#features" className="text-white hover:text-primary transition-colors">Features</a>
+              <a href="#about" className="text-white hover:text-primary transition-colors">About Us</a>
             </div>
             
             {isMobile && (
               <Sheet>
                 <SheetTrigger asChild>
-                  <button className="md:hidden text-gray-700">
+                  <button className="md:hidden text-white">
                     <Menu size={24} />
                   </button>
                 </SheetTrigger>
