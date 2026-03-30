@@ -44,7 +44,7 @@ const HeroSection = () => {
                   className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
                 >
                   <img 
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Google_Play_Store_badge_EN.svg/320px-Google_Play_Store_badge_EN.svg.png" 
+                    src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQobhWPz0ruWVxG5fiJVRf3ctDkP-Yym8XSCY4VNXTXW1sOz0Z6" 
                     alt="Get it on Google Play" 
                     className="h-12"
                   />
