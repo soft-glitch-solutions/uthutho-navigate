@@ -4,7 +4,7 @@ import HeroSection from '../components/home/HeroSection';
 import QuoteSection from '../components/home/QuoteSection';
 import FeaturesSection from '../components/home/FeaturesSection';
 import GoalsSection from '../components/home/GoalsSection';
-import SchoolTransportSection from '../components/home/SchoolTransportSection';
+import TransportDigitalSection from '../components/home/TransportDigitalSection';
 import TeamSection from '../components/home/TeamSection';
 import Footer from '../components/home/Footer';
 import Timeline from '../components/home/Timeline';
@@ -25,7 +25,7 @@ const Index = () => {
 
       
       {/* Moved AISection to appear before GoalsSection */}
-      <SchoolTransportSection />
+      <TransportDigitalSection />
       
       <FeaturesSection />
       
