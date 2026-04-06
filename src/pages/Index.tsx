@@ -10,6 +10,8 @@ import Footer from '../components/home/Footer';
 import Timeline from '../components/home/Timeline';
 import MediaSection from '../components/home/MediaSection';
 import AwardsSection from '../components/home/AwardsSection';
+import JourneyDrive from '../components/home/JourneyDrive';
+
 
 const Index = () => {
   return (
@@ -26,6 +28,8 @@ const Index = () => {
       
       {/* Moved AISection to appear before GoalsSection */}
       <TransportDigitalSection />
+
+      <JourneyDrive />
       
       <FeaturesSection />
       
