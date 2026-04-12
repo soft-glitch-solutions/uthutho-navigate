@@ -27,9 +27,9 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Zeyn Kisten',
     title: 'Finance Analyst',
     description: 'Zeyn brings financial expertise to Uthutho, ensuring sound financial planning, analysis, and sustainability as we scale our transport solutions across communities.',
-    image: '/lovable-uploads/zeyn.png', // Update this path when image is available
+    image: '/lovable-uploads/zeyn.png',
     socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/zeyn-kisten/', // Update with actual LinkedIn URL
+      linkedin: 'https://www.linkedin.com/in/zeyn-kisten/',
     },
   },
   {
@@ -88,8 +88,16 @@ const teamMembers: TeamMemberProps[] = [
     title: 'Head of Marketing',
     description: 'Aaliyah leads Uthutho’s marketing strategy, shaping brand direction, driving growth initiatives, and ensuring our message reaches and resonates with communities across every journey.',
     image: '/lovable-uploads/aaliyah.jpeg',
+    socialLinks: {},
+  },
+  {
+    id: 10,
+    name: 'Waseem Dollie',
+    title: 'Governance Developer',
+    description: 'Waseem ensures Uthutho’s systems and processes align with governance best practices, supporting compliance, structure, and sustainable platform growth.',
+    image: '/lovable-uploads/waseem.jpeg', // update when you have the image
     socialLinks: {
-      // add LinkedIn later if available
+      linkedin: 'https://www.linkedin.com/in/waseemdollie/',
     },
   }
 ];
