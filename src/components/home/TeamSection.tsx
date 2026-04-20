@@ -17,7 +17,7 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Delisha-Ann Naicker',
     title: 'Head of Operations & Design',
     description: 'Delisha ensures the Uthutho experience is smooth, functional, and beautifully designed — for every commuter and community.',
-    image: '/lovable-uploads/delisha (1).png',
+    image: '/lovable-uploads/delisha.jpeg',
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/delisha-ann-n-710879115/',
     },
@@ -37,7 +37,7 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Makhi Mangxola',
     title: 'Product Strategy & Business Analysis Lead',
     description: 'Makhi drives Uthutho’s product strategy by bridging technical development with business needs. He leads business analysis, defines system requirements, supports data-driven decision-making, and works closely with developers to ensure scalable, market-ready transport solutions aligned with Uthutho’s growth goals.',
-    image: '/lovable-uploads/Makhi.png',
+    image: '/lovable-uploads/makhi.jpeg',
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/makhi-mangxola-4b740718b/',
     },
