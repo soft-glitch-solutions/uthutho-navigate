@@ -87,7 +87,7 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Aaliyah Bam',
     title: 'Head of Marketing',
     description: 'Aaliyah leads Uthutho’s marketing strategy, shaping brand direction, driving growth initiatives, and ensuring our message reaches and resonates with communities across every journey.',
-    image: '/lovable-uploads/aaliyah.jpeg',
+    image: '/lovable-uploads/aaliyah.jpg',
     socialLinks: {},
   },
   {
@@ -95,7 +95,7 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Waseem Dollie',
     title: 'Governance Developer',
     description: 'Waseem ensures Uthutho’s systems and processes align with governance best practices, supporting compliance, structure, and sustainable platform growth.',
-    image: '/lovable-uploads/waseem.jpeg', // update when you have the image
+    image: '/lovable-uploads/waseem.jpg', // update when you have the image
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/waseemdollie/',
     },
