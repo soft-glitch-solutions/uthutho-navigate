@@ -67,7 +67,7 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Naeema Less',
     title: 'Data Integrity & Systems Analyst',
     description: 'Naeema oversees data accuracy and system integrity, ensuring seamless information management and reliability across all platforms.',
-    image: '/lovable-uploads/naeema.jpg',
+    image: '/lovable-uploads/Naeema.jpg',
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/',
     },
