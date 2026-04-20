@@ -7,7 +7,7 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Shaqeel Less',
     title: 'Founder & CEO',
     description: 'Shaqeel is the visionary behind Uthutho, building a smarter way for communities to navigate and access public transport information.',
-    image: '/lovable-uploads/97f89484-6b1f-4dcd-ad4b-1136e91da5ab.jpg',
+    image: '/lovable-uploads/shaqeel.jpg',
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/shaqeel-less-11979a186?originalSubdomain=za',
     },
