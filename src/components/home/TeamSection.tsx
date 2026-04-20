@@ -27,7 +27,7 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Zeyn Kisten',
     title: 'Finance Analyst',
     description: 'Zeyn brings financial expertise to Uthutho, ensuring sound financial planning, analysis, and sustainability as we scale our transport solutions across communities.',
-    image: '/lovable-uploads/zeyn.png',
+    image: '/lovable-uploads/zeyn.jpeg',
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/zeyn-kisten/',
     },
@@ -47,7 +47,7 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Ishmael Sikhikhi',
     title: 'Quality Assurance & Software Development',
     description: 'Ishmael ensures our applications meet the highest standards through rigorous testing and quality control, while also contributing to our software development.',
-    image: '/lovable-uploads/70352247.jpg',
+    image: '/lovable-uploads/Ishmeal.jpg',
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/ishmael-sikhikhi-2b8086126/?originalSubdomain=za',
     },
@@ -57,7 +57,7 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Eben Jacobs',
     title: 'Software Tester',
     description: 'Eben meticulously tests our software to identify issues, improve performance, and ensure every product release is reliable and user-friendly.',
-    image: '/lovable-uploads/eben-jacons.jpeg',
+    image: '/lovable-uploads/eben.jpeg',
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/eben-jacobs-92090037a/',
     },
@@ -77,7 +77,7 @@ const teamMembers: TeamMemberProps[] = [
     name: 'Zacharia Solomons',
     title: 'Business Development Associate',
     description: 'Zacharia contributes to Uthutho growth by identifying new opportunities, supporting partnerships, and helping align business initiatives with community needs.',
-    image: '/lovable-uploads/ZachariaSolomons.jpeg',
+    image: '/lovable-uploads/zac.jpg',
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/',
     },
