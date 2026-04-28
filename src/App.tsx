@@ -43,6 +43,7 @@ import AdminBlogsPage from "./components/admin/BlogsPage";
 import LearnMore from "./pages/LearnMore";
 import MediaPage from "./pages/media";
 import RedbullArticle from "./pages/RedbullArticle";
+import AboutUsPage from "./pages/AboutUsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -88,6 +89,7 @@ const App = () => {
               <Route path="/blog/redbull-basement-2026" element={<RedbullArticle />} />
               <Route path="/blog/:blogId" element={<BlogDetailPublicPage />} />
               <Route path="/media" element={<MediaPage />} />
+              <Route path="/about-us" element={<AboutUsPage />} />
               <Route path="/admin" element={<AdminLogin />} />
               
               {/* Admin dashboard layout with nested routes */}

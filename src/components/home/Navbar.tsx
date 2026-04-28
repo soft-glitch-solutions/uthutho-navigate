@@ -23,7 +23,7 @@ const Navbar = () => {
             
             <div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-white hover:text-primary transition-colors">Features</a>
-              <a href="#about" className="text-white hover:text-primary transition-colors">About Us</a>
+              <Link to="/about-us" className="text-white hover:text-primary transition-colors">About Us</Link>
             </div>
             
             {isMobile && (
@@ -36,7 +36,7 @@ const Navbar = () => {
                 <SheetContent side="right" className="w-full sm:w-80 bg-black border-white/10">
                   <div className="flex flex-col h-full pt-10 space-y-6">
                     <a href="#features" className="text-white text-lg hover:text-primary transition-colors py-2">Features</a>
-                    <a href="#about" className="text-white text-lg hover:text-primary transition-colors py-2">About Us</a>
+                    <Link to="/about-us" className="text-white text-lg hover:text-primary transition-colors py-2">About Us</Link>
                   </div>
                 </SheetContent>
               </Sheet>
