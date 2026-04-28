@@ -10,7 +10,7 @@ const Navbar = () => {
   return (
     <nav className="fixed w-full z-50">
       <div className="container mx-auto px-4 pt-4 pb-2">
-        <div className="bg-black/95 backdrop-blur-sm rounded-full mx-auto max-w-3xl">
+        <div className="bg-muted-darker/95 backdrop-blur-sm rounded-full mx-auto max-w-3xl border border-glass">
           <div className="flex items-center justify-between h-16 px-4 md:px-8">
             <div className="flex items-center space-x-3">
               <img 

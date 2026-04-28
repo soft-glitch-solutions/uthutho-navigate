@@ -17,17 +17,17 @@ const FeaturesSection: React.FC = () => {
 
   const features = [
     {
-      icon: <MapPin className="h-8 w-8 text-primary" />,
+      icon: <MapPin className="h-8 w-8 text-secondary" />,
       title: "Find People on Your Route",
       description: "Mark yourself as waiting or traveling and see who else is on the same journey with you."
     },
     {
-      icon: <MessageSquare className="h-8 w-8 text-secondary" />,
+      icon: <MessageSquare className="h-8 w-8 text-primary" />,
       title: "Journey Chats",
       description: "Join temporary chats with fellow commuters. Conversations disappear once the journey ends."
     },
     {
-      icon: <Award className="h-8 w-8 text-accent" />,
+      icon: <Award className="h-8 w-8 text-secondary" />,
       title: "Gamified Travel",
       description: "Earn points, badges, and rewards as you travel. Compete on leaderboards and keep your streaks alive."
     },
@@ -52,7 +52,7 @@ const FeaturesSection: React.FC = () => {
       description: "Parents can track school transport vehicles in real time and know when children arrive safely."
     },
     {
-      icon: <Shield className="h-8 w-8 text-accent" />,
+      icon: <Shield className="h-8 w-8 text-primary" />,
       title: "Safe & Transparent Transport",
       description: "Parents get clear information about drivers, routes, and transport services to make informed decisions."
     }
@@ -69,9 +69,12 @@ const FeaturesSection: React.FC = () => {
   return (
     <section id="features" className="py-16 md:py-24 bg-black">
       <div className="container px-4 mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 md:mb-16 text-white">
-          Our Features
-        </h2>
+        <div className="text-center mb-12 md:mb-16">
+          <p className="text-primary tracking-[2px] text-sm font-bold">FEATURES</p>
+          <h2 className="text-3xl font-light text-white sm:text-4xl xl:text-5xl font-pj">
+            Connecting Commuters, Empowering Parents
+          </h2>
+        </div>
 
         <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-20">
           {/* Left Side - Rotating Feature */}
@@ -110,7 +113,7 @@ const FeaturesSection: React.FC = () => {
               <div className="absolute -inset-12 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 rounded-full blur-3xl animate-float-slow"></div>
               
               {/* Image */}
-              <div className="relative bg-black/50 rounded-2xl overflow-hidden backdrop-blur-sm">
+              <div className="relative bg-muted-darker/50 rounded-2xl overflow-hidden backdrop-blur-sm border border-glass">
                 <img 
                   src={centralImage}
                   alt="Journey Connect"
@@ -123,7 +126,7 @@ const FeaturesSection: React.FC = () => {
 
         {/* Mobile Layout */}
         <div className="lg:hidden mt-12">
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {features.map((feature, index) => (
               <div key={index}>
                 <FeatureCard

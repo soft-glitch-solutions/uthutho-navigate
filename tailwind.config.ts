@@ -29,16 +29,21 @@ export default {
           foreground: 'hsl(var(--primary-foreground))'
         },
         secondary: {
-          DEFAULT: '#ed67b1',
+          DEFAULT: '#fbbf24',
           foreground: 'hsl(var(--secondary-foreground))'
         },
         accent: {
-          DEFAULT: '#f8c325',
+          DEFAULT: '#fbbf24',
           foreground: 'hsl(var(--accent-foreground))'
         },
         highlight: {
           DEFAULT: '#fd602d',
-        }
+        },
+        muted: {
+          DEFAULT: "#222",
+          darker: "#111",
+        },
+        glass: 'rgba(255, 255, 255, 0.05)',
       },
       fontFamily: {
         quiapo: ['Quiapo', 'sans-serif'],

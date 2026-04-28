@@ -10,7 +10,6 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-16">
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[linear-gradient(45deg,#1ea2b133,#ed67b133,#f8c32533,#fd602d33)] opacity-20"></div>
         <div className="absolute inset-0 bg-[url('/lovable-uploads/Mobile_uthutho.png')] bg-cover bg-center opacity-10"></div>
         <div className="absolute inset-0 flex items-center justify-center opacity-5">
           <img 
@@ -23,63 +22,35 @@ const HeroSection = () => {
 
       <div className="container px-4 mx-auto flex flex-col md:flex-row items-center justify-between relative z-10 py-8 md:py-16">
         <div className="text-center md:text-left md:w-1/2 mb-12 md:mb-0">
-          <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white transform transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+        <p className={`text-primary tracking-[2px] text-sm font-bold transition-all duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+            UTHUTHO
+          </p>
+          <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-quiapo mb-6 text-white transform transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             Transform Your Daily Commute!
           </h1>
-          <p className={`text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            South Africa's smart public transport companion
-          </p>
-          <p className={`text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            No Data No problem, Join our data free web app version. 
+          <p className={`text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl font-inter transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+          South Africa's smart public transport companion. No data? No problem. Join our data-free web app.
           </p>
           <div className={`transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             {/* App Store Badges */}
             <div className="flex flex-col items-center md:items-start mb-8">
               <div className="flex flex-wrap justify-center md:justify-start gap-4 mb-3">
-                <div className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity">
-                <a 
-                  href="https://play.google.com/store/apps/details?id=com.softglitch.uthutho&hl=en_ZA" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
-                >
-                  <img 
-                    src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQobhWPz0ruWVxG5fiJVRf3ctDkP-Yym8XSCY4VNXTXW1sOz0Z6" 
-                    alt="Get it on Google Play" 
-                    className="h-12"
-                  />
-                  </a>
-                </div>
-                <a 
-                  href="https://appgallery.huawei.com/app/C116453879" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity"
-                >
-                  <img 
-                    src="https://firstimpact.co.za/wp-content/uploads/2024/02/huawei-Badge-Black-huawei-app-gallery-1-1024x307.png" 
-                    alt="Available on Huawei AppGallery" 
-                    className="h-12"
-                  />
+                <a href="https://play.google.com/store/apps/details?id=com.softglitch.uthutho&hl=en_ZA" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity">
+                  <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQobhWPz0ruWVxG5fiJVRf3ctDkP-Yym8XSCY4VNXTXW1sOz0Z6" alt="Get it on Google Play" className="h-12"/>
+                </a>
+                <a href="https://appgallery.huawei.com/app/C116453879" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity">
+                  <img src="https://firstimpact.co.za/wp-content/uploads/2024/02/huawei-Badge-Black-huawei-app-gallery-1-1024x307.png" alt="Available on Huawei AppGallery" className="h-12"/>
                 </a>
               </div>
-
             </div>
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start items-center">
-              <button 
-                onClick={() => window.open("https://www.mobile.uthutho.co.za/", "_blank")}
-                className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-[#fd602d] hover:bg-[#fd602d]/10 transition-colors whitespace-nowrap"
-              >
+              <button onClick={() => window.open("https://www.mobile.uthutho.co.za/", "_blank")} className="bg-primary text-primary-foreground px-8 py-3 rounded-full font-semibold border-2 border-primary hover:bg-primary/90 transition-colors whitespace-nowrap">
                 Data Free Portal
               </button>
-
               <div className="flex flex-col items-center">
-                <button 
-                  onClick={() => window.open("/release/Uthutho.apk", "_blank")}
-                  className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-[#1ea2b1] hover:bg-[#1ea2b1]/10 transition-colors whitespace-nowrap"
-                >
+                <button onClick={() => window.open("/release/Uthutho.apk", "_blank")} className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-secondary hover:bg-secondary/10 transition-colors whitespace-nowrap">
                   Download APK
                 </button>
                 <span className="text-xs text-gray-400 mt-1">v1.8.2 (Latest)</span>
@@ -88,15 +59,8 @@ const HeroSection = () => {
 
             {/* WhatsApp Channel Button */}
             <div className="mt-6 flex justify-center md:justify-start">
-              <button 
-                onClick={() => window.open("https://whatsapp.com/channel/0029VbBvCFSFMqrRi2c83q0Z", "_blank")}
-                className="flex items-center gap-2 bg-[#25D366]/10 border-2 border-[#25D366] text-[#25D366] px-6 py-3 rounded-full font-semibold hover:bg-[#25D366]/20 transition-colors"
-              >
-                <img 
-                  src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
-                  alt="WhatsApp" 
-                  className="w-5 h-5"
-                />
+              <button onClick={() => window.open("https://whatsapp.com/channel/0029VbBvCFSFMqrRi2c83q0Z", "_blank")} className="flex items-center gap-2 bg-[#25D366]/10 border-2 border-[#25D366] text-[#25D366] px-6 py-3 rounded-full font-semibold hover:bg-[#25D366]/20 transition-colors">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" className="w-5 h-5"/>
                 Join WhatsApp Channel
               </button>
             </div>
@@ -105,8 +69,8 @@ const HeroSection = () => {
 
         <div className={`md:w-1/2 transform transition-all duration-1000 delay-500 ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-20 opacity-0'}`}>
           <div className="relative w-[250px] sm:w-[300px] h-[500px] sm:h-[600px] mx-auto">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#1ea2b1] via-[#ed67b1] to-[#f8c325] opacity-20 blur-xl rounded-full"></div>
-            <div className="relative z-10 bg-black rounded-[40px] p-3 shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary opacity-20 blur-xl rounded-full"></div>
+            <div className="relative z-10 bg-muted-darker/50 rounded-[40px] p-3 shadow-2xl border border-glass">
               <div className="relative overflow-hidden rounded-[32px] h-[470px] sm:h-[570px]">
                 <img 
                   src="/lovable-uploads/Mobile_uthutho.jpeg"

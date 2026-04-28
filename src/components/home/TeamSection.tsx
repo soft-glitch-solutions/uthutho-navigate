@@ -5,7 +5,7 @@ const teamMembers: TeamMemberProps[] = [
   {
     id: 1,
     name: 'Shaqeel Less',
-    title: 'Founder & CEO',
+    title: 'Founder',
     description: 'Shaqeel is the visionary behind Uthutho, building a smarter way for communities to navigate and access public transport information.',
     image: '/lovable-uploads/shaqeel.jpg',
     socialLinks: {
@@ -13,29 +13,9 @@ const teamMembers: TeamMemberProps[] = [
     },
   },
   {
-    id: 2,
-    name: 'Delisha-Ann Naicker',
-    title: 'Head of Operations & Design',
-    description: 'Delisha ensures the Uthutho experience is smooth, functional, and beautifully designed — for every commuter and community.',
-    image: '/lovable-uploads/delisha.jpeg',
-    socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/delisha-ann-n-710879115/',
-    },
-  },
-  {
-    id: 3,
-    name: 'Zeyn Kisten',
-    title: 'Finance Analyst',
-    description: 'Zeyn brings financial expertise to Uthutho, ensuring sound financial planning, analysis, and sustainability as we scale our transport solutions across communities.',
-    image: '/lovable-uploads/zeyn.jpeg',
-    socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/zeyn-kisten/',
-    },
-  },
-  {
     id: 4,
     name: 'Makhi Mangxola',
-    title: 'Product Strategy & Business Analysis Lead',
+    title: 'Co-Founder',
     description: 'Makhi drives Uthutho’s product strategy by bridging technical development with business needs. He leads business analysis, defines system requirements, supports data-driven decision-making, and works closely with developers to ensure scalable, market-ready transport solutions aligned with Uthutho’s growth goals.',
     image: '/lovable-uploads/makhi.jpeg',
     socialLinks: {
@@ -43,9 +23,67 @@ const teamMembers: TeamMemberProps[] = [
     },
   },
   {
+    id: 2,
+    name: 'Delisha-Ann Naicker',
+    title: 'Head of Business Operations',
+    description: 'Delisha ensures the Uthutho experience is smooth, functional, and beautifully designed — for every commuter and community.',
+    image: '/lovable-uploads/delisha.jpeg',
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/delisha-ann-n-710879115/',
+    },
+  },
+    {
+    id: 7,
+    name: 'Naeema Less',
+    title: 'Head of Network Growth',
+    description: 'Naeema oversees data accuracy and system integrity, ensuring seamless information management and reliability across all platforms.',
+    image: '/lovable-uploads/Naeema.jpg',
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/',
+    },
+  },
+  {
+    id: 10,
+    name: 'Waseem Dollie',
+    title: 'Business Analyst & Developer',
+    description: 'Waseem ensures Uthutho’s systems and processes align with governance best practices, supporting compliance, structure, and sustainable platform growth.',
+    image: '/lovable-uploads/waseem.jpg', // update when you have the image
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/waseemdollie/',
+    },
+  },
+  {
+    id: 3,
+    name: 'Zeyn Kisten',
+    title: 'Business Development & Account Manager',
+    description: 'Zeyn brings financial expertise to Uthutho, ensuring sound financial planning, analysis, and sustainability as we scale our transport solutions across communities.',
+    image: '/lovable-uploads/zeyn.jpeg',
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/zeyn-kisten/',
+    },
+  },
+  {
+    id: 9,
+    name: 'Aaliyah Bam',
+    title: 'Marketing Coordinator',
+    description: 'Aaliyah leads Uthutho’s marketing strategy, shaping brand direction, driving growth initiatives, and ensuring our message reaches and resonates with communities across every journey.',
+    image: '/lovable-uploads/aaliyah.jpg',
+    socialLinks: {},
+  },
+  {
+    id: 8,
+    name: 'Zacharia Solomons',
+    title: 'Brand Ambassador, UI/UX Tester & Support',
+    description: 'Zacharia contributes to Uthutho growth by identifying new opportunities, supporting partnerships, and helping align business initiatives with community needs.',
+    image: '/lovable-uploads/zac.jpg',
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/',
+    },
+  },
+  {
     id: 5,
     name: 'Ishmael Sikhikhi',
-    title: 'Quality Assurance & Software Development',
+    title: 'Developer & Network Mapper',
     description: 'Ishmael ensures our applications meet the highest standards through rigorous testing and quality control, while also contributing to our software development.',
     image: '/lovable-uploads/Ishmeal.jpg',
     socialLinks: {
@@ -55,7 +93,7 @@ const teamMembers: TeamMemberProps[] = [
   {
     id: 6,
     name: 'Eben Jacobs',
-    title: 'Software Tester',
+    title: 'Brand Ambassador, UI/UX Tester & Support',
     description: 'Eben meticulously tests our software to identify issues, improve performance, and ensure every product release is reliable and user-friendly.',
     image: '/lovable-uploads/eben.jpeg',
     socialLinks: {
@@ -63,56 +101,31 @@ const teamMembers: TeamMemberProps[] = [
     },
   },
   {
-    id: 7,
-    name: 'Naeema Less',
-    title: 'Data Integrity & Systems Analyst',
-    description: 'Naeema oversees data accuracy and system integrity, ensuring seamless information management and reliability across all platforms.',
-    image: '/lovable-uploads/Naeema.jpg',
+    id: 11,
+    name: 'Aakifah Moosa',
+    title: 'Network Mapper',
+    description: 'Aakifah is responsible for mapping and maintaining our network infrastructure, ensuring the highest levels of performance and reliability.',
+    image: '/lovable-uploads/aakifah.png',
     socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/',
+      linkedin: 'https://www.linkedin.com/in/aakifah-moosa/',
     },
   },
-  {
-    id: 8,
-    name: 'Zacharia Solomons',
-    title: 'Business Development Associate',
-    description: 'Zacharia contributes to Uthutho growth by identifying new opportunities, supporting partnerships, and helping align business initiatives with community needs.',
-    image: '/lovable-uploads/zac.jpg',
-    socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/',
-    },
-  },
-  {
-    id: 9,
-    name: 'Aaliyah Bam',
-    title: 'Head of Marketing',
-    description: 'Aaliyah leads Uthutho’s marketing strategy, shaping brand direction, driving growth initiatives, and ensuring our message reaches and resonates with communities across every journey.',
-    image: '/lovable-uploads/aaliyah.jpg',
-    socialLinks: {},
-  },
-  {
-    id: 10,
-    name: 'Waseem Dollie',
-    title: 'Governance Developer',
-    description: 'Waseem ensures Uthutho’s systems and processes align with governance best practices, supporting compliance, structure, and sustainable platform growth.',
-    image: '/lovable-uploads/waseem.jpg', // update when you have the image
-    socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/waseemdollie/',
-    },
-  }
 ];
 
 const TeamSection = () => {
   return (
-    <section id="about" className="py-12 md:py-20 bg-black">
+    <section id="about" className="py-16 md:py-24 bg-black">
       <div className="container px-4 mx-auto">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-primary">
-          Our Team
-        </h2>
-        <p className="text-gray-300 text-center mb-8 md:mb-16 max-w-3xl mx-auto">
-          Meet the dedicated team behind Uthutho, working tirelessly to transform public transport in South Africa.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="text-center mb-12 md:mb-16">
+          <p className="text-primary tracking-[2px] text-sm font-bold">OUR TEAM</p>
+          <h2 className="text-3xl font-light text-white sm:text-4xl xl:text-5xl mt-4">
+            The Driving Force Behind Uthutho
+          </h2>
+          <p className="text-gray-400 text-center mt-6 max-w-2xl mx-auto">
+            Meet the dedicated individuals working to transform public transport in South Africa. Our team combines expertise in technology, design, and community engagement to build solutions that make a difference.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {teamMembers.map((member) => (
             <TeamMember key={member.id} {...member} />
           ))}

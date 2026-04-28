@@ -1,6 +1,5 @@
 
 import { Github, Linkedin, Twitter } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
 
 interface SocialLinks {
   linkedin?: string;
@@ -19,24 +18,24 @@ export interface TeamMemberProps {
 
 const TeamMember = ({ name, title, description, image, socialLinks }: TeamMemberProps) => {
   return (
-    <Card className="bg-white/5 backdrop-blur-sm border border-white/10 hover:border-primary/50 transition-all overflow-hidden">
-      <div className="relative">
-        <div className="relative w-full h-64 overflow-hidden">
-          <img 
-            src={image} 
-            alt={`${name} - ${title}`} 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+    <div className="bg-muted-darker/50 rounded-2xl overflow-hidden group border border-glass hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-2">
+      <div className="relative w-full h-72">
+        <img 
+          src={image} 
+          alt={`${name} - ${title}`} 
+          className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 p-6">
+          <h3 className="text-2xl font-semibold text-white">{name}</h3>
+          <p className="text-primary font-medium">{title}</p>
         </div>
       </div>
-      <CardContent className="p-6 relative z-10">
-        <h3 className="text-xl font-semibold mb-1 text-white">{name}</h3>
-        <p className="text-primary font-medium mb-3">{title}</p>
-        <p className="text-gray-300 text-sm mb-4">{description}</p>
+      <div className="p-6">
+        <p className="text-gray-400 text-sm mb-4 h-24 overflow-hidden">{description}</p>
         
         {socialLinks && (
-          <div className="flex space-x-3 mt-4">
+          <div className="flex space-x-4 mt-4">
             {socialLinks.linkedin && (
               <a 
                 href={socialLinks.linkedin} 
@@ -44,7 +43,7 @@ const TeamMember = ({ name, title, description, image, socialLinks }: TeamMember
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-primary transition-colors"
               >
-                <Linkedin size={18} />
+                <Linkedin size={20} />
               </a>
             )}
             {socialLinks.x && (
@@ -54,7 +53,7 @@ const TeamMember = ({ name, title, description, image, socialLinks }: TeamMember
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-primary transition-colors"
               >
-                <Twitter size={18} />
+                <Twitter size={20} />
               </a>
             )}
             {socialLinks.github && (
@@ -64,13 +63,13 @@ const TeamMember = ({ name, title, description, image, socialLinks }: TeamMember
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-primary transition-colors"
               >
-                <Github size={18} />
+                <Github size={20} />
               </a>
             )}
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
