@@ -43,7 +43,7 @@ const teamMembers: TeamMemberProps[] = [
     },
   },
   {
-    id: 10,
+    id: 9,
     name: 'Waseem Dollie',
     title: 'Business Analyst & Developer',
     description: 'Waseem ensures Uthutho’s systems and processes align with governance best practices, supporting compliance, structure, and sustainable platform growth.',
@@ -61,14 +61,6 @@ const teamMembers: TeamMemberProps[] = [
     socialLinks: {
       linkedin: 'https://www.linkedin.com/in/zeyn-kisten/',
     },
-  },
-  {
-    id: 9,
-    name: 'Aaliyah Bam',
-    title: 'Marketing Coordinator',
-    description: 'Aaliyah leads Uthutho’s marketing strategy, shaping brand direction, driving growth initiatives, and ensuring our message reaches and resonates with communities across every journey.',
-    image: '/lovable-uploads/aaliyah.jpg',
-    socialLinks: {},
   },
   {
     id: 8,
@@ -101,7 +93,7 @@ const teamMembers: TeamMemberProps[] = [
     },
   },
   {
-    id: 11,
+    id: 10,
     name: 'Aakifah Moosa',
     title: 'Network Mapper',
     description: 'Aakifah is responsible for mapping and maintaining our network infrastructure, ensuring the highest levels of performance and reliability.',
