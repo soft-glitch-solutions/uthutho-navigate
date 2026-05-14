@@ -41,19 +41,9 @@ const HeroSection = () => {
                 <a href="https://appgallery.huawei.com/app/C116453879" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity">
                   <img src="https://firstimpact.co.za/wp-content/uploads/2024/02/huawei-Badge-Black-huawei-app-gallery-1-1024x307.png" alt="Available on Huawei AppGallery" className="h-12"/>
                 </a>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start items-center">
-              <button onClick={() => window.open("https://www.mobile.uthutho.co.za/", "_blank")} className="bg-primary text-primary-foreground px-8 py-3 rounded-full font-semibold border-2 border-primary hover:bg-primary/90 transition-colors whitespace-nowrap">
-                Data Free Portal
-              </button>
-              <div className="flex flex-col items-center">
-                <button onClick={() => window.open("/release/Uthutho.apk", "_blank")} className="bg-transparent text-white px-8 py-3 rounded-full font-semibold border-2 border-secondary hover:bg-secondary/10 transition-colors whitespace-nowrap">
-                  Download APK
-                </button>
-                <span className="text-xs text-gray-400 mt-1">v1.8.2 (Latest)</span>
+                <a href="https://www.mobile.uthutho.co.za/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity">
+                  <img src="https://appassets.mvtdev.com/index/public-transit-resources/img/store-buttons/web_app-badge_en.webp" alt="Web App" className="h-12"/>
+                </a>
               </div>
             </div>
 
