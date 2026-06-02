@@ -1,4 +1,4 @@
-import { Truck, ArrowRight, Shield, MapPin, Users } from 'lucide-react';
+import { Bus, ArrowRight, Shield, MapPin, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const TransportDigitalSection: React.FC = () => {
@@ -7,11 +7,11 @@ const TransportDigitalSection: React.FC = () => {
       <div className="container px-4 mx-auto">
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-block p-3 mb-8 rounded-full bg-primary/10">
-            <Truck className="w-8 h-8 text-primary" />
+            <Bus className="w-8 h-8 text-primary" />
           </div>
 
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-white">
-            Digitalising Informal Transport
+            Digitalising Paratransit
           </h2>
 
           <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">

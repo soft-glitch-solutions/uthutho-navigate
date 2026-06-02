@@ -10,7 +10,7 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-16">
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[url('/lovable-uploads/Mobile_uthutho.png')] bg-cover bg-center opacity-10"></div>
+        <div className="absolute inset-0  bg-cover bg-center opacity-10"></div>
         <div className="absolute inset-0 flex items-center justify-center opacity-5">
           <img 
             src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png" 
@@ -29,7 +29,7 @@ const HeroSection = () => {
             Transform Your Daily Commute!
           </h1>
           <p className={`text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl font-inter transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          South Africa's smart public transport companion. No data? No problem. Join our data-free web app.
+          Your smart paratransit companion. No data? No problem. Join our data-free web app.
           </p>
           <div className={`transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             {/* App Store Badges */}
@@ -51,15 +51,18 @@ const HeroSection = () => {
         </div>
 
         <div className={`md:w-1/2 transform transition-all duration-1000 delay-500 ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-20 opacity-0'}`}>
-          <div className="relative w-[250px] sm:w-[300px] h-[500px] sm:h-[600px] mx-auto">
+          <div className="relative w-[250px] sm:w-[300px] h-[500px] sm:h-[600px] mx-auto pointer-events-none">
             <div className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary opacity-20 blur-xl rounded-full"></div>
             <div className="relative z-10 bg-muted-darker/50 rounded-[40px] p-3 shadow-2xl border border-glass">
               <div className="relative overflow-hidden rounded-[32px] h-[470px] sm:h-[570px]">
-                <img 
-                  src="/lovable-uploads/Mobile_uthutho.jpeg"
-                  alt="Uthutho App"
-                  className="w-full h-full object-cover"
-                />
+                <iframe 
+                  className="w-full h-full absolute top-0 left-0"
+                  src="https://www.youtube.com/embed/AFaaiVxz0LU?autoplay=1&mute=1&loop=1&playlist=AFaaiVxz0LU&controls=0&showinfo=0&rel=0&playsinline=1"
+                  title="Uthutho App Showcase"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
               </div>
             </div>
           </div>

@@ -30,33 +30,28 @@ const Footer = () => {
               <span className="text-xl font-bold text-primary">Uthutho</span>
             </div>
             <p className="text-gray-400">
-              Transforming local travel in South Africa through smart public transport solutions.
+              Transforming paratransit through smart public transport solutions.
             </p>
           </div>
 
-          {/* Quick Links */}
+          {/* Feedback */}
           <div>
-            <h3 className="text-primary font-semibold mb-4">Quick Links</h3>
+            <h3 className="text-primary font-semibold mb-4">Feedback</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/blog" className="text-gray-400 hover:text-secondary transition-colors">
-                  Blog
+                <Link to="/feedback" className="text-gray-400 hover:text-secondary transition-colors">
+                  Give us feedback
                 </Link>
               </li>
               <li>
-                <Link to="/docs" className="text-gray-400 hover:text-secondary transition-colors">
-                  Documentation
+                <Link to="/ratings" className="text-gray-400 hover:text-secondary transition-colors">
+                  Rate our app
                 </Link>
               </li>
               <li>
-                <a
-                  href="https://portal.uthutho.co.za"
-                  className="text-gray-400 hover:text-secondary transition-colors"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Admin Portal
-                </a>
+                <Link to="/suggest-a-stop" className="text-gray-400 hover:text-secondary transition-colors">
+                  Suggest a stop
+                </Link>
               </li>
             </ul>
           </div>
@@ -66,7 +61,7 @@ const Footer = () => {
             <h3 className="text-primary font-semibold mb-4">Contact</h3>
             <ul className="space-y-2">
               <li className="text-gray-400">Cape Town, South Africa</li>
-              <li className="text-gray-400">info@uthutho.com</li>
+              <li className="text-gray-400">info@uthutho.co.za</li>
             </ul>
           </div>
 

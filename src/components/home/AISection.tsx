@@ -1,50 +1,59 @@
-
-import { Bot, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { motion } from "framer-motion";
 
 const AISection = () => {
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-br from-black via-black/95 to-primary/10">
-      <div className="container px-4 mx-auto">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-block p-3 mb-8 rounded-full bg-primary/10">
-            <Bot className="w-8 h-8 text-primary" />
-          </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-white">
-            Meet Uthutho AI Assistant
-          </h2>
-          <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Your personal guide to navigating South Africa's transport system. Get instant answers about routes, schedules, and travel tips tailored to your needs. Powered by advanced AI to make your journey smoother.
+    <section className="py-20 bg-gray-900 text-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold">The Future of Paratransit is Here</h2>
+          <p className="text-lg text-gray-400 mt-2">
+            Uthutho is at the forefront of revolutionizing paratransit systems across the Global South.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link 
-              to="https://mobile.uthutho.co.za/"
-              className="group inline-flex items-center px-8 py-3 text-lg font-semibold rounded-full bg-primary text-white hover:bg-primary/90 transition-colors"
-            >
-              Try Uthutho AI
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link 
-              to="/learn-more"
-              className="text-primary hover:text-primary/80 font-semibold transition-colors"
-            >
-              Learn more about our AI
-            </Link>
-          </div>
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-            <div className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <h3 className="text-xl font-semibold text-white mb-2">Route Planning</h3>
-              <p className="text-gray-400">Get detailed information about the best routes and transport options for your journey.</p>
-            </div>
-            <div className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <h3 className="text-xl font-semibold text-white mb-2">Local Insights</h3>
-              <p className="text-gray-400">Access up-to-date information about local transport services and travel conditions.</p>
-            </div>
-            <div className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <h3 className="text-xl font-semibold text-white mb-2">24/7 Assistance</h3>
-              <p className="text-gray-400">Get instant answers to your travel questions anytime, anywhere.</p>
-            </div>
-          </div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-gray-800 p-8 rounded-lg"
+          >
+            <h3 className="text-2xl font-bold mb-4">Phase 1: Data Collection</h3>
+            <p className="text-gray-400">
+              We are actively mapping paratransit networks, starting with key regions and expanding globally.
+            </p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-gray-800 p-8 rounded-lg"
+          >
+            <h3 className="text-2xl font-bold mb-4">Phase 2: Real-time Analytics</h3>
+            <p className="text-gray-400">
+              Our platform will provide live insights into passenger demand, traffic patterns, and vehicle availability.
+            </p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="bg-gray-800 p-8 rounded-lg"
+          >
+            <h3 className="text-2xl font-bold mb-4">Phase 3: AI-Powered Optimization</h3>
+            <p className="text-gray-400">
+              Leveraging artificial intelligence to create dynamic, efficient, and sustainable paratransit for all.
+            </p>
+          </motion.div>
+        </div>
+
+        <div className="text-center mt-12">
+          <a
+            href="/blog"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
+          >
+            Learn More About Our Vision
+          </a>
         </div>
       </div>
     </section>

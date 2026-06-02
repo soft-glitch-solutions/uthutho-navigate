@@ -5,9 +5,11 @@ import {
   Clock,
   Award,
   MessageSquare,
-  Truck,
+  Bus, // Changed from Truck
   Shield,
-  Navigation
+  Navigation,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import FeatureCard from './FeatureCard';
 import centralImage from "/lovable-uploads/Tech.jpg";
@@ -42,7 +44,7 @@ const FeaturesSection: React.FC = () => {
       description: "Travel feels less lonely and more secure by connecting with others going the same way."
     },
     {
-      icon: <Truck className="h-8 w-8 text-primary" />,
+      icon: <Bus className="h-8 w-8 text-primary" />,
       title: "School Transport Listings",
       description: "Drivers and operators can list school transport routes, service areas, and pricing for parents to browse."
     },
@@ -58,11 +60,17 @@ const FeaturesSection: React.FC = () => {
     }
   ];
 
+  const nextFeature = () => {
+    setCurrentIndex((prev) => (prev + 1) % features.length);
+  };
+
+  const prevFeature = () => {
+    setCurrentIndex((prev) => (prev - 1 + features.length) % features.length);
+  };
+
   // Auto-rotate every 4 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % features.length);
-    }, 4000);
+    const interval = setInterval(nextFeature, 4000);
     return () => clearInterval(interval);
   }, [features.length]);
 
@@ -79,12 +87,16 @@ const FeaturesSection: React.FC = () => {
         <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-20">
           {/* Left Side - Rotating Feature */}
           <div className="w-full lg:w-1/2 transition-all duration-500 ease-in-out">
-            <div className="transform transition-all duration-500 animate-fade-in">
-              <FeatureCard
-                icon={features[currentIndex].icon}
-                title={features[currentIndex].title}
-                description={features[currentIndex].description}
-              />
+            <div className="flex items-center justify-between">
+              <button onClick={prevFeature} className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"><ChevronLeft className="w-6 h-6 text-white" /></button>
+              <div className="transform transition-all duration-500 animate-fade-in">
+                <FeatureCard
+                  icon={features[currentIndex].icon}
+                  title={features[currentIndex].title}
+                  description={features[currentIndex].description}
+                />
+              </div>
+              <button onClick={nextFeature} className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"><ChevronRight className="w-6 h-6 text-white" /></button>
             </div>
             
             {/* Progress Dots */}
