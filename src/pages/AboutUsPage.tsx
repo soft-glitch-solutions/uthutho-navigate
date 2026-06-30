@@ -32,16 +32,6 @@ const teamMembers: TeamMemberProps[] = [
       linkedin: 'https://www.linkedin.com/in/delisha-ann-n-710879115/',
     },
   },
-    {
-    id: 7,
-    name: 'Naeema Less',
-    title: 'Head of Network Growth',
-    description: 'Naeema oversees data accuracy and system integrity, ensuring seamless information management and reliability across all platforms.',
-    image: '/lovable-uploads/Naeema.jpg',
-    socialLinks: {
-      linkedin: 'https://www.linkedin.com/in/naeema-less-77b9a31a9/',
-    },
-  },
   {
     id: 9,
     name: 'Waseem Dollie',

@@ -10,7 +10,7 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-16">
       <div className="absolute inset-0">
-        <div className="absolute inset-0  bg-cover bg-center opacity-10"></div>
+        <div className="absolute inset-0 bg-[url('/lovable-uploads/uthutho-commute.png')] bg-cover bg-center opacity-10"></div>
         <div className="absolute inset-0 flex items-center justify-center opacity-5">
           <img 
             src="/lovable-uploads/e9056cae-b62d-4515-aae1-ac0e16261d24.png" 
@@ -57,7 +57,7 @@ const HeroSection = () => {
               <div className="relative overflow-hidden rounded-[32px] h-[470px] sm:h-[570px]">
                 <iframe 
                   className="w-full h-full absolute top-0 left-0"
-                  src="https://www.youtube.com/embed/AFaaiVxz0LU?autoplay=1&mute=1&loop=1&playlist=AFaaiVxz0LU&controls=0&showinfo=0&rel=0&playsinline=1"
+                  src="https://www.youtube.com/embed/AFaaiVxz0LU?autoplay=1&mute=1&loop=1&playlist=AFaaiVxz0LU&controls=0&showinfo=0&rel=0&playsinline=1&modestbranding=1"
                   title="Uthutho App Showcase"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
