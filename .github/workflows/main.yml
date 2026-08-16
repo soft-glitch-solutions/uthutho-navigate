@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main  # Deploy when pushing to the main branch
+      - demo  # Deploy when pushing to the demo branch
 
 jobs:
   deploy:
@@ -24,7 +25,9 @@ jobs:
       - name: Build the app
         run: npm run build
 
-      - name: Deploy to cPanel via FTP
+      # Deploy to production (main branch → uthutho.co.za)
+      - name: Deploy to Production via FTP
+        if: github.ref == 'refs/heads/main'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -32,6 +35,20 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
           port: ${{ secrets.FTP_PORT }}
-          local-dir: dist/  # This is your build directory
-          server-dir: /public_html/  # Change this if needed
-          cleanup: true  # Remove old files before uploading
+          local-dir: dist/
+          server-dir: /public_html/
+          cleanup: true
+
+      # Deploy to demo (demo branch → demo.uthutho.co.za)
+      - name: Deploy to Demo via FTP
+        if: github.ref == 'refs/heads/demo'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.DEMO_FTP_SERVER }}
+          username: ${{ secrets.DEMO_FTP_USERNAME }}
+          password: ${{ secrets.DEMO_FTP_PASSWORD }}
+          protocol: ftp
+          port: ${{ secrets.DEMO_FTP_PORT }}
+          local-dir: dist/
+          server-dir: /demo.uthutho.co.za/
+          cleanup: true
