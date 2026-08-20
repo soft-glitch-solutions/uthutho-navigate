@@ -2,12 +2,12 @@ import React from 'react';
 import { MapPin, Users, Award, Shield, Leaf, Zap } from 'lucide-react';
 
 const goals = [
-  { icon: <MapPin className="h-6 w-6 text-primary" />, text: "Make commuting in South Africa simple, social, and fun" },
-  { icon: <Users className="h-6 w-6 text-secondary" />, text: "Build safer and stronger communities through shared journeys" },
-  { icon: <Award className="h-6 w-6 text-accent" />, text: "Use gamification to keep travel engaging and rewarding" },
-  { icon: <Shield className="h-6 w-6 text-primary" />, text: "Protect commuter privacy with journey titles only" },
-  { icon: <Leaf className="h-6 w-6 text-green-500" />, text: "Promote eco-friendly travel and reduce congestion" },
-  { icon: <Zap className="h-6 w-6 text-yellow-400" />, text: "Bridge the information gap with real-time updates" },
+  { icon: <MapPin className="h-6 w-6 text-primary" />, text: "Help commuters make smarter decisions with live route and queue visibility" },
+  { icon: <Users className="h-6 w-6 text-secondary" />, text: "Turn everyday travellers into a trusted network of real-time transport updates" },
+  { icon: <Award className="h-6 w-6 text-accent" />, text: "Build a stronger transport ecosystem for taxis, school transport, and future mobility services" },
+  { icon: <Shield className="h-6 w-6 text-primary" />, text: "Give parents better confidence through clearer school transport information and visibility" },
+  { icon: <Leaf className="h-6 w-6 text-green-500" />, text: "Support more efficient journeys by reducing guesswork, missed connections, and wasted trips" },
+  { icon: <Zap className="h-6 w-6 text-yellow-400" />, text: "Keep transport intelligence accessible with digital and data-light experiences" },
 ];
 
 const GoalsSection = () => {
@@ -18,7 +18,7 @@ const GoalsSection = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-12 text-white">
-          Our Goals
+          What makes Uthutho different
         </h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center max-w-6xl mx-auto">
