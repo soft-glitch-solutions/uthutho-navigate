@@ -9,31 +9,6 @@ interface TimelineItem {
 
 const timelineItems: TimelineItem[] = [
   {
-    date: "January 2026",
-    title: "Journey Expansion & Driver Onboarding ✅",
-    description: "Expanded the Journey feature to school transport and carpooling. Drivers can sign up with Uber-like features including profiles, availability, and route management."
-  },
-  {
-    date: "March 2026",
-    title: "Stability & Performance Updates ✅",
-    description: "Major stability improvements, bug fixes, performance optimisation, and improved real-time journey accuracy."
-  },
-  {
-    date: "April 2026",
-    title: "City Route Expansion ✅",
-    description: "Added and refined routes in Johannesburg and Durban, with better coverage and commuter-driven updates."
-  },
-  {
-    date: "May 2026",
-    title: "Transport Organisation Partnerships ✅",
-    description: "Connected with transport organisations, schools, and fleet operators to onboard verified drivers and official routes."
-  },
-  {
-    date: "June 2026",
-    title: "International Expansion ✅",
-    description: "Launched Uthutho in selected international markets with similar public transport needs."
-  },
-  {
     date: "September 2026",
     title: "Cape Town & Gauteng Growth Push",
     description: "Accelerating user adoption and route coverage across Cape Town and Gauteng. Expanding commuter presence through targeted campaigns, local ambassadors, and community-driven route contributions."
