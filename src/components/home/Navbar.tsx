@@ -1,11 +1,18 @@
 
 import { Link } from 'react-router-dom';
-import { Phone, Menu, Bot } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Navbar = () => {
   const isMobile = useIsMobile();
+  const navItems = [
+    { label: 'Home', href: '#home' },
+    { label: 'Features', href: '#features' },
+    { label: 'Media Coverage', to: '/media' },
+    { label: 'About', to: '/about-us' },
+    { label: 'Contact', href: '#contact' },
+  ];
 
   return (
     <nav className="fixed w-full z-50">
@@ -21,9 +28,18 @@ const Navbar = () => {
               <span className="text-xl md:text-2xl font-bold text-primary">Uthutho</span>
             </div>
             
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-white hover:text-primary transition-colors">Features</a>
-              <Link to="/about-us" className="text-white hover:text-primary transition-colors">About Us</Link>
+            <div className="hidden md:flex items-center space-x-6">
+              {navItems.map((item) =>
+                item.to ? (
+                  <Link key={item.label} to={item.to} className="text-white hover:text-primary transition-colors">
+                    {item.label}
+                  </Link>
+                ) : (
+                  <a key={item.label} href={item.href} className="text-white hover:text-primary transition-colors">
+                    {item.label}
+                  </a>
+                ),
+              )}
             </div>
             
             {isMobile && (
@@ -35,8 +51,17 @@ const Navbar = () => {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-full sm:w-80 bg-black border-white/10">
                   <div className="flex flex-col h-full pt-10 space-y-6">
-                    <a href="#features" className="text-white text-lg hover:text-primary transition-colors py-2">Features</a>
-                    <Link to="/about-us" className="text-white text-lg hover:text-primary transition-colors py-2">About Us</Link>
+                    {navItems.map((item) =>
+                      item.to ? (
+                        <Link key={item.label} to={item.to} className="text-white text-lg hover:text-primary transition-colors py-2">
+                          {item.label}
+                        </Link>
+                      ) : (
+                        <a key={item.label} href={item.href} className="text-white text-lg hover:text-primary transition-colors py-2">
+                          {item.label}
+                        </a>
+                      ),
+                    )}
                   </div>
                 </SheetContent>
               </Sheet>

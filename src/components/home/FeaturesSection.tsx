@@ -20,43 +20,43 @@ const FeaturesSection: React.FC = () => {
   const features = [
     {
       icon: <MapPin className="h-8 w-8 text-secondary" />,
-      title: "Find People on Your Route",
-      description: "Mark yourself as waiting or traveling and see who else is on the same journey with you."
+      title: "Know how busy your route is before you arrive",
+      description: "See live commuter activity, queue demand, and movement on the route you plan to use."
     },
     {
       icon: <MessageSquare className="h-8 w-8 text-primary" />,
-      title: "Journey Chats",
-      description: "Join temporary chats with fellow commuters. Conversations disappear once the journey ends."
+      title: "Talk to commuters on your route while travelling",
+      description: "Join live journey chats to swap updates, ask questions, and travel with more confidence."
     },
     {
       icon: <Award className="h-8 w-8 text-secondary" />,
-      title: "Gamified Travel",
-      description: "Earn points, badges, and rewards as you travel. Compete on leaderboards and keep your streaks alive."
+      title: "See what is happening across the whole journey",
+      description: "Track demand at each stop so you can spot pressure points and make better route decisions earlier."
     },
     {
       icon: <Clock className="h-8 w-8 text-primary" />,
-      title: "Dynamic Journeys",
-      description: "Journeys exist only while people are traveling. When the trip ends, the journey closes automatically."
+      title: "Get live updates only when they matter",
+      description: "Uthutho focuses on active journeys, giving you timely information instead of stale transport listings."
     },
     {
       icon: <Users className="h-8 w-8 text-secondary" />,
-      title: "Community & Safety",
-      description: "Travel feels less lonely and more secure by connecting with others going the same way."
+      title: "Travel with community-powered visibility",
+      description: "Move with less uncertainty by relying on updates from people already travelling your route."
     },
     {
       icon: <Bus className="h-8 w-8 text-primary" />,
-      title: "School Transport Listings",
-      description: "Drivers and operators can list school transport routes, service areas, and pricing for parents to browse."
+      title: "Find school transport options with more clarity",
+      description: "Parents can review routes, service areas, and available transport options in one place."
     },
     {
       icon: <Navigation className="h-8 w-8 text-secondary" />,
-      title: "Live Vehicle Tracking",
-      description: "Parents can track school transport vehicles in real time and know when children arrive safely."
+      title: "Follow school transport progress in real time",
+      description: "Track active school transport journeys and stay informed about expected arrivals and movement."
     },
     {
       icon: <Shield className="h-8 w-8 text-primary" />,
-      title: "Safe & Transparent Transport",
-      description: "Parents get clear information about drivers, routes, and transport services to make informed decisions."
+      title: "Choose transport with better safety context",
+      description: "Get clearer route and service information so families and commuters can make more informed choices."
     }
   ];
 
@@ -70,7 +70,9 @@ const FeaturesSection: React.FC = () => {
 
   // Auto-rotate every 4 seconds
   useEffect(() => {
-    const interval = setInterval(nextFeature, 4000);
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % features.length);
+    }, 4000);
     return () => clearInterval(interval);
   }, [features.length]);
 
@@ -80,7 +82,7 @@ const FeaturesSection: React.FC = () => {
         <div className="text-center mb-12 md:mb-16">
           <p className="text-primary tracking-[2px] text-sm font-bold">FEATURES</p>
           <h2 className="text-3xl font-light text-white sm:text-4xl xl:text-5xl font-pj">
-            Connecting Commuters, Empowering Parents
+            One platform for commuters, parents, and partners
           </h2>
         </div>
 

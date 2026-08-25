@@ -8,7 +8,6 @@ import TransportDigitalSection from '../components/home/TransportDigitalSection'
 import TeamSection from '../components/home/TeamSection';
 import Footer from '../components/home/Footer';
 import Timeline from '../components/home/Timeline';
-import MediaSection from '../components/home/MediaSection';
 import AwardsSection from '../components/home/AwardsSection';
 import JourneyDrive from '../components/home/JourneyDrive';
 
@@ -18,14 +17,7 @@ const Index = () => {
     <div className="min-h-screen bg-black font-quiapo">
       <Navbar />
       <HeroSection />
-      
-      <QuoteSection 
-        quote="Hamba ngokukhululeka, yazi indlela yakho!"
-        translation="Travel with ease, know your route!"
-      />
-      
 
-      
       {/* Moved AISection to appear before GoalsSection */}
       <TransportDigitalSection />
 

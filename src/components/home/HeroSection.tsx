@@ -2,13 +2,23 @@ import { useState, useEffect } from 'react';
 
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const highlights = [
+    'Live taxi queue and route updates',
+    'School transport visibility for parents',
+    'Community insights that work on low data',
+  ];
+  const trustSignals = [
+    'Built for South African commuters',
+    'Community-powered journey intelligence',
+    'Recognised local transport innovation',
+  ];
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-16">
+    <section id="home" className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-16">
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[url('/lovable-uploads/uthutho-commute.png')] bg-cover bg-center opacity-10"></div>
         <div className="absolute inset-0 flex items-center justify-center opacity-5">
@@ -22,18 +32,52 @@ const HeroSection = () => {
 
       <div className="container px-4 mx-auto flex flex-col md:flex-row items-center justify-between relative z-10 py-8 md:py-16">
         <div className="text-center md:text-left md:w-1/2 mb-12 md:mb-0">
-        <p className={`text-primary tracking-[2px] text-sm font-bold transition-all duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-            UTHUTHO
+          <p className={`text-primary tracking-[2px] text-sm font-bold transition-all duration-700 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+            COMMUNITY-POWERED COMMUTING
           </p>
           <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-quiapo mb-6 text-white transform transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            Transform Your Daily Commute!
+            South Africa&apos;s Community-Powered Transport Platform
           </h1>
           <p className={`text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl font-inter transform transition-all duration-700 delay-300 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-          Your smart paratransit companion. No data? No problem. Join our data-free web app.
+            Get live multi-transport updates, smarter route information, school transport visibility, and commuter insights powered by the people who travel every day.
           </p>
+          <div className={`grid gap-3 mb-8 max-w-2xl text-left transform transition-all duration-700 delay-400 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            {highlights.map((highlight) => (
+              <div key={highlight} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm sm:text-base text-white/90 backdrop-blur-sm">
+                {highlight}
+              </div>
+            ))}
+          </div>
           <div className={`transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            {/* App Store Badges */}
-            <div className="flex flex-col items-center md:items-start mb-8">
+            <div className="flex flex-col items-center md:items-start mb-8 gap-4">
+              <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                <a
+                  href="https://www.mobile.uthutho.co.za/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
+                >
+                  Download App
+                </a>
+                <a
+                  href="#features"
+                  className="inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-primary hover:text-primary"
+                >
+                  Join Community
+                </a>
+                <a
+                  href="#business-solutions"
+                  className="inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-primary hover:text-primary"
+                >
+                  Partner With Uthutho
+                </a>
+                <a
+                  href="mailto:info@uthutho.co.za?subject=Support%20Uthutho"
+                  className="inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-primary hover:text-primary"
+                >
+                  Support The Project
+                </a>
+              </div>
               <div className="flex flex-wrap justify-center md:justify-start gap-4 mb-3">
                 <a href="https://play.google.com/store/apps/details?id=com.softglitch.uthutho&hl=en_ZA" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity">
                   <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQobhWPz0ruWVxG5fiJVRf3ctDkP-Yym8XSCY4VNXTXW1sOz0Z6" alt="Get it on Google Play" className="h-12"/>
@@ -45,8 +89,14 @@ const HeroSection = () => {
                   <img src="https://appassets.mvtdev.com/index/public-transit-resources/img/store-buttons/web_app-badge_en.webp" alt="Web App" className="h-12"/>
                 </a>
               </div>
+              <div className="grid gap-2 sm:grid-cols-3 w-full max-w-2xl">
+                {trustSignals.map((signal) => (
+                  <div key={signal} className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-xs sm:text-sm text-white/80">
+                    {signal}
+                  </div>
+                ))}
+              </div>
             </div>
-
           </div>
         </div>
 

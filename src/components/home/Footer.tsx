@@ -15,7 +15,7 @@ const TikTokIcon = ({ className }: { className?: string }) => (
 
 const Footer = () => {
   return (
-    <footer className="bg-black border-t border-white/10">
+    <footer id="contact" className="bg-black border-t border-white/10">
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           
@@ -30,7 +30,7 @@ const Footer = () => {
               <span className="text-xl font-bold text-primary">Uthutho</span>
             </div>
             <p className="text-gray-400">
-              Transforming paratransit through smart public transport solutions.
+              Community-powered transport intelligence for commuters, parents, and partners across South Africa.
             </p>
           </div>
 
