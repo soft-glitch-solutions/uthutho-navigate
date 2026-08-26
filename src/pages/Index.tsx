@@ -30,11 +30,6 @@ const Index = () => {
       {/* Added new Timeline section */}
       <Timeline />
       
-      <QuoteSection 
-        quote="Izindlela zakho ziqinisekisa impumelelo!"
-        translation="Your journey leads to success – keep moving forward!"
-      />
-      
       <TeamSection />
 
       <Footer />
