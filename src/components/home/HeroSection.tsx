@@ -3,14 +3,9 @@ import { useState, useEffect } from 'react';
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const highlights = [
-    'Live taxi queue and route updates',
-    'School transport visibility for parents',
-    'Community insights that work on low data',
   ];
   const trustSignals = [
-    'Built for South African commuters',
-    'Community-powered journey intelligence',
-    'Recognised local transport innovation',
+
   ];
 
   useEffect(() => {
@@ -50,34 +45,6 @@ const HeroSection = () => {
           </div>
           <div className={`transform transition-all duration-700 delay-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <div className="flex flex-col items-center md:items-start mb-8 gap-4">
-              <div className="flex flex-wrap justify-center md:justify-start gap-3">
-                <a
-                  href="https://www.mobile.uthutho.co.za/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
-                >
-                  Download App
-                </a>
-                <a
-                  href="#features"
-                  className="inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-primary hover:text-primary"
-                >
-                  Join Community
-                </a>
-                <a
-                  href="#business-solutions"
-                  className="inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-primary hover:text-primary"
-                >
-                  Partner With Uthutho
-                </a>
-                <a
-                  href="mailto:info@uthutho.co.za?subject=Support%20Uthutho"
-                  className="inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-primary hover:text-primary"
-                >
-                  Support The Project
-                </a>
-              </div>
               <div className="flex flex-wrap justify-center md:justify-start gap-4 mb-3">
                 <a href="https://play.google.com/store/apps/details?id=com.softglitch.uthutho&hl=en_ZA" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity">
                   <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQobhWPz0ruWVxG5fiJVRf3ctDkP-Yym8XSCY4VNXTXW1sOz0Z6" alt="Get it on Google Play" className="h-12"/>
